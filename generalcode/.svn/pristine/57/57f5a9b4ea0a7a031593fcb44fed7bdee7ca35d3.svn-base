@@ -1,0 +1,278 @@
+# ******************************************************
+## Revision "$LastChangedDate$"
+## Date "$LastChangedRevision$"
+## Author "$LastChangedBy$"
+## URL "$HeadURL$"
+## Copyright 2017, PBL Netherlands Environmental Assessment Agency and Utrecht University.
+## Reuse permitted under Gnu Public License, GPL v3.
+# ******************************************************
+
+# P(A): Fraction of Agreement.
+# P(E): Expected fraction of Agreement subject to observed distribution.
+# P(max): Maximal fraction of Agreement subject to observed distribution.
+# Assume two maps A and B with N classes.
+# p_ij = 0.1 means that 10% of all the cells of map A with class i have class j in map B.
+# p_iT = fraction of all the cells of map A with class i.
+# p_Ti = fraction of all the cells of map B with class i. 
+# P(A) = SUM(over Nclasses)_(p_ii)
+# P(E) = SUM(over Nclasses)_(p_iT * P_Ti)
+# P(max) = SUM(over Nclasses)_(min(p_iT , P_Ti))
+
+# These methods are only used on integer maps!
+from error import *
+from iround import *
+
+def calculate_matrix(mapA,mapB):
+    '''
+    Calculate the cell-by-cell matrix of all cells. The cells contain the number of cells with this combination.
+    matrix[i][j]: fraction of map A with class i that have class j in map B.
+    '''
+    if (mapA.length != mapB.length):
+        raise MyError("COMPARE_RASTERS: To compare two rasters, length should be equal.")
+
+    # Find minimum and maximum values in both maps.
+    max_num = iround(max(mapA.maximum(),mapB.maximum()))
+    min_num = iround(min(mapA.minimum(),mapB.minimum()))
+
+    # Dimension of matrix.
+    N = max_num - min_num + 1
+
+    #if (N > 50):
+    #    raise MyError("COMPARE_RASTERS: To compare two rasters, number of classes should be less or equal than 50.")
+
+    # Create an matrix for all these values.
+    matrix = []
+    for irow in range(N):
+        matrix.append(N*[0.0])
+
+    # Fill the matrix
+    ncount = 0
+    for icell in range(mapA.length):
+        valA = mapA.get_data(icell)
+        valB = mapB.get_data(icell)
+        if (valA == None):
+            # Nodata is excluded.
+            continue
+        if (valB == None):
+            # Nodata is excluded.
+            continue
+
+        valA = iround(valA)
+        valB = iround(valB)
+        ncount += 1
+        # Add this cell to the matrix.
+        matrix[valA-min_num][valB-min_num] += 1
+
+    # Make a fraction of the matrix.
+    for irow in range(N):
+        for icol in range(N):
+            matrix[irow][icol] /= float(ncount)
+
+    return matrix,min_num
+
+def fr_agreement(matrix):
+    '''
+    Calculate the fraction of agreement P(A).
+    '''
+    P_A = 0.0
+    for irow in range(len(matrix)):
+        P_A += matrix[irow][irow]
+    return P_A
+
+def fr_expected_agreement(matrix):
+    '''
+    Calculate the expected fraction of agreement P(E) and the maximal fraction of Agreement subject to observed distribution.
+    '''
+
+    # Calculate the sum of the columns and the rows.
+    P_iT = len(matrix) * [0.0]
+    P_Ti = len(matrix) * [0.0]
+    for irow in range(len(matrix)):
+        for icol in range(len(matrix)):
+            P_iT[irow] += matrix[irow][icol]
+            P_Ti[icol] += matrix[irow][icol]
+    print("P_iT", P_iT)
+    print("P_Ti", P_Ti)
+    P_E = 0.0
+    P_max = 0.0
+    for irow in range(len(matrix)):
+        P_E += P_iT[irow]*P_Ti[irow]
+        P_max += min(P_iT[irow],P_Ti[irow])
+
+    return P_E,P_max
+
+def kappa_stat(P_A,P_E):
+    '''
+    Calculate the kappa statistics (level of agreement).
+    Note: kappa_stat is equal to multiplication of kappa_location and kappa_histo.
+    '''
+    try:
+        return (P_A - P_E)/(1.0 - P_E)
+    except:
+        return 0.0
+
+def kappa_location(P_A,P_E,P_max):
+    '''
+    Calculate the kappa-location statistics (level of agreement).
+    Kappa-location is a measure for the similarity of spatial allocation of categories
+    for the two maps compared.
+    '''
+    try:
+        return (P_A - P_E)/(P_max - P_E)
+    except:
+        return 0.0
+
+
+def kappa_histogram(P_E,P_max):
+    '''
+    Calculate the kappa-histogram statistics (level of agreement).
+    Kappa_histogram is a measure of the quantitive similarity of two maps. 
+    '''
+    try:
+        return (P_max - P_E)/(1.0 - P_E)
+    except:
+        return 0.0
+
+def calculate_statistics(matrix):
+    '''
+    Calculate the statistics based on the matrix provided.
+    '''
+
+    # Calculate the fraction of agreement.
+    P_A = fr_agreement(matrix)
+
+    # Calculate P_E and P_max.
+    P_E,P_max = fr_expected_agreement(matrix)
+
+    # Calculate kappa.
+    kappa = kappa_stat(P_A,P_E)
+
+    # Calculate kappa_location.
+    kappa_loc = kappa_location(P_A,P_E,P_max)
+
+    # Calculate kappa_histo (of histograms).
+    kappa_histo = kappa_histogram(P_E,P_max)
+
+    return kappa,kappa_loc,kappa_histo
+
+def compare_rasters(mapA,mapB):
+    '''
+    Return the level of agreement between the two maps (kappa,kapp_location and kappa_histo).
+    '''
+    # Calculate the cell-by-cell difference.
+    matrix,min_num = calculate_matrix(mapA,mapB)
+    # print("MATRIX: ",matrix)
+
+    # Calculate the statistics.
+    kappa,kappa_loc,kappa_histo = calculate_statistics(matrix)
+
+    return kappa,kappa_loc,kappa_histo
+
+def compare_rasters_per_class(mapA,mapB):
+    '''
+    Return the level of agreement between the two maps (kappa,kapp_location and kappa_histo).
+    '''
+    # Calculate the cell-by-cell difference.
+    matrix,min_num = calculate_matrix(mapA,mapB)
+    # print("MATRIX: ",matrix)
+
+    # Create output dictionary
+    output_dict = {}
+
+    # Calculate the statistics for each class
+    for iclass in range(len(matrix)):
+        # print("ICLASS: ", iclass + min_num)
+        # Create a new matrix with the class and not the class (binair).
+        # Element zero represent the class choosen, element one is the rest.
+        matrix_class = []
+        for irow in range(2):
+            matrix_class.append(2*[0.0])
+
+        # Fill the matrix
+        for irow in range(len(matrix)):
+            for icol in range(len(matrix)):
+                if (irow != iclass and icol != iclass):
+                    matrix_class[1][1] += matrix[irow][icol]
+                elif (irow == iclass and icol != iclass):
+                    matrix_class[0][1] += matrix[irow][icol]
+                elif (irow != iclass and icol == iclass):
+                    matrix_class[1][0] += matrix[irow][icol]
+                else:
+                    matrix_class[0][0] += matrix[irow][icol]                
+
+        # Calculate the statistics.
+        kappa,kappa_loc,kappa_histo = calculate_statistics(matrix_class)
+
+        output_dict[min_num + iclass] = [kappa,kappa_loc,kappa_histo]
+
+    return output_dict
+
+
+# Source code to test this functions.
+           
+if (__name__ == "__main__"):
+
+    import ascraster
+
+    mapA = ascraster.Asciigrid(ncols = 4,nrows = 4, xllcorner = 0.0, yllcorner = 0.0, \
+                               cellsize = 1.0, nodata_value = -1, numtype = int)
+    mapB = ascraster.duplicategrid(mapA)
+    mapA.values = [-1,-1,-1,-1, 1, 1, 1, 1,\
+                    2, 2, 2, 2, 3, 3, 3, 3]
+    mapB.values = [-1,-1,-1,-1, 1, 1, 1, 1,\
+                    3, 2, 2, 2, 3, 3, 3, 3]
+    print("Raster are equal.")
+    print(compare_rasters(mapA,mapA))
+    print("Raster are equal. PER CLASS")
+    print(compare_rasters_per_class(mapA,mapA))
+    print("Raster are equal except one cell (3 versus 2).")
+    print(compare_rasters(mapA,mapB))
+    print(compare_rasters_per_class(mapA,mapB))
+    mapA.values = [-1,-1,-1,-1, 1, 1, 1, 1,\
+                    2, 3, 2, 2, 3, 3, 3, 3]
+    mapB.values = [-1,-1,-1,-1, 1, 1, 1, 1,\
+                    3, 2, 2, 2, 3, 3, 3, 3]
+    print("Raster are equal except two cells (3 versus 2).")
+    print(compare_rasters(mapA,mapB))
+    print(compare_rasters_per_class(mapA,mapB))
+    mapA.values = [ 2, 3, 2, 2, 3, 3, 3, 3,\
+                   -1,-1,-1,-1, 1, 1, 1, 1]
+    mapB.values = [-1,-1,-1,-1, 1, 1, 1, 1,\
+                    3, 2, 2, 2, 3, 3, 3, 3]
+    print("Raster cells are all not equal, but the same distribution.")
+    print(compare_rasters(mapA,mapB))
+    print(compare_rasters_per_class(mapA,mapB))
+    mapA.values = [ 2, 2, 2, 2, 3, 3, 3, 3,\
+                   -1,-1,-1,-1, 1, 1, 1, 1]
+    mapB.values = [ 4, 4, 4, 4, 5, 5, 5, 5,\
+                    6, 6, 6, 6, 7, 7, 7, 7]
+    print("Raster cells are all not equal, and the different distribution.")
+    print(compare_rasters(mapA,mapB))
+    print(compare_rasters_per_class(mapA,mapB))
+    mapA.values = [ 2, 2, 2, 2, 2, 2, 2, 2,\
+                    2, 2, 2, 2, 2, 2, 2, 2]
+    mapB.values = [ 2, 2, 2, 2, 2, 2, 2, 2,\
+                    2, 2, 2, 2, 2, 2, 2, 2]
+    print("Raster cells are partly equal, and the different distribution, only two values.")
+    matrix,min_num = calculate_matrix(mapA,mapB)
+    print("MATRIX: ", matrix)
+    print(compare_rasters(mapA,mapB))
+
+    mapA = ascraster.Asciigrid(ncols = 2,nrows = 2, xllcorner = 0.0, yllcorner = 0.0, \
+                               cellsize = 1.0, nodata_value = -1, numtype = int)
+    mapB = ascraster.duplicategrid(mapA)
+    mapA.values = [1, 1, 1, 1]
+    mapB.values = [1, 1, 1, 1]
+    print("SAME_4_1: ",compare_rasters(mapA,mapB))
+    mapA.values = [1, 2, 1, 1]
+    mapB.values = [1, 2, 1, 1]
+    print("SAME_4_12: ",compare_rasters(mapA,mapB))
+    mapA.values = [1, 2, 3, 1]
+    mapB.values = [1, 2, 2, 1]
+    print("SAME_4_123: ",compare_rasters(mapA,mapB))
+    mapA.values = [1, 2, 3, 4]
+    mapB.values = [1, 2, 3, 4]
+    print("SAME_4_1234: ",compare_rasters(mapA,mapB))
+    mapA.values = [1, 2, 3, 4]
+    mapB.values = [1, 2, 3, 3]
+    print("SAME_4_1234_3: ",compare_rasters(mapA,mapB))
