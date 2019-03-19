@@ -1,8 +1,10 @@
 # ******************************************************
-## Revision "$LastChangedDate:  $"
-## Date "$LastChangedRevision:  $"
-## Author "$LastChangedBy:  $"
-## URL "$HeadURL:  $"
+## Revision "$LastChangedDate: 2019-01-31 12:05:37 +0100 (Thu, 31 Jan 2019) $"
+## Date "$LastChangedRevision: 620 $"
+## Author "$LastChangedBy: arthurbeusen $"
+## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/aquaculture_allocation/trunk/tools/main_allocation.py $"
+## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
+## Reuse permitted under Gnu Public License, GPL v3.
 # ******************************************************
 
 # General python modules
@@ -13,6 +15,7 @@ import time
 
 # Import own general modules
 import cmd_options_general
+from error import *
 
 class Input_Critload(cmd_options_general.Input,object):
     '''
@@ -26,9 +29,7 @@ class Input_Critload(cmd_options_general.Input,object):
      
      All other commandline arguments will be stored in <instance>.args
     '''
-    
-    def __init__(self,list_args):
-
+    def start_init(self,list_args):
         # Extract scriptname to set working directory
         scriptname = list_args.pop(0)
 
@@ -52,8 +53,8 @@ class Input_Critload(cmd_options_general.Input,object):
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
                             year = 2000,
-                            outputdir = os.path.join(os.getcwd(), "..","output","2000"),
-                            inputdir = os.path.join(os.getcwd(), "..","input","2000"),
+                            outputdir = os.path.join(os.getcwd(), "..","output"),
+                            inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0
                             )
         parser.add_option("--root",
@@ -67,7 +68,7 @@ class Input_Critload(cmd_options_general.Input,object):
                           action="store",
                           help="Full path to file with all 'constant' parameter values like filenames etc..")                            
         parser.add_option("--year",
-                          type = "float",
+                          type = "int",
                           dest = "year",
                           action="store",
                           help="Year of the simulation.")
@@ -106,10 +107,93 @@ class Input_Critload(cmd_options_general.Input,object):
         # Switch debugging on/off
         self.set_debug(self.options.ldebug)
 
+        return self,list_args
+    
+    def __init__(self,list_args):
+
+        # Extract scriptname to set working directory
+        scriptname = list_args.pop(0)
+
+        # If an inifile is provided, integrate values into list_args
+        if ("--inifile" in list_args):
+            # Insert inifile arguments before other commandline arguments.
+            # This way commandline options prevail over inifile options
+            print("Inifile option found in the command line.")
+            list_args = self._parse_inifile(list_args) + list_args    
+
+        usage = "usage: python %prog [options]"
+        self._dbg("Argument list: %s" % list_args)
+        
+        # Debug print of current working directory
+        self._dbg("Current workdir: %s" % os.getcwd())
+        
+        # Initialisation of the OptionParser
+        parser = optparse.OptionParser(prog=scriptname,usage=usage)      
+               
+        # Set defaults for test mode
+        parser.set_defaults(root = os.getcwd(),
+                            parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
+                            year = 2000,
+                            outputdir = os.path.join(os.getcwd(), "..","output"),
+                            inputdir = os.path.join(os.getcwd(), "..","input"),
+                            ldebug = 0
+                            )
+        parser.add_option("--root",
+                          type = "string",
+                          dest = "root",
+                          action="store",
+                          help="Not used anymore.")
+        parser.add_option("--parameter_ini",
+                          type = "string",
+                          dest = "parameter_ini",
+                          action="store",
+                          help="Full path to file with all 'constant' parameter values like filenames etc..")                           
+        parser.add_option("--year",
+                          type = "int",
+                          dest = "year",
+                          action="store",
+                          help="Year of the simulation.")
+        parser.add_option("--inputdir",
+                          type = "string",
+                          dest = "inputdir",
+                          action="store",
+                          help="Input directory with the IMAGE gridinformation.")
+        parser.add_option("--outputdir",
+                          type = "string",
+                          dest = "outputdir",
+                          action="store",
+                          help="Output directory.")
+        parser.add_option("--ldebug",
+                          dest = "ldebug",
+                          action="store",
+                          help="Print debug messages 1: yes, 0: no.")
+        parser.add_option("--inifile",
+                          type = "string",
+                          dest = "inifile",
+                          action="store",
+                          help="""Path to ini-file.
+                          In inifile use commandline options, followed by '=', followed by argument, e.g. --outputdir = OECD.
+                          Comments must be preceded by '#'. Everything after '#' on a line will be ignored by the parser."""
+                          )
+
+        (self.options, self.args) = parser.parse_args(args=list_args)
+        # Make the same object as self.options, but with only the variable input options.
+        # This is needed for writing in the log file.
+        (self.options_var, self.args1) = parser.parse_args(args=list_args)
+             
+        # Set ldebug and lss_grw as int parameters:
+        self.options.ldebug = int(self.options.ldebug)
+
+        # Switch debugging on/off
+        self.set_debug(self.options.ldebug)
+
+        # Check here whether the main input directory exists
+        self.validate_directory(self.options.inputdir, bool_write=False)
+
         # Expand all file names to an absolute reference
         #self.options.root = os.path.join(os.getcwd(), self.options.root)
-        self.options.outputdir = os.path.join(self.options.root, self.options.outputdir)
-        self.options.inputdir = os.path.join(self.options.root, self.options.inputdir)
+        self.options.outputdir = os.path.join(self.options.root, self.options.outputdir,str(self.options.year))
+        self.options.inputdir = os.path.join(self.options.root, self.options.inputdir,str(self.options.year))
          
         # Read all the default parameter settings out of the parameter.ini
         # Here all the other semi constant parameters for the model are set!
@@ -176,14 +260,19 @@ class Input_Critload(cmd_options_general.Input,object):
         '''
         self.validate_directory(self.options.root, bool_write=False)
        
+        # Check here whether the year is found on input directory
+        try:
+            self.validate_directory(self.options.inputdir, bool_write=False)
+        except MyError:
+            raise MyError("Directory '%s' does not exist in the input directory." % self.options.year)
+
         # Create new output directory if necessary
         if not os.path.exists(self.options.outputdir):
             os.makedirs(self.options.outputdir)
             
         self.validate_directory(self.options.outputdir, bool_write=True)
-        self.validate_directory(self.options.inputdir, bool_write=False)
-               
-        # TODO            
+
+        # Check the input files
         self.validate_file(self.options.filename_gridcell_area)
         self.validate_file(self.options.filename_agri_area)
         self.validate_file(self.options.filename_natural_area)

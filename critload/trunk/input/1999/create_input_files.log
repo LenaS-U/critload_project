@@ -1,0 +1,25 @@
+# Wed Mar 13 17:56:24 2019  : Logfile started by user: beusena
+# Wed Mar 13 17:56:24 2019  : Starting run....
+#############################################
+# Wed Mar 13 17:56:24 2019  : MANDIST DIRECTORY: /data/beusena/mandist/preproc_nbal/SSP2_18feb2018/mandist_files
+# Wed Mar 13 17:56:24 2019  : GNM INPUT DIRECTORY: /data/beusena/globalnutrients/scen_input/SSPs/history_2005
+# Wed Mar 13 17:56:24 2019  : GNM OUTPUT DIRECTORY: /data/beusena/tmp/output_history_110
+# Wed Mar 13 17:56:24 2019  : WATER INPUT DIRECTORY: /data/beusena/globalnutrients/water_input/pcrglobwb_100
+#############################################
+# Wed Mar 13 17:56:24 2019  : ******************************************************
+# Wed Mar 13 17:56:24 2019  : # Version information of main script.
+# Wed Mar 13 17:56:24 2019  : ******************************************************
+# Wed Mar 13 17:56:24 2019  : ## Version information from file: /home/beusena/Downloads/trunk_12mrt2019/tools/create_input_files.py
+# Wed Mar 13 17:56:24 2019  : ## Revision "$LastChangedDate: 2019-01-31 12:05:37 +0100 (Thu, 31 Jan 2019) $"
+# Wed Mar 13 17:56:24 2019  : ## Date "$LastChangedRevision: 620 $"
+# Wed Mar 13 17:56:24 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed Mar 13 17:56:24 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/aquaculture_allocation/trunk/tools/main_allocation.py $"
+# Wed Mar 13 17:56:24 2019  : ******************************************************
+# Wed Mar 13 17:56:24 2019  : # Version information of generalcode directory.
+# Wed Mar 13 17:56:24 2019  : ******************************************************
+# Wed Mar 13 17:56:24 2019  : ## Version information from file: /data/beusena/generalcode/trunk/general_class.py
+# Wed Mar 13 17:56:24 2019  : ## Revision "$LastChangedDate: 2019-03-07 14:33:50 +0100 (Thu, 07 Mar 2019) $"
+# Wed Mar 13 17:56:24 2019  : ## Date "$LastChangedRevision: 19 $"
+# Wed Mar 13 17:56:24 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed Mar 13 17:56:24 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/general_class.py $"
+# Wed Mar 13 17:56:24 2019  : ******************************************************

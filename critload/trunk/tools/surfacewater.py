@@ -2,12 +2,18 @@
 ## Revision "$LastChangedDate: 2019-01-31 12:05:37 +0100 (Thu, 31 Jan 2019) $"
 ## Date "$LastChangedRevision: 620 $"
 ## Author "$LastChangedBy: arthurbeusen $"
+## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/aquaculture_allocation/trunk/tools/main_allocation.py $"
+## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
+## Reuse permitted under Gnu Public License, GPL v3.
 # ******************************************************
 
+# Python modules
 import os
 
+# Generalcode modules
 import ascraster
 
+# Local modules
 from print_debug import *
        
 def calculate(params):
@@ -118,7 +124,7 @@ def calculate(params):
     one_min_frnfe = ascraster.duplicategrid(one_grid)
     one_min_frnfe.substract(frnfe)
     frnfe_division = ascraster.duplicategrid(frnfe)
-    frnfe_division.divide(one_min_frnfe, default_nodata_value = -99)
+    frnfe_division.divide(one_min_frnfe, default_nodata_value = -9999)
     
     denominator = ascraster.duplicategrid(frnfe_division)
     denominator.multiply(pt8)
@@ -127,17 +133,17 @@ def calculate(params):
     denominator.add(pt5)
     
     nman_crit_sw = ascraster.duplicategrid(numerator)
-    nman_crit_sw.divide(denominator, default_nodata_value = -99)
+    nman_crit_sw.divide(denominator, default_nodata_value = -9999)
     
     fileout = os.path.join(params.outputdir,"nman_crit_sw.asc")
-    nman_crit_sw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nman_crit_sw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nman_crit_sw,"The critical N input from manure for the surface water criterion is")
     
     # calculate critical N input from fertilizer
     nfert_crit_sw = ascraster.duplicategrid(nman_crit_sw)
     nfert_crit_sw.multiply(frnfe_division)
     fileout = os.path.join(params.outputdir,"nfert_crit_sw.asc")
-    nfert_crit_sw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nfert_crit_sw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nfert_crit_sw,"The critical N input from fertilizer for the surface water criterion is")
     
     # calculate related N deposition
@@ -162,9 +168,9 @@ def calculate(params):
     
     # calculate implied NUE
     nue_crit_sw = ascraster.duplicategrid(nup_ag)
-    nue_crit_sw.divide(nin_tot_crit_sw, default_nodata_value = -99)
+    nue_crit_sw.divide(nin_tot_crit_sw, default_nodata_value = -9999)
     fileout = os.path.join(params.outputdir,"nue_crit_sw.asc")
-    nue_crit_sw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nue_crit_sw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nue_crit_sw,"The implied NUE for the surface water criterion is")
     
     # FORWARD CALCULATIONS TO CHECK
@@ -181,12 +187,13 @@ def calculate(params):
     # Critical leaching - IF NEGATIVE, set to zero
     nle_ag_crit_sw = ascraster.duplicategrid(nbud_ag_crit_sw)
     nle_ag_crit_sw.substract(nsro_ag_crit_sw)
-    nle_ag_crit_sw.multiply(fle_ag)
+    nle_ag_crit_sw.multiply(fle_ag,minimum = 0.0)
     
-    for icell in range(nle_ag_crit_sw.length):
-        val=nle_ag_crit_sw.get_data(icell) 
-        if (val < 0):
-            nle_ag_crit_sw.set_data(icell,0)        
+    # This part of the code is not needed with the minimum=0.0 (in line above).
+    #for icell in range(nle_ag_crit_sw.length):
+    #    val=nle_ag_crit_sw.get_data(icell) 
+    #    if (val < 0):
+    #        nle_ag_crit_sw.set_data(icell,0)        
             
     print_debug(nle_ag_crit_sw,"The critical N leaching for the surface water criterion is")
     
@@ -238,9 +245,9 @@ def calculate(params):
     nload_crit_sw_test.add(nload_fixed_tot)
     
     # TEST IF FORWARD CALCULATIONS EQUAL BACKWARD CALLCULATION
-    
-    bw = round(nload_crit_sw.get_data(3),4)
-    fw = round(nload_crit_sw_test.get_data(3),4)
+    # This does not work in the real case.....    
+    #bw = round(nload_crit_sw.get_data(3),4)
+    #fw = round(nload_crit_sw_test.get_data(3),4)
     
     # for if nbud_crit = 0
     fw2grid = ascraster.duplicategrid(nbud_ag_crit_sw)
@@ -249,11 +256,11 @@ def calculate(params):
     fw2grid.multiply(fgw_rec_le_ag)
     fw2grid.add(nload_crit_sw_test)
    
-    fw2 = round(fw2grid.get_data(3),4)
+    #fw2 = round(fw2grid.get_data(3),4)
     
-    if bw == fw:
-        print("Comparison of backward and forward calculation was SUCCESFUL")
-    elif bw == fw2:
-        print("Comparison of backward and forward calculation was SUCCESFUL - negative budget")
-    else:   
-        print("ATTENTION!!! Comparison of backward and forward calculation NOT successful")
+    #if bw == fw:
+    #    print("Comparison of backward and forward calculation was SUCCESFUL")
+    #elif bw == fw2:
+    #    print("Comparison of backward and forward calculation was SUCCESFUL - negative budget")
+    #else:   
+    #    print("ATTENTION!!! Comparison of backward and forward calculation NOT successful")

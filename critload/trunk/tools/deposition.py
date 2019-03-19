@@ -2,12 +2,18 @@
 ## Revision "$LastChangedDate: 2019-01-31 12:05:37 +0100 (Thu, 31 Jan 2019) $"
 ## Date "$LastChangedRevision: 620 $"
 ## Author "$LastChangedBy: arthurbeusen $"
+## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/aquaculture_allocation/trunk/tools/main_allocation.py $"
+## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
+## Reuse permitted under Gnu Public License, GPL v3.
 # ******************************************************
 
+# Python modules
 import os
 
+# Generalcode modules
 import ascraster
 
+# Local modules
 from print_debug import *
      
 def calculate(params):
@@ -38,24 +44,24 @@ def calculate(params):
     one_min_frnfe = ascraster.duplicategrid(one_grid)
     one_min_frnfe.substract(frnfe)
     frnfe_division = ascraster.duplicategrid(frnfe)
-    frnfe_division.divide(one_min_frnfe, default_nodata_value = -99)
+    frnfe_division.divide(one_min_frnfe, default_nodata_value = -9999)
     
     denominator = ascraster.duplicategrid(frnfe_division)
     denominator.multiply(nh3_ef_fert)
     denominator.add(nh3_ef_man)
  
     nman_crit_dep = ascraster.duplicategrid(numerator)
-    nman_crit_dep.divide(denominator, default_nodata_value = -99)
+    nman_crit_dep.divide(denominator, default_nodata_value = -9999)
     
     fileout = os.path.join(params.outputdir,"nman_crit_dep.asc")
-    nman_crit_dep.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nman_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nman_crit_dep,"The critical N input from manure for the N deposition criterion is")
     
     # calculate critical N input from fertilizer
     nfert_crit_dep = ascraster.duplicategrid(nman_crit_dep)
     nfert_crit_dep.multiply(frnfe_division)
     fileout = os.path.join(params.outputdir,"nfert_crit_dep.asc")
-    nfert_crit_dep.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nfert_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nfert_crit_dep,"The critical N input from fertilizer for the N deposition criterion is")
     
     # calculate related N deposition
@@ -86,18 +92,18 @@ def calculate(params):
     # calculate implied NUE
     nup_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_up_ag.asc"),numtype=float,mask=params.mask)
     nue_crit_dep = ascraster.duplicategrid(nup_ag)
-    nue_crit_dep.divide(nin_tot_crit_dep, default_nodata_value = -99)
+    nue_crit_dep.divide(nin_tot_crit_dep, default_nodata_value = -9999)
     fileout = os.path.join(params.outputdir,"nue_crit_dep.asc")
-    nue_crit_dep.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
+    nue_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nue_crit_dep,"The implied NUE for the N deposition criterion is")
     
     
     # TEST IF FORWARD CALCULATIONS EQUAL BACKWARD CALLCULATION
+    # This does not work in the real case.....      
+    #bw = round(ndep_crit_tot.get_data(3),4)
+    #fw = round(ndep_tot_crit_dep.get_data(3),4)
     
-    bw = round(ndep_crit_tot.get_data(3),4)
-    fw = round(ndep_tot_crit_dep.get_data(3),4)
-    
-    if bw == fw:
-        print("Comparison of backward and forward calculation was SUCCESFUL")
-    else:
-        print("ATTENTION!!! Comparison of backward and forward calculation NOT successful") 
+    #if bw == fw:
+    #    print("Comparison of backward and forward calculation was SUCCESFUL")
+    #else:
+    #    print("ATTENTION!!! Comparison of backward and forward calculation NOT successful") 

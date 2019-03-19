@@ -1,9 +1,9 @@
 # ******************************************************
-## Revision "$LastChangedDate: 2018-07-08 18:08:17 +0200 (Sun, 08 Jul 2018) $"
-## Date "$LastChangedRevision: 1 $"
+## Revision "$LastChangedDate: 2019-01-31 12:05:37 +0100 (Thu, 31 Jan 2019) $"
+## Date "$LastChangedRevision: 620 $"
 ## Author "$LastChangedBy: arthurbeusen $"
-## URL "$HeadURL: https://pbl.sliksvn.com/dgnm/core/general_startup.py $"
-## Copyright 2017, PBL Netherlands Environmental Assessment Agency and Utrecht University.
+## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/aquaculture_allocation/trunk/tools/main_allocation.py $"
+## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
 ## Reuse permitted under Gnu Public License, GPL v3.
 # ******************************************************
 
@@ -19,7 +19,7 @@ import my_sys
 # Import local modules.
 import cmd_options_critload
 
-def general_startup(args):
+def general_startup(args,prefix=""):
 
     # Parse command-line arguments and set parameters for script
     try:
@@ -31,7 +31,7 @@ def general_startup(args):
     
     # Start timer and logging
     s = my_sys.SimpleTimer()
-    log = my_logging.Log(params.outputdir,"critload_%i.log" % (params.year))
+    log = my_logging.Log(params.outputdir,"%s_%i.log" % (prefix,params.year))
     print("Log will be written to %s" % log.logFile)
     
     # If no arguments are provided do a run with defaults in params
