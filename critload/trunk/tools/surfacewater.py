@@ -15,16 +15,16 @@ def calculate(params):
     print("The critical N concentration in surface water is", params.crit_sw)
     
     # calculate Nload,crit,sw =Q*Nconc,sw(crit)
-    q = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"q.asc"),numtype=float)
+    q = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"q.asc"),numtype=float,mask=params.mask)
     nload_crit_sw = ascraster.duplicategrid(q)
     nload_crit_sw.multiply(params.crit_sw)
     print_debug(nload_crit_sw,"The critical N load to surface water is")
     
     # calculate fixed N load to surface water
-    npoint_tot = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"npoint_tot.asc"),numtype=float)
-    nero_tot = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nero_tot.asc"),numtype=float)
-    nload_fixed_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_ag.asc"),numtype=float)
-    nload_fixed_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_nat.asc"),numtype=float)
+    npoint_tot = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"npoint_tot.asc"),numtype=float,mask=params.mask)
+    nero_tot = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nero_tot.asc"),numtype=float,mask=params.mask)
+    nload_fixed_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_ag.asc"),numtype=float,mask=params.mask)
+    nload_fixed_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_nat.asc"),numtype=float,mask=params.mask)
     nload_fixed_tot = ascraster.duplicategrid(npoint_tot)
     nload_fixed_tot.add(nero_tot)
     nload_fixed_tot.add(nload_fixed_ag)
@@ -32,9 +32,9 @@ def calculate(params):
     print_debug(nload_fixed_tot,"The fixed N load to surface water is")
     
     # calculate parameter 'v' 
-    fle_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_ag.asc"),numtype=float)
-    fsro_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc"),numtype=float)
-    fgw_rec_le_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fgw_rec_le_ag.asc"),numtype=float)
+    fle_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_ag.asc"),numtype=float,mask=params.mask)
+    fsro_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc"),numtype=float,mask=params.mask)
+    fgw_rec_le_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fgw_rec_le_ag.asc"),numtype=float,mask=params.mask)
     v_part1 = ascraster.duplicategrid(fgw_rec_le_ag)
     v_part1.multiply(fle_ag)
     v_part2 = ascraster.duplicategrid(fgw_rec_le_ag)
@@ -46,9 +46,9 @@ def calculate(params):
     print_debug(v,"The value for parameter v is")
     
     # calculate parameter 'w' 
-    fle_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_nat.asc"),numtype=float)
-    fsro_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_nat.asc"),numtype=float)
-    fgw_rec_le_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fgw_rec_le_nat.asc"),numtype=float)
+    fle_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_nat.asc"),numtype=float,mask=params.mask)
+    fsro_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_nat.asc"),numtype=float,mask=params.mask)
+    fgw_rec_le_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fgw_rec_le_nat.asc"),numtype=float,mask=params.mask)
     w_part1 = ascraster.duplicategrid(fgw_rec_le_nat)
     w_part1.multiply(fle_nat)
     w_part2 = ascraster.duplicategrid(fgw_rec_le_nat)
@@ -60,15 +60,15 @@ def calculate(params):
     print_debug(w,"The value for parameter w is")
     
     # calculate critical N input from manure
-    nup_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_up_ag.asc"),numtype=float)
-    nfix_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_ag.asc"),numtype=float)
-    nfix_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_nat.asc"),numtype=float)
-    nox_em = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc"),numtype=float)
-    nh3_ef_man = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man.asc"),numtype=float)
-    nh3_ef_fert = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert.asc"),numtype=float)
-    frnfe = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe.asc"),numtype=float)
-    fag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fag.asc"),numtype=float)
-    fnat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fnat.asc"),numtype=float)
+    nup_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_up_ag.asc"),numtype=float,mask=params.mask)
+    nfix_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_ag.asc"),numtype=float,mask=params.mask)
+    nfix_nat = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_nat.asc"),numtype=float,mask=params.mask)
+    nox_em = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc"),numtype=float,mask=params.mask)
+    nh3_ef_man = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man.asc"),numtype=float,mask=params.mask)
+    nh3_ef_fert = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert.asc"),numtype=float,mask=params.mask)
+    frnfe = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe.asc"),numtype=float,mask=params.mask)
+    fag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fag.asc"),numtype=float,mask=params.mask)
+    fnat = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fnat.asc"),numtype=float,mask=params.mask)
     
     numerator = ascraster.duplicategrid(nload_crit_sw)
         
@@ -118,7 +118,7 @@ def calculate(params):
     one_min_frnfe = ascraster.duplicategrid(one_grid)
     one_min_frnfe.substract(frnfe)
     frnfe_division = ascraster.duplicategrid(frnfe)
-    frnfe_division.divide(one_min_frnfe)
+    frnfe_division.divide(one_min_frnfe, default_nodata_value = -99)
     
     denominator = ascraster.duplicategrid(frnfe_division)
     denominator.multiply(pt8)
@@ -127,7 +127,7 @@ def calculate(params):
     denominator.add(pt5)
     
     nman_crit_sw = ascraster.duplicategrid(numerator)
-    nman_crit_sw.divide(denominator)
+    nman_crit_sw.divide(denominator, default_nodata_value = -99)
     
     fileout = os.path.join(params.outputdir,"nman_crit_sw.asc")
     nman_crit_sw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
@@ -162,7 +162,7 @@ def calculate(params):
     
     # calculate implied NUE
     nue_crit_sw = ascraster.duplicategrid(nup_ag)
-    nue_crit_sw.divide(nin_tot_crit_sw)
+    nue_crit_sw.divide(nin_tot_crit_sw, default_nodata_value = -99)
     fileout = os.path.join(params.outputdir,"nue_crit_sw.asc")
     nue_crit_sw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
     print_debug(nue_crit_sw,"The implied NUE for the surface water criterion is")

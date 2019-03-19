@@ -15,9 +15,9 @@ def calculate(params):
     print("The critical N conc in gw is", params.crit_gw)    
     
     # calculate nle,ag,crit(gw) Nle,ag(crit)=(1-fsro)*Q*fag*Nconc,le,ag(crit)
-    fsro_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc"),numtype=float)
-    q = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"q.asc"),numtype=float)
-    fag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fag.asc"),numtype=float)
+    fsro_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc"),numtype=float,mask=params.mask)
+    q = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"q.asc"),numtype=float,mask=params.mask)
+    fag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fag.asc"),numtype=float,mask=params.mask)
     
     one_grid = ascraster.duplicategrid(fsro_ag)
     for i in range(one_grid.length):
@@ -31,18 +31,18 @@ def calculate(params):
     print_debug(nle_ag_crit_gw,"The critical leaching is")
     
     # calculate critical N input from manure
-    fle_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_ag.asc"),numtype=float)
-    nup_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_up_ag.asc"),numtype=float)
-    nfix_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_ag.asc"),numtype=float)
-    nox_em = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc"),numtype=float)
-    nh3_ef_man = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man.asc"),numtype=float)
-    nh3_ef_fert = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert.asc"),numtype=float)
-    frnfe = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe.asc"),numtype=float)
+    fle_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_ag.asc"),numtype=float,mask=params.mask)
+    nup_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_up_ag.asc"),numtype=float,mask=params.mask)
+    nfix_ag = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"nfix_ag.asc"),numtype=float,mask=params.mask)
+    nox_em = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc"),numtype=float,mask=params.mask)
+    nh3_ef_man = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man.asc"),numtype=float,mask=params.mask)
+    nh3_ef_fert = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert.asc"),numtype=float,mask=params.mask)
+    frnfe = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe.asc"),numtype=float,mask=params.mask)
     
     nman_crit_gw = ascraster.duplicategrid(nle_ag_crit_gw)
-    nman_crit_gw.divide(fle_ag)
+    nman_crit_gw.divide(fle_ag, default_nodata_value = -99)
     nman_crit_gw.add(nup_ag)
-    nman_crit_gw.divide(one_min_fsro)
+    nman_crit_gw.divide(one_min_fsro, default_nodata_value = -99)
     nman_crit_gw.substract(nfix_ag)
     nox_times_fag = ascraster.duplicategrid(nox_em)
     nox_times_fag.multiply(fag)
@@ -59,7 +59,7 @@ def calculate(params):
     one_min_frnfe = ascraster.duplicategrid(one_grid)
     one_min_frnfe.substract(frnfe)
     frnfe_division = ascraster.duplicategrid(frnfe)
-    frnfe_division.divide(one_min_frnfe)
+    frnfe_division.divide(one_min_frnfe, default_nodata_value = -99)
     
     pt3 = ascraster.duplicategrid(frnfe_division)
     pt3.multiply(pt2)
@@ -67,7 +67,7 @@ def calculate(params):
     pt4 = ascraster.duplicategrid(pt1)
     pt4.add(pt3)
    
-    nman_crit_gw.divide(pt4)
+    nman_crit_gw.divide(pt4, default_nodata_value = -99)
     
     fileout = os.path.join(params.outputdir,"nman_crit_gw.asc")
     nman_crit_gw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
@@ -102,7 +102,7 @@ def calculate(params):
     
     # calculate implied NUE
     nue_crit_gw = ascraster.duplicategrid(nup_ag)
-    nue_crit_gw.divide(nin_tot_crit_gw)
+    nue_crit_gw.divide(nin_tot_crit_gw, default_nodata_value = -99)
     fileout = os.path.join(params.outputdir,"nue_crit_gw.asc")
     nue_crit_gw.write_ascii_file(fileout,output_nodata_value=-999,compress=params.lcompress)
     print_debug(nue_crit_gw,"The implied NUE for the groundwater criterion is")

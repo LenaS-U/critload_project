@@ -52,8 +52,8 @@ class Input_Critload(cmd_options_general.Input,object):
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
                             year = 2000,
-                            outputdir = os.path.join(os.getcwd(), "..","output"),
-                            inputdir = os.path.join(os.getcwd(), "..","input"),
+                            outputdir = os.path.join(os.getcwd(), "..","output","2000"),
+                            inputdir = os.path.join(os.getcwd(), "..","input","2000"),
                             ldebug = 0
                             )
         parser.add_option("--root",
