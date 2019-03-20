@@ -1,0 +1,34 @@
+Total area int crops: 1.003133e+09
+Total area ext crops: 5.254746e+08
+Total area int grass: 8.193125e+08
+Total area ext grass: 2.413344e+09
+Total cellarea: 1.448870e+10
+Total agricultural area: 4.761264e+09
+Total natural area: 8.689450e+09
+Total runoff: 5.014766e+20
+Total N deposition: 7.246175e+10
+Total fertilizer upland crops: 5.908747e+10
+Total fertilizer legumes: 4.764053e+09
+Total fertilizer wrice: 1.678335e+10
+Total fertilizer grass: 3.439730e+09
+Total fertilizer: 8.407460e+10
+Total manure: 8.970934e+10
+Total N natural fixation: 5.471665e+10
+Total N agricultural fixation: 4.024710e+10
+Total N uptake: 1.297726e+11
+Total NH3 emission spreading fertilizer: 1.150811e+10
+Total NH3 emission spreading manure: 5.998542e+09
+Total NH3 emission storage: 9.060337e+09
+Total NH3 emission grazing: 6.205705e+09
+Total leaching natural soils: 1.609090e+10
+Total leaching on agricultural soils: 3.975707e+10
+Total groundwater on natural soils: 1.125686e+10
+Total groundwater on agricultural soils: 1.760531e+10
+Total point sources: 5.869378e+09
+Total aquaculture: 7.447653e+08
+Total deposition on water: 1.025394e+09
+Total alloch matter: 1.200877e+10
+Total erosion natural soils: 1.140714e+09
+Total surface runoff natural soils: 5.095333e+08
+Total erosion on agricultural soils: 6.021068e+09
+Total surface runoff on agricultural soils: 6.322428e+09

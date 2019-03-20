@@ -286,11 +286,3 @@ def temp_values(params):
     nload_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_tot,"nload_tot =")        
     
-    # calculate N inputs to agriculture in kg N ha-1
-    n_in_ag_ha = ascraster.duplicategrid(n_in_ag)
-    n_in_ag_ha.divide(a_ag, default_nodata_value = -9999)
-    fileout = os.path.join(params.outputdir,"n_in_ag_ha.asc")
-    n_in_ag_ha.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-   
-
-    

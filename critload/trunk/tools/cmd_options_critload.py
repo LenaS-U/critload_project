@@ -38,7 +38,7 @@ class Input_Critload(cmd_options_general.Input,object):
             # Insert inifile arguments before other commandline arguments.
             # This way commandline options prevail over inifile options
             print("Inifile option found in the command line.")
-            list_args = self._parse_inifile(list_args) + list_args      
+            list_args = self._parse_inifile(list_args) + list_args    
 
         usage = "usage: python %prog [options]"
         self._dbg("Argument list: %s" % list_args)
@@ -133,7 +133,7 @@ class Input_Critload(cmd_options_general.Input,object):
         # Set defaults for test mode
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
-                            year = 1999,
+                            year = 2000,
                             outputdir = os.path.join(os.getcwd(), "..","output"),
                             inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0

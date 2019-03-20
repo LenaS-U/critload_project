@@ -1,6 +1,6 @@
 # ******************************************************
-## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
-## Date "$LastChangedRevision: 625 $"
+## Revision "$LastChangedDate: 2019-03-19 21:06:02 +0100 (Tue, 19 Mar 2019) $"
+## Date "$LastChangedRevision: 627 $"
 ## Author "$LastChangedBy: arthurbeusen $"
 ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/create_input_files.py $"
 ## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
@@ -36,6 +36,33 @@ gnm_outputdir = r"/data/beusena/tmp/output_history_110"
 mandistdir = r"/data/beusena/mandist/preproc_nbal/SSP2_18feb2018/mandist_files"
 water_inputdir = r"/data/beusena/globalnutrients/water_input/pcrglobwb_100"
 
+def gridfile_total(filename,txt,fp=None):
+    grid = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    return print_total(grid,txt,fp=fp)
+
+def grid_total(grid):
+    '''
+    Calculate the sum of a grid
+    '''
+    total = 0.0
+    for icell in range(grid.length):
+        val = grid.get_data(icell)
+        if (val != None):
+            total += val
+
+    return total
+
+def print_total(grid,txt,fp=None):
+    '''
+    Calculate the sum of a grid and print it to screen or to an opened file
+    '''
+
+    total = grid_total(grid)
+
+    if (fp == None):
+        print(txt + " " + str(format(total,"e")))
+    else:
+        fp.write(txt + " " + str(format(total,"e")) + "\n")
 
 def fr_recent_grw(params,runoff):
     fraction = (params.fr_max_recent_grw/ params.max_runoff) * runoff
@@ -130,6 +157,9 @@ def get_all_files(args):
         if (val != None):
             mask.set_data(icell,1)
 
+    # Open output file for all world totals of the produced files.
+    fp = open(os.path.join(inputdir,"global_totals.txt"),"w")
+
     # Areas in ha.
     # Read cellarea file in m2.
     area = ascraster.Asciigrid(ascii_file = os.path.join(params.root,"..","fix_input","cellarea30.asc"),numtype = float)
@@ -152,7 +182,11 @@ def get_all_files(args):
     grass_int.multiply(landarea)
     grass_ext.multiply(landarea)
     crop_int.multiply(landarea)
-    crop_int.multiply(landarea)
+    crop_ext.multiply(landarea)
+    print_total(crop_int,"Total area int crops:",fp=fp)
+    print_total(crop_ext,"Total area ext crops:",fp=fp)
+    print_total(grass_int,"Total area int grass:",fp=fp)
+    print_total(grass_ext,"Total area ext grass:",fp=fp)
 
     landarea = ascraster.duplicategrid(grass_int)
     landarea.add(grass_ext)
@@ -167,9 +201,10 @@ def get_all_files(args):
             area.set_data(icell,area.nodata_value)
         else:
             cellarea = area.get_data(icell,0.0)
-            lndarea = min(cellarea,lndarea)
-            landarea.set_data(icell,lndarea)
-            natarea.set_data(icell,cellarea - lndarea)
+            # This step causes a difference between the table info of mandist and the gridinfo.
+            #lndarea = min(cellarea,lndarea)
+            #landarea.set_data(icell,lndarea)
+            natarea.set_data(icell,max(0.0,cellarea - lndarea))
 
     # Make the cell area of the total area inclusive the coast.
     rownum = ascraster.duplicategrid(landarea)
@@ -193,6 +228,9 @@ def get_all_files(args):
     area.write_ascii_file(os.path.join(inputdir,params.filename_gridcell_area))
     landarea.write_ascii_file(os.path.join(inputdir,params.filename_agri_area))
     natarea.write_ascii_file(os.path.join(inputdir,params.filename_natural_area))
+    print_total(area,"Total cellarea:",fp=fp)
+    print_total(landarea,"Total agricultural area:",fp=fp)
+    print_total(natarea,"Total natural area:",fp=fp)
 
     # Calculate the fraction recent groundwater to surface water
     # Read runoff in mm   
@@ -214,45 +252,125 @@ def get_all_files(args):
    
     # Calculate the precipitation surplus in dm3
     runoff.multiply(area)
-    # Conversion from mm* ha to dm3
+    # Conversion from mm*ha to dm3
     runoff.multiply(1.0e8)
     # Write the precipitation surplus in dm3 to file
     runoff.write_ascii_file(os.path.join(inputdir,params.filename_precipitation_surplus))
+    print_total(runoff,"Total runoff:",fp=fp)
 
     # Deposition
     filename = os.path.join(gnmdir_in,"ndeposition.asc")
     # Read deposition in mg N/m2/yr
     depo = ascraster.Asciigrid(ascii_file = filename,numtype = float)
     # Multiply with total cell area (ha).
-    depo.multiply(depo)
+    depo.multiply(area)
     # Conversion to get kg N yr-1
     depo.multiply(1.0e-2)
     # Write N deposition in kg N yr-1 to file
     depo.write_ascii_file(os.path.join(inputdir,params.filename_n_deposition))
+    print_total(depo,"Total N deposition:",fp=fp)
 
     # Inputs [kg N yr-1]
-    filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT FERTILIZER GRID FILE"])
-    filename = os.path.splitext(filename)[0] +"_N" + os.path.splitext(filename)[1]
+    #filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT FERTILIZER GRID FILE"])
+    #filename = os.path.splitext(filename)[0] +"_N" + os.path.splitext(filename)[1]
     # Read fertilizer in kg N ha-1
-    fert     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    #fert     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read agricultural area in ha
+    #filename = os.path.join(mandistdir_in,mandist_files_dict["LAND AREA ASC FILE"])
+    #agri_area = ascraster.Asciigrid(ascii_file = os.path.join(inputdir,params.filename_agri_area),numtype = float)
+    # Substract extentive grass.
+    #agri_area.substract(grass_ext)
+    # Make kg N yr-1
+    #fert.multiply(agri_area,default_nodata_value=-9999.)
+    #fert.write_ascii_file(os.path.join(inputdir,params.filename_fert_inp))
+    #print_total(fert,"Total fertilizer:")
+
+
+    # Inputs [kg N yr-1]
+    filename_org = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT FERTILIZER GRID FILE"])
     # Read landarea in km2
     filename = os.path.join(mandistdir_in,mandist_files_dict["LAND AREA ASC FILE"])
-    landarea = ascraster.Asciigrid(ascii_file = filename,numtype = float)
-    # Make kg N yr-1 of this (factor 100 is conversion from km2 to ha).
-    fert.multiply(landarea,default_nodata_value=-9999.)
-    fert.multiply(100.)
+    landarea     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read fertilizer on upland crops in kg N ha-1
+    filename = os.path.splitext(filename_org)[0] +"_UPLANDCROP" + os.path.splitext(filename)[1]
+    fert_upl     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read upland area in percentage of landarea
+    filename = os.path.join(mandistdir_in,mandist_files_dict["INPUT FERTILIZER UPLAND CROPS GRID FILE"])
+    area_upl     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Calculate area upland crops in ha.
+    area_upl.multiply(landarea,default_nodata_value=-9999.)
+    # Calculate total fertilizer on upland crop
+    fert_upl.multiply(area_upl,default_nodata_value=-9999.)
+    print_total(fert_upl,"Total fertilizer upland crops:",fp=fp)
+
+    # Read fertilizer on legumes in kg N ha-1
+    filename = os.path.splitext(filename_org)[0] +"_LEGUMES" + os.path.splitext(filename)[1]
+    fert_leg     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read legumes area in percentage of landarea
+    filename = os.path.join(mandistdir_in,mandist_files_dict["INPUT FERTILIZER LEGUMES GRID FILE"])
+    area_leg     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Calculate area legumes in ha.
+    area_leg.multiply(landarea,default_nodata_value=-9999.)
+    # Calculate total fertilizer on legumes
+    fert_leg.multiply(area_leg,default_nodata_value=-9999.)
+    print_total(fert_leg,"Total fertilizer legumes:",fp=fp)
+
+    # Read fertilizer on wrice in kg N ha-1
+    filename = os.path.splitext(filename_org)[0] +"_WRICE" + os.path.splitext(filename)[1]
+    fert_wrice     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read legumes area in percentage of landarea
+    filename = os.path.join(mandistdir_in,mandist_files_dict["INPUT FERTILIZER WET RICE GRID FILE"])
+    area_wrice     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Calculate area legumes in ha.
+    area_wrice.multiply(landarea,default_nodata_value=-9999.)
+    # Calculate total fertilizer on wrice
+    fert_wrice.multiply(area_wrice,default_nodata_value=-9999.)
+    print_total(fert_wrice,"Total fertilizer wrice:",fp=fp)
+
+    # Read fertilizer on grass in kg N ha-1
+    filename = os.path.splitext(filename_org)[0] +"_GRASS" + os.path.splitext(filename)[1]
+    fert_grass     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Read legumes area in percentage of landarea
+    filename = os.path.join(mandistdir_in,mandist_files_dict["INPUT FERTILIZER GRASS GRID FILE"])
+    area_grass     = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    # Calculate area grass in ha.
+    area_grass.multiply(landarea,default_nodata_value=-9999.)
+    # Calculate total fertilizer on grass
+    fert_grass.multiply(area_grass,default_nodata_value=-9999.)
+    print_total(fert_grass,"Total fertilizer grass:",fp=fp)
+
+    # Calculate total fertilizer in kg N yr-1
+    fert = fert_upl
+    fert.add(fert_leg)
+    fert.add(fert_wrice)
+    fert.add(fert_grass)
     fert.write_ascii_file(os.path.join(inputdir,params.filename_fert_inp))
+    print_total(fert,"Total fertilizer:",fp=fp)
+
 
     filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT TOTAL MANURE APPLICATION GRID FILE"])
     # Read manure in kg N ha-1
     manure   = ascraster.Asciigrid(ascii_file = filename,numtype = float)
     # Read landarea in km2
     filename = os.path.join(mandistdir_in,mandist_files_dict["LAND AREA ASC FILE"])
-    landarea = ascraster.Asciigrid(ascii_file = filename,numtype = float)
-    # Make kg N yr-1 of this (factor 100 is conversion from km2 to ha).
+    landarea = ascraster.Asciigrid(ascii_file = os.path.join(inputdir,params.filename_agri_area),numtype = float)
+    # Make kg N yr-1
+    #manure_int_crops = ascraster.duplicategrid(manure)
+    #manure_ext_crops = ascraster.duplicategrid(manure)
+    #manure_int_grass = ascraster.duplicategrid(manure)
+    #manure_ext_grass = ascraster.duplicategrid(manure)
+    #manure_int_crops.multiply(crop_int,default_nodata_value=-9999.)
+    #manure_ext_crops.multiply(crop_ext,default_nodata_value=-9999.)
+    #manure_int_grass.multiply(grass_int,default_nodata_value=-9999.)
+    #manure_ext_grass.multiply(grass_ext,default_nodata_value=-9999.)
+    #print_total(manure_int_crops,"Total manure int crops:")
+    #print_total(manure_ext_crops,"Total manure ext crops:")
+    #print_total(manure_int_grass,"Total manure int grass:")
+    #print_total(manure_ext_grass,"Total manure ext grass:")
+    #print("TOT MANURE: ", grid_total(manure_int_crops) + grid_total(manure_ext_crops) + grid_total(manure_int_grass) + grid_total(manure_ext_grass) )
     manure.multiply(landarea,default_nodata_value=-9999.)
-    manure.multiply(100.)
     manure.write_ascii_file(os.path.join(inputdir,params.filename_manure_inp))
+    print_total(manure,"Total manure:",fp=fp)
 
     # N fixation
     filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT N NATURAL FIXATION GRID FILE"])
@@ -261,6 +379,7 @@ def get_all_files(args):
     Nfix_nat.multiply(mask,default_nodata_value=-9999.)
     # Write N fixation for natural areas in kg N yr-1 to file
     Nfix_nat.write_ascii_file(os.path.join(inputdir,params.filename_nfixation_nat))
+    print_total(Nfix_nat,"Total N natural fixation:",fp=fp)
 
     filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT N CROP FIXATION GRID FILE"])
     # Read N fixation for agricultural area in kg N yr-1
@@ -268,6 +387,7 @@ def get_all_files(args):
     Nfix_agri.multiply(mask,default_nodata_value=-9999.)
     # Write N fixation for agricultural areas in kg N yr-1 to file
     Nfix_agri.write_ascii_file(os.path.join(inputdir,params.filename_nfixation_agri))
+    print_total(Nfix_agri,"Total N agricultural fixation:",fp=fp)
 
     # N uptake
     filename = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT UPTAKE GRID FILE"])
@@ -277,7 +397,25 @@ def get_all_files(args):
     uptake.multiply(mask,default_nodata_value=-9999.)
     # Write N uptake in kg N yr-1 to file
     uptake.write_ascii_file(os.path.join(inputdir,params.filename_crop_uptake))
+    print_total(uptake,"Total N uptake:",fp=fp)
 
+
+    # N uptake
+    #filename_org = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT UPTAKE GRID FILE"])
+    #filename = os.path.splitext(filename_org)[0] +"_N_ARABLE" + os.path.splitext(filename)[1]
+    # Read uptake in kg N yr-1
+    #uptake_arable = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    #print_total(uptake_arable,"Total N uptake crops:")
+
+    #filename = os.path.splitext(filename_org)[0] +"_N_GRS" + os.path.splitext(filename)[1]
+    # Read uptake in kg N yr-1
+    #uptake_grass = ascraster.Asciigrid(ascii_file = filename,numtype = float)
+    #print_total(uptake_grass,"Total N uptake grass:")
+
+    #uptake.multiply(mask,default_nodata_value=-9999.)
+    # Write N uptake in kg N yr-1 to file
+    #uptake.write_ascii_file(os.path.join(inputdir,params.filename_crop_uptake))
+    #print_total(uptake,"Total N uptake:")
 
     # Emission spreading fertilizer
     filename_org = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT SPREADING GRID FILE"])
@@ -307,6 +445,7 @@ def get_all_files(args):
     fert_ext_grass.add(fert_int_crop)
     # Write NH3 emission spreading fertilizer in kg N yr-1 to file
     fert_ext_grass.write_ascii_file(os.path.join(inputdir,params.filename_nh3_em_spread_fert))
+    print_total(fert_ext_grass,"Total NH3 emission spreading fertilizer:",fp=fp)
 
     # Emission spreading manure
     filename_org = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT SPREADING GRID FILE"])
@@ -336,6 +475,7 @@ def get_all_files(args):
     manure_ext_grass.add(manure_int_crop)
     # Write NH3 emission spreading manure in kg N yr-1 to file
     manure_ext_grass.write_ascii_file(os.path.join(inputdir,params.filename_nh3_em_spread_manure))
+    print_total(manure_ext_grass,"Total NH3 emission spreading manure:",fp=fp)
 
     # Area of extensive systems and mixed and landless systems
     area_int = ascraster.duplicategrid(crop_int)
@@ -359,6 +499,7 @@ def get_all_files(args):
     storage_ext.add(storage_int)
     # Write NH3 emission of storage in kg N yr-1 to file
     storage_ext.write_ascii_file(os.path.join(inputdir,params.filename_nh3_em_storage))
+    print_total(storage_ext,"Total NH3 emission storage:",fp=fp)
 
     # Emission from grazing
     filename_org = os.path.join(mandistdir_out,mandist_files_dict["OUTPUT GRAZING GRID FILE"])
@@ -376,11 +517,13 @@ def get_all_files(args):
     grazing_ext.add(grazing_int)
     # Write NH3 emission of grazing in kg N yr-1 to file
     grazing_ext.write_ascii_file(os.path.join(inputdir,params.filename_nh3_em_grazing))
+    print_total(grazing_ext,"Total NH3 emission grazing:",fp=fp)
 
 
     # Budget, runoff, leaching & groundwater: agriculture
     my_sys.my_copyfile(os.path.join(gnmdir_out,"Nleaching_nat.asc"),\
                        os.path.join(inputdir,params.filename_leaching_nat))
+    gridfile_total(os.path.join(inputdir,params.filename_leaching_nat),"Total leaching natural soils:",fp=fp)
 
     # Leaching
     filename = os.path.join(gnmdir_out,"Nleaching_arable.asc")
@@ -390,6 +533,7 @@ def get_all_files(args):
     le_crop.add(le_grass)
     # Write N of leaching on agricultural soils in kg N yr-1 to file
     le_crop.write_ascii_file(os.path.join(inputdir,params.filename_leaching_ag))
+    print_total(le_crop,"Total leaching on agricultural soils:",fp=fp)
 
     # Groundwater
     filename = os.path.join(gnmdir_out,"Nsgrw.asc")
@@ -413,6 +557,8 @@ def get_all_files(args):
     # Write N of leaching on agricultural soils in kg N yr-1 to file
     grw_nat.write_ascii_file(os.path.join(inputdir,params.filename_groundwaterload_nat))
     grw_agri.write_ascii_file(os.path.join(inputdir,params.filename_groundwaterload_ag))
+    print_total(grw_nat,"Total groundwater on natural soils:",fp=fp)
+    print_total(grw_agri,"Total groundwater on agricultural soils:",fp=fp)
 
     # Point sources & fixed diffuse sources (erosion)[kg N yr-1]
     my_sys.my_copyfile(os.path.join(gnmdir_in,"Npoint.asc"),\
@@ -425,6 +571,14 @@ def get_all_files(args):
                        os.path.join(inputdir,params.filename_n_point_alloch_matter))
     my_sys.my_copyfile(os.path.join(gnmdir_out,"Nsoilloss_nat.asc"),\
                        os.path.join(inputdir,params.filename_n_in_erosion_nat))
+    my_sys.my_copyfile(os.path.join(gnmdir_out,"N_sro_nat.asc"),\
+                       os.path.join(inputdir,params.filename_nsro_nat))
+    gridfile_total(os.path.join(inputdir,params.filename_n_point_wastewater),"Total point sources:",fp=fp)
+    gridfile_total(os.path.join(inputdir,params.filename_n_point_aquaculture),"Total aquaculture:",fp=fp)
+    gridfile_total(os.path.join(inputdir,params.filename_n_point_dep_surfacewater),"Total deposition on water:",fp=fp)
+    gridfile_total(os.path.join(inputdir,params.filename_n_point_alloch_matter),"Total alloch matter:",fp=fp)
+    gridfile_total(os.path.join(inputdir,params.filename_n_in_erosion_nat),"Total erosion natural soils:",fp=fp)
+    gridfile_total(os.path.join(inputdir,params.filename_nsro_nat),"Total surface runoff natural soils:",fp=fp)
 
     # N erosion
     filename = os.path.join(gnmdir_out,"Nsoilloss_arable.asc")
@@ -434,6 +588,7 @@ def get_all_files(args):
     eros_crop.add(eros_grass)
     # Write N of erosion on agricultural soils in kg N yr-1 to file
     eros_crop.write_ascii_file(os.path.join(inputdir,params.filename_n_in_erosion_ag))
+    print_total(eros_crop,"Total erosion on agricultural soils:",fp=fp)
     
     # Surface runoff
     filename = os.path.join(gnmdir_out,"N_sro_arable.asc")
@@ -441,20 +596,11 @@ def get_all_files(args):
     filename = os.path.join(gnmdir_out,"N_sro_grs.asc")
     nsro_grass = ascraster.Asciigrid(ascii_file = filename,numtype = float)
     nsro_crop.add(nsro_grass)
-    # Substract the erosion from this.
-    nsro_crop.substract(eros_crop) 
     # Write N of surface runoff on agricultural soils in kg N yr-1 to file
     nsro_crop.write_ascii_file(os.path.join(inputdir,params.filename_nsro_ag))
+    print_total(nsro_crop,"Total surface runoff on agricultural soils:",fp=fp)
 
-    filename = os.path.join(gnmdir_out,"N_sro_nat.asc")
-    nsro_nat = ascraster.Asciigrid(ascii_file = filename,numtype = float)
-    filename = os.path.join(gnmdir_out,"Nsoilloss_nat.asc")
-    eros_nat = ascraster.Asciigrid(ascii_file = filename,numtype = float)
-    # Substract the erosion from this.
-    nsro_nat.substract(eros_nat) 
-    # Write N of surface runoff on natural soils in kg N yr-1 to file
-    nsro_nat.write_ascii_file(os.path.join(inputdir,params.filename_nsro_nat))
-
+    fp.close()
 
 if (__name__ == "__main__"):
   
