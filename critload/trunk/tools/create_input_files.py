@@ -1,6 +1,6 @@
 # ******************************************************
-## Revision "$LastChangedDate: 2019-03-19 21:06:02 +0100 (Tue, 19 Mar 2019) $"
-## Date "$LastChangedRevision: 627 $"
+## Revision "$LastChangedDate: 2019-03-26 20:34:04 +0100 (Tue, 26 Mar 2019) $"
+## Date "$LastChangedRevision: 629 $"
 ## Author "$LastChangedBy: arthurbeusen $"
 ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/create_input_files.py $"
 ## Copyright 2019, PBL Netherlands Environmental Assessment Agency and Wageningen University.
@@ -32,7 +32,7 @@ import read_mandist_ini
 
 # Set the directory for the source locations.
 gnm_inputdir = r"/data/beusena/globalnutrients/scen_input/SSPs/history_2005"
-gnm_outputdir = r"/data/beusena/tmp/output_history_110"
+gnm_outputdir = r"/data/beusena/tmp/output_feb2018/history"
 mandistdir = r"/data/beusena/mandist/preproc_nbal/SSP2_18feb2018/mandist_files"
 water_inputdir = r"/data/beusena/globalnutrients/water_input/pcrglobwb_100"
 
@@ -253,7 +253,7 @@ def get_all_files(args):
     # Calculate the precipitation surplus in dm3
     runoff.multiply(area)
     # Conversion from mm*ha to dm3
-    runoff.multiply(1.0e8)
+    runoff.multiply(1.0e4)
     # Write the precipitation surplus in dm3 to file
     runoff.write_ascii_file(os.path.join(inputdir,params.filename_precipitation_surplus))
     print_total(runoff,"Total runoff:",fp=fp)
