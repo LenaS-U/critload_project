@@ -23,7 +23,7 @@ Total NH3 emission grazing: 6.205705e+09
 Total leaching natural soils: 1.622416e+10
 Total leaching on agricultural soils: 3.930219e+10
 Total groundwater on natural soils: 1.126396e+10
-Total groundwater on agricultural soils: 1.866360e+10
+Total groundwater on agricultural soils: 1.868209e+10
 Total point sources: 5.869378e+09
 Total aquaculture: 7.447653e+08
 Total deposition on water: 1.041432e+09

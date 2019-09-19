@@ -55,11 +55,39 @@ def temp_values(params):
     frnfe.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(frnfe,"frNfe =")
     
-    # calculate ndep_ag
+    # calculate total NH3 emission
+    nh3_spread_man = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure,numtype=float,mask=params.mask)
+    nh3_stor = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_storage,numtype=float,mask=params.mask)
+    nh3_graz = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing,numtype=float,mask=params.mask)
+    nh3_spread_fert = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert,numtype=float,mask=params.mask)
+    nh3_tot = ascraster.duplicategrid(nh3_spread_man)
+    nh3_tot.add(nh3_stor)
+    nh3_tot.add(nh3_graz)
+    nh3_tot.add(nh3_spread_fert)
+    print_debug(nh3_tot,"nh3_tot =")
+    
+    # calculate corrected N deposition grid - for all cells where Ndep < NH3em, replace Ndep by NH3em
     ndep_tot = ascraster.Asciigrid(ascii_file=params.filename_n_deposition,numtype=float,mask=params.mask)
-    ndep_ag = ascraster.duplicategrid(a_ag)
-    ndep_ag.divide(a_tot, default_nodata_value = -9999)
-    ndep_ag.multiply(ndep_tot)
+    ndep_tot_corr = ascraster.duplicategrid(ndep_tot)
+    for icell in range(nh3_tot.length):
+        # Get values from both grids.
+        nh3 =  nh3_tot.get_data(icell)
+        dep = ndep_tot.get_data(icell)
+    
+        # If both grids have nodata, keep nodata.
+        if (nh3 == None or dep == None or dep >= nh3):
+            continue
+        if dep < nh3:
+            depcorr = nh3
+        ndep_tot_corr.set_data(icell,depcorr)
+    fileout = os.path.join(params.outputdir,"ndep_tot_corr.asc")
+    ndep_tot_corr.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)    
+    print_debug(ndep_tot,"ndep_tot =")
+    print_debug(ndep_tot_corr,"ndep_tot_corr =")
+
+    # calculate ndep_ag
+    ndep_ag = ascraster.duplicategrid(ndep_tot_corr)
+    ndep_ag.multiply(fag)
     fileout = os.path.join(params.outputdir,"ndep_ag.asc")
     ndep_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ndep_ag,"ndep_ag =")
@@ -73,8 +101,18 @@ def temp_values(params):
     n_in_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(n_in_ag,"n_in_ag =")
     
-    # calculate NUE
+    # calculate frnup
+    nsro_ag = ascraster.Asciigrid(ascii_file=params.filename_nsro_ag,numtype=float,mask=params.mask)
     n_up = ascraster.Asciigrid(ascii_file=params.filename_crop_uptake,numtype=float,mask=params.mask)
+    nin_min_nsro = ascraster.duplicategrid(n_in_ag)
+    nin_min_nsro.substract(nsro_ag)
+    frnup = ascraster.duplicategrid(n_up)
+    frnup.divide(nin_min_nsro, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"frnup.asc")
+    frnup.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frnup,"frnup =")
+    
+    # calculate NUE
     nue = ascraster.duplicategrid(n_up)
     nue.divide(n_in_ag, default_nodata_value = -9999)
     fileout = os.path.join(params.outputdir,"nue.asc")
@@ -102,13 +140,12 @@ def temp_values(params):
     nh3_ef_fert.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nh3_ef_fert,"nh3_ef_fert =")
     
-    # calculate NOx emissions: NOx = Ndep - (NH3,spread,fe+NH3,spread,man+NH3stor+NH3,graz)
-    nox_em = ascraster.duplicategrid(ndep_tot)
-    nox_em.substract(nh3_man_tot)
-    nox_em.substract(nh3_spread_fert)
+    # calculate NOx emissions: NOx = *corrected* Ndep - (NH3,spread,fe+NH3,spread,man+NH3stor+NH3,graz)
+    nox_em = ascraster.duplicategrid(ndep_tot_corr)
+    nox_em.substract(nh3_tot)
     fileout = os.path.join(params.outputdir,"nox_em.asc")
     nox_em.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nox_em,"nox_em =")   
+    print_debug(nox_em,"nox_em =")    
     
     # calculate N budget agriculture: Nbud,ag = Nin,ag - Nup,ag
     nbud_ag = ascraster.duplicategrid(n_in_ag)
@@ -127,7 +164,6 @@ def temp_values(params):
     print_debug(ngw_ag_rec,"ngw_ag_rec =")
     
     # calculate Denitrification in soil: Nde,ag = Nbud,ag - Nsro,ag - Nle,ag
-    nsro_ag = ascraster.Asciigrid(ascii_file=params.filename_nsro_ag,numtype=float,mask=params.mask)
     nle_ag = ascraster.Asciigrid(ascii_file=params.filename_leaching_ag,numtype=float,mask=params.mask)
     nde_ag = ascraster.duplicategrid(nbud_ag)
     nde_ag.substract(nsro_ag)
@@ -160,9 +196,8 @@ def temp_values(params):
     print_debug(fgw_rec_le_ag,"fgw_rec_le_ag =")
     
     # calculate ndep_nat
-    ndep_nat = ascraster.duplicategrid(a_nat)
-    ndep_nat.divide(a_tot, default_nodata_value = -9999)
-    ndep_nat.multiply(ndep_tot)
+    ndep_nat = ascraster.duplicategrid(ndep_tot_corr)
+    ndep_nat.multiply(fnat)
     fileout = os.path.join(params.outputdir,"ndep_nat.asc")
     ndep_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ndep_nat,"ndep_nat =")
@@ -212,9 +247,9 @@ def temp_values(params):
     
     # calculate fraction of N leaching that is delivered to surface water via groundwater in first x years - natural areas
     fgw_rec_le_nat = ascraster.duplicategrid(ngw_nat_rec)
-    fgw_rec_le_nat.divide(nle_nat, default_nodata_value = -9999)
+    fgw_rec_le_nat.divide(nle_nat, default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fgw_rec_le_nat.asc")
-    fgw_rec_le_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    fgw_rec_le_nat.write_ascii_file(fileout,output_nodata_value= 0,compress=params.lcompress)
     print_debug(fgw_rec_le_nat,"fgw_rec_le_nat =")
     
     # calculate variable load to surface water from agriculture: Nload,var,ag = Nsro,ag + Ngw,rec,ag

@@ -20,15 +20,60 @@ def calculate(params):
 
     print("The critical N deposition rate is " + str(params.crit_dep) + " kg N ha-1 yr-1")
     
+    # make grid with critical N deposition per biome
+    grid = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"n_fe_eff.asc"),numtype=float,mask=params.mask)
+    ndep_crit_ha = ascraster.duplicategrid(grid)
+    for i in range(ndep_crit_ha.length):
+        ndep_crit_ha.set_data(i,-9999)
+          
+    biome = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"gnlct_1999.asc"),numtype=float,mask=params.mask)
+    for icell in range(biome.length):
+        val = biome.get_data(icell)
+        # Ice (7) or Hot desert (16)
+        if (val == 7 or val == 16):
+            cl = 5.0
+        # Boreal forest (10), Cool coniferous forest (11) or scrubland (17)
+        elif (val == 10 or val == 11 or val == 17):
+            cl = 7.5
+        # Tundra (8) or wooded tundra (9)
+        elif (val == 8 or val == 9):
+            cl = 10.0
+        # Temperate mixed forest (12) Temperate deciduous forest (13) or Warm mixed forest (14)
+        elif (val == 12 or val == 13 or val == 14):
+            cl = 12.5
+        # Savanna (18)
+        elif (val == 18):
+            cl = 15.0
+        # Grassland/steppe (15)
+        elif (val == 15):
+            cl = 17.5                    
+        # Tropical woodland (19)
+        elif (val == 19):
+            cl = 19.5       
+        # Tropical forest (20)
+        elif (val == 20):
+            cl = 25.0
+        # Biome can also have value 0 or none (-1)
+        else:
+            continue        
+        ndep_crit_ha.set_data(icell,cl) 
+    
+    print_debug(biome,"The biome ID is") 
+    
     # calculate total critical deposition: Ndep,tot(crit) = Ndep,crit,ha * A
     a_tot = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"a_tot.asc"),numtype=float,mask=params.mask)
-    ndep_crit_tot = ascraster.duplicategrid(a_tot)
-    ndep_crit_tot.multiply(params.crit_dep)
-    print_debug(ndep_crit_tot,"The total critical N deposition is")
-    
+    ndep_crit_tot = ascraster.duplicategrid(ndep_crit_ha)
+    ndep_crit_tot.multiply(a_tot)
+
+    fileout = os.path.join(params.outputdir,"ndep_crit_ha.asc")
+    ndep_crit_ha.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(ndep_crit_ha,"The critical N deposition per hectare is") 
+
+    fileout = os.path.join(params.outputdir,"ndep_crit_tot.asc")
+    ndep_crit_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(ndep_crit_tot,"The total critical N deposition is")    
    
     # calculate critical N input from manure
-    
     nox_em = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc"),numtype=float,mask=params.mask)
     nh3_ef_man = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man.asc"),numtype=float,mask=params.mask)
     nh3_ef_fert = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert.asc"),numtype=float,mask=params.mask)
@@ -99,11 +144,14 @@ def calculate(params):
     
     
     # TEST IF FORWARD CALCULATIONS EQUAL BACKWARD CALLCULATION
-    # This does not work in the real case.....      
-    #bw = round(ndep_crit_tot.get_data(3),4)
-    #fw = round(ndep_tot_crit_dep.get_data(3),4)
+    # This does not work in the real case..... --> Yes it does???      
+    bw = round(ndep_crit_tot.get_data(icell_debug),4)
+    fw = round(ndep_tot_crit_dep.get_data(icell_debug),4)
     
-    #if bw == fw:
-    #    print("Comparison of backward and forward calculation was SUCCESFUL")
-    #else:
-    #    print("ATTENTION!!! Comparison of backward and forward calculation NOT successful") 
+    print("Critical deposition forwa calculations is %f" % fw)
+    print("Critical deposition backw calculations is %f" % bw)
+    
+    if bw == fw:
+        print("Comparison of backward and forward calculation was SUCCESFUL")
+    else:
+        print("ATTENTION!!! Comparison of backward and forward calculation NOT successful") 

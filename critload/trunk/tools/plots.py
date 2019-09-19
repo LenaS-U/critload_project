@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # read files from output directory
 os.chdir('d:\\critload_project')
-os.chdir('critload2')
+os.chdir('critload')
 os.chdir('trunk')
 os.chdir('output')
 os.chdir('1999')
@@ -19,7 +19,7 @@ frnfe     = np.loadtxt("frnfe.asc"         , skiprows=6)
 
 # read files from input directory
 os.chdir('d:\\critload_project')
-os.chdir('critload2')
+os.chdir('critload')
 os.chdir('trunk')
 os.chdir('input')
 os.chdir('1999')

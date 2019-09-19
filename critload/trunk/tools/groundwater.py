@@ -108,7 +108,7 @@ def calculate(params):
     
     # calculate implied NUE
     nue_crit_gw = ascraster.duplicategrid(nup_ag)
-    nue_crit_gw.divide(nin_tot_crit_gw, default_nodata_value = -999)
+    nue_crit_gw.divide(nin_tot_crit_gw, default_nodata_value = -9999)
     fileout = os.path.join(params.outputdir,"nue_crit_gw.asc")
     nue_crit_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nue_crit_gw,"The implied NUE for the groundwater criterion is")
@@ -131,11 +131,14 @@ def calculate(params):
     print_debug(nle_ag_crit_gw_test,"The critical N leaching for the groundwater criterion is")
     
     # TEST IF FORWARD CALCULATIONS EQUAL BACKWARD CALLCULATION
-    # This does not work in the real case.....
-    #bw = round(nle_ag_crit_gw.get_data(3),4)
-    #fw = round(nle_ag_crit_gw_test.get_data(3),4)
+    # This does not work in the real case..... --> Yes it does???
+    bw = round(nle_ag_crit_gw.get_data(icell_debug),4)
+    fw = round(nle_ag_crit_gw_test.get_data(icell_debug),4)
+
+    print("Critical leaching forwa calculations is %f" % fw)
+    print("Critical leaching backw calculations is %f" % bw)
     
-    #if bw == fw:
-    #    print("Comparison of backward and forward calculation was SUCCESFUL")
-    #else:
-    #    print("ATTENTION!!! Comparison of backward and forward calculation NOT successful")
+    if bw == fw:
+        print("Comparison of backward and forward calculation was SUCCESFUL")
+    else:
+        print("ATTENTION!!! Comparison of backward and forward calculation NOT successful")

@@ -40,11 +40,11 @@ mancritsw[mancritsw==-9999]=np.nan
 fercritsw[fercritsw==-9999]=np.nan
 mancritgw[mancritgw==-1]   =np.nan
 fercritgw[fercritgw==-1]   =np.nan
-mancritde[mancritde==0]    =np.nan
-fercritde[fercritde==0]    =np.nan
+mancritde[mancritde==-9999]    =np.nan
+fercritde[fercritde==-9999]    =np.nan
 fgwrecag[fgwrecag==-9999]  =np.nan
 fgwrecna[fgwrecna==-9999]  =np.nan
-agarea[agarea==-2]         =np.nan
+agarea[agarea==-1]         =np.nan
 nfer[nfer==-9999]          =np.nan
 nman[nman==-9999]          =np.nan
 frnfe[frnfe==-9999]        =np.nan

@@ -52,7 +52,7 @@ class Input_Critload(cmd_options_general.Input,object):
         # Set defaults for test mode
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
-                            year = 2000,
+                            year = 1999,
                             outputdir = os.path.join(os.getcwd(), "..","output"),
                             inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0
@@ -133,7 +133,7 @@ class Input_Critload(cmd_options_general.Input,object):
         # Set defaults for test mode
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
-                            year = 2000,
+                            year = 1999,
                             outputdir = os.path.join(os.getcwd(), "..","output"),
                             inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0
