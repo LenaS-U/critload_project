@@ -1,5 +1,5 @@
-# Wed Sep 18 16:32:11 2019  : Logfile started by user: schul028
-# Wed Sep 18 16:32:11 2019  : Starting run....
+# Thu Sep 19 16:52:03 2019  : Logfile started by user: schul028
+# Thu Sep 19 16:52:03 2019  : Starting run....
 #############################################
 # Ini input options used:
  --root = D:\\critload_project\\critload\\trunk\\tools
@@ -55,22 +55,22 @@
 # lcompress = False
 # mask = None
 #############################################
-# Wed Sep 18 16:32:11 2019  : The following command line arguments will not be used:['run.ini']
-# Wed Sep 18 16:32:11 2019  : ******************************************************
-# Wed Sep 18 16:32:11 2019  : # Version information of main script.
-# Wed Sep 18 16:32:11 2019  : ******************************************************
-# Wed Sep 18 16:32:11 2019  : ## Version information from file: D:\critload_project\critload\trunk\tools\main_critload.py
-# Wed Sep 18 16:32:11 2019  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
-# Wed Sep 18 16:32:11 2019  : ## Date "$LastChangedRevision: 625 $"
-# Wed Sep 18 16:32:11 2019  : ## Author "$LastChangedBy: arthurbeusen $"
-# Wed Sep 18 16:32:11 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
-# Wed Sep 18 16:32:11 2019  : ******************************************************
-# Wed Sep 18 16:32:12 2019  : # Version information of generalcode directory.
-# Wed Sep 18 16:32:12 2019  : ******************************************************
-# Wed Sep 18 16:32:12 2019  : ## Version information from file: D:\critload_project\generalcode\trunk\cmd_options_general.py
-# Wed Sep 18 16:32:12 2019  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
-# Wed Sep 18 16:32:12 2019  : ## Date "$LastChangedRevision: 17 $"
-# Wed Sep 18 16:32:12 2019  : ## Author "$LastChangedBy: arthurbeusen $"
-# Wed Sep 18 16:32:12 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
-# Wed Sep 18 16:32:12 2019  : ******************************************************
-# Wed Sep 18 16:33:13 2019  : Total run took 61.073161 seconds to complete.
+# Thu Sep 19 16:52:03 2019  : The following command line arguments will not be used:['run.ini']
+# Thu Sep 19 16:52:03 2019  : ******************************************************
+# Thu Sep 19 16:52:03 2019  : # Version information of main script.
+# Thu Sep 19 16:52:03 2019  : ******************************************************
+# Thu Sep 19 16:52:03 2019  : ## Version information from file: D:\critload_project\critload\trunk\tools\main_critload.py
+# Thu Sep 19 16:52:03 2019  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
+# Thu Sep 19 16:52:03 2019  : ## Date "$LastChangedRevision: 625 $"
+# Thu Sep 19 16:52:03 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Thu Sep 19 16:52:03 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
+# Thu Sep 19 16:52:03 2019  : ******************************************************
+# Thu Sep 19 16:52:04 2019  : # Version information of generalcode directory.
+# Thu Sep 19 16:52:04 2019  : ******************************************************
+# Thu Sep 19 16:52:04 2019  : ## Version information from file: D:\critload_project\generalcode\trunk\cmd_options_general.py
+# Thu Sep 19 16:52:04 2019  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
+# Thu Sep 19 16:52:04 2019  : ## Date "$LastChangedRevision: 17 $"
+# Thu Sep 19 16:52:04 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Thu Sep 19 16:52:04 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
+# Thu Sep 19 16:52:04 2019  : ******************************************************
+# Thu Sep 19 16:53:04 2019  : Total run took 61.242924 seconds to complete.

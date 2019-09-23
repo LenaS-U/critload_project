@@ -15,10 +15,35 @@ import ascraster
 
 # Local modules
 from print_debug import *
+
+def griddivide(grid1,grid2,default_nodata_value = 0):
+    '''
+    Calculate result of grid1/grid2 
+    '''
+    # Make a copy of the first grid.
+    grid3 = ascraster.duplicategrid(grid1)
+
+    for icell in range(grid3.length):
+        # Get values from both grids.
+        val1 = grid1.get_data(icell)
+        val2 = grid2.get_data(icell)
+
+        # If both grids have nodata, keep nodata.
+        if (val1 == None or val2 == None):
+            continue
+        # Do the calculation
+        try:
+            val3 = val1/val2
+        except (ZeroDivisionError,TypeError):
+            val3 = default_nodata_value
+        
+        # Put result in grid.
+        grid3.set_data(icell,val3)
+
+    return grid3
     
 def temp_values(params):
     
- 
     # calculate fag   
     a_tot = ascraster.Asciigrid(ascii_file=params.filename_gridcell_area,numtype=float,mask=params.mask)
     a_ag = ascraster.Asciigrid(ascii_file=params.filename_agri_area,numtype=float,mask=params.mask)
@@ -49,12 +74,32 @@ def temp_values(params):
     n_man = ascraster.Asciigrid(ascii_file=params.filename_manure_inp,numtype=float,mask=params.mask)
     fert_man = ascraster.duplicategrid(n_man)
     fert_man.add(n_fert)
-    frnfe = ascraster.duplicategrid(n_fert)
-    frnfe.divide(fert_man, default_nodata_value = -9999)
+    #frnfe = ascraster.duplicategrid(n_fert)
+    #frnfe.divide(fert_man, default_nodata_value = -9999, minimum=0.00001, maximum=0.9999)
+    frnfe = griddivide(n_fert,fert_man,default_nodata_value = 0)
+    
+    # replace '0' by 0.0001 in frNfe
+    for icell in range(frnfe.length):
+        val = frnfe.get_data(icell)
+        if (val == None or val > 0):
+            continue
+        if val == 0.0:
+            res = 0.0001
+        frnfe.set_data(icell,res) 
+    
+    # replace '1' by 0.9999 in frNfe
+    for icell in range(frnfe.length):
+        val = frnfe.get_data(icell)
+        if (val == None or val < 1):
+            continue
+        if val == 1.0:
+            res = 0.9999
+        frnfe.set_data(icell,res) 
+    
+    print_debug(frnfe,"frNfe =")
     fileout = os.path.join(params.outputdir,"frnfe.asc")
     frnfe.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(frnfe,"frNfe =")
-    
+
     # calculate total NH3 emission
     nh3_spread_man = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure,numtype=float,mask=params.mask)
     nh3_stor = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_storage,numtype=float,mask=params.mask)
@@ -120,22 +165,19 @@ def temp_values(params):
     print_debug(nue,"nue =")
     
     # calculate fnh3em,man
-    nh3_spread_man = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure,numtype=float,mask=params.mask)
-    nh3_stor = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_storage,numtype=float,mask=params.mask)
-    nh3_graz = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing,numtype=float,mask=params.mask)
-    nh3_man_tot = ascraster.duplicategrid(nh3_spread_man)
-    nh3_man_tot.add(nh3_stor)
-    nh3_man_tot.add(nh3_graz)
-    nh3_ef_man = ascraster.duplicategrid(nh3_man_tot)
-    nh3_ef_man.divide(n_man, default_nodata_value = -9999)
+    nh3_man_tot = ascraster.duplicategrid(nh3_tot)
+    nh3_man_tot.substract(nh3_spread_fert)
+    #nh3_ef_man = ascraster.duplicategrid(nh3_man_tot)
+    #nh3_ef_man.divide(n_man, default_nodata_value = -9999)
+    nh3_ef_man = griddivide(nh3_man_tot,n_man,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"nh3_ef_man.asc")
     nh3_ef_man.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nh3_ef_man,"nh3_ef_man =")
     
     # calculate fnh3em,fert
-    nh3_spread_fert = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert,numtype=float,mask=params.mask)
-    nh3_ef_fert = ascraster.duplicategrid(nh3_spread_fert)
-    nh3_ef_fert.divide(n_fert, default_nodata_value = -9999)
+    #nh3_ef_fert = ascraster.duplicategrid(nh3_spread_fert)
+    #nh3_ef_fert.divide(n_fert, default_nodata_value = -9999)
+    nh3_ef_fert = griddivide(nh3_spread_fert,n_fert,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"nh3_ef_fert.asc")
     nh3_ef_fert.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nh3_ef_fert,"nh3_ef_fert =")
@@ -175,22 +217,25 @@ def temp_values(params):
     # calculate leaching fraction fle,ag
     nbud_min_nsro_ag = ascraster.duplicategrid(nbud_ag)
     nbud_min_nsro_ag.substract(nsro_ag)
-    fle_ag = ascraster.duplicategrid(nle_ag)
-    fle_ag.divide(nbud_min_nsro_ag, default_nodata_value = -9999)
+    #fle_ag = ascraster.duplicategrid(nle_ag)
+    #fle_ag.divide(nbud_min_nsro_ag, default_nodata_value = -9999)
+    fle_ag = griddivide(nle_ag,nbud_min_nsro_ag,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fle_ag.asc")
     fle_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fle_ag,"fle_ag =")   
     
     # calculate runoff fraction fsro,ag
-    fsro_ag = ascraster.duplicategrid(nsro_ag)
-    fsro_ag.divide(n_in_ag, default_nodata_value = -9999)
+    #fsro_ag = ascraster.duplicategrid(nsro_ag)
+    #fsro_ag.divide(n_in_ag, default_nodata_value = -9999)
+    fsro_ag = griddivide(nsro_ag,n_in_ag,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fsro_ag.asc")
     fsro_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fsro_ag,"fsro_ag =")   
     
     # calculate fraction of N leaching that is delivered to surface water via groundwater in first x years
-    fgw_rec_le_ag = ascraster.duplicategrid(ngw_ag_rec)
-    fgw_rec_le_ag.divide(nle_ag, default_nodata_value = -9999)
+    #fgw_rec_le_ag = ascraster.duplicategrid(ngw_ag_rec)
+    #fgw_rec_le_ag.divide(nle_ag, default_nodata_value = -9999)
+    fgw_rec_le_ag = griddivide(ngw_ag_rec,nle_ag,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fgw_rec_le_ag.asc")
     fgw_rec_le_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fgw_rec_le_ag,"fgw_rec_le_ag =")
@@ -232,24 +277,27 @@ def temp_values(params):
     # calculate leaching fraction fle,nat
     nbud_min_nsro_nat = ascraster.duplicategrid(nbud_nat)
     nbud_min_nsro_nat.substract(nsro_nat)
-    fle_nat = ascraster.duplicategrid(nle_nat)
-    fle_nat.divide(nbud_min_nsro_nat, default_nodata_value = -9999)
+    #fle_nat = ascraster.duplicategrid(nle_nat)
+    #fle_nat.divide(nbud_min_nsro_nat, default_nodata_value = -9999)
+    fle_nat = griddivide(nle_nat,nbud_min_nsro_nat,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fle_nat.asc")
     fle_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fle_nat,"fle_nat =")   
     
     # calculate runoff fraction fsro,nat
-    fsro_nat = ascraster.duplicategrid(nsro_nat)
-    fsro_nat.divide(nbud_nat, default_nodata_value = -9999)
+    #fsro_nat = ascraster.duplicategrid(nsro_nat)
+    #fsro_nat.divide(nbud_nat, default_nodata_value = -9999)
+    fsro_nat = griddivide(nsro_nat,nbud_nat,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fsro_nat.asc")
     fsro_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fsro_nat,"fsro_nat =")   
     
     # calculate fraction of N leaching that is delivered to surface water via groundwater in first x years - natural areas
-    fgw_rec_le_nat = ascraster.duplicategrid(ngw_nat_rec)
-    fgw_rec_le_nat.divide(nle_nat, default_nodata_value = 0)
+    #fgw_rec_le_nat = ascraster.duplicategrid(ngw_nat_rec)
+    #fgw_rec_le_nat.divide(nle_nat, default_nodata_value = -9999)
+    fgw_rec_le_nat = griddivide(ngw_nat_rec,nle_nat,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fgw_rec_le_nat.asc")
-    fgw_rec_le_nat.write_ascii_file(fileout,output_nodata_value= 0,compress=params.lcompress)
+    fgw_rec_le_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fgw_rec_le_nat,"fgw_rec_le_nat =")
     
     # calculate variable load to surface water from agriculture: Nload,var,ag = Nsro,ag + Ngw,rec,ag
