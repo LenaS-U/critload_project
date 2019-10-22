@@ -52,7 +52,7 @@ class Input_Critload(cmd_options_general.Input,object):
         # Set defaults for test mode
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
-                            year = 1999,
+                            year = 2010,
                             outputdir = os.path.join(os.getcwd(), "..","output"),
                             inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0
@@ -133,7 +133,7 @@ class Input_Critload(cmd_options_general.Input,object):
         # Set defaults for test mode
         parser.set_defaults(root = os.getcwd(),
                             parameter_ini = os.path.join(os.getcwd(), "parameters.ini"),
-                            year = 1999,
+                            year = 2010,
                             outputdir = os.path.join(os.getcwd(), "..","output"),
                             inputdir = os.path.join(os.getcwd(), "..","input"),
                             ldebug = 0
@@ -200,22 +200,46 @@ class Input_Critload(cmd_options_general.Input,object):
         self._parse_parameter_inifile(self.options,self.options.parameter_ini)
 
         # Add all the directories to the filenames
+        # Biome map
+        self.options.filename_biome_map = os.path.join(self.options.inputdir,self.options.filename_biome_map)
         # Area & precipitation surplus
         self.options.filename_gridcell_area = os.path.join(self.options.inputdir,self.options.filename_gridcell_area)
         self.options.filename_agri_area = os.path.join(self.options.inputdir,self.options.filename_agri_area)
+        self.options.filename_cropland_area = os.path.join(self.options.inputdir,self.options.filename_cropland_area)
+        self.options.filename_extgl_area = os.path.join(self.options.inputdir,self.options.filename_extgl_area)
+        self.options.filename_intgl_area = os.path.join(self.options.inputdir,self.options.filename_intgl_area)
         self.options.filename_natural_area = os.path.join(self.options.inputdir,self.options.filename_natural_area)
         self.options.filename_precipitation_surplus = os.path.join(self.options.inputdir,self.options.filename_precipitation_surplus)
         # Inputs & uptake
         self.options.filename_fert_inp = os.path.join(self.options.inputdir,self.options.filename_fert_inp)
+        self.options.filename_fert_inp_cropland = os.path.join(self.options.inputdir,self.options.filename_fert_inp_cropland)
+        self.options.filename_fert_inp_grassland = os.path.join(self.options.inputdir,self.options.filename_fert_inp_grassland)
         self.options.filename_nfixation_agri = os.path.join(self.options.inputdir,self.options.filename_nfixation_agri)
+        self.options.filename_nfixation_cropland = os.path.join(self.options.inputdir,self.options.filename_nfixation_cropland)
+        self.options.filename_nfixation_intgl = os.path.join(self.options.inputdir,self.options.filename_nfixation_intgl)
+        self.options.filename_nfixation_extgl = os.path.join(self.options.inputdir,self.options.filename_nfixation_extgl)
         self.options.filename_manure_inp = os.path.join(self.options.inputdir,self.options.filename_manure_inp)
-        self.options.filename_crop_uptake = os.path.join(self.options.inputdir,self.options.filename_crop_uptake)
+        self.options.filename_manure_inp_cropland = os.path.join(self.options.inputdir,self.options.filename_manure_inp_cropland)
+        self.options.filename_manure_inp_intgl = os.path.join(self.options.inputdir,self.options.filename_manure_inp_intgl)
+        self.options.filename_manure_inp_extgl = os.path.join(self.options.inputdir,self.options.filename_manure_inp_extgl)        
+        #$#self.options.filename_uptake_agriculture =  os.path.join(self.options.inputdir,self.options.filename_uptake_agriculture) 
+        self.options.filename_uptake_cropland = os.path.join(self.options.inputdir,self.options.filename_uptake_cropland)
+        self.options.filename_uptake_intgl = os.path.join(self.options.inputdir,self.options.filename_uptake_intgl)
+        self.options.filename_uptake_extgl = os.path.join(self.options.inputdir,self.options.filename_uptake_extgl)   
         # Emissions & deposition
         self.options.filename_n_deposition = os.path.join(self.options.inputdir,self.options.filename_n_deposition)
         self.options.filename_nh3_em_spread_fert = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_fert)
+        self.options.filename_nh3_em_spread_fert_cropland = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_fert_cropland)
+        self.options.filename_nh3_em_spread_fert_intgl = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_fert_intgl)
+        self.options.filename_nh3_em_spread_fert_extgl = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_fert_extgl)
         self.options.filename_nh3_em_spread_manure = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_manure)
+        self.options.filename_nh3_em_spread_manure_cropland = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_manure_cropland)
+        self.options.filename_nh3_em_spread_manure_intgl = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_manure_intgl)
+        self.options.filename_nh3_em_spread_manure_extgl = os.path.join(self.options.inputdir,self.options.filename_nh3_em_spread_manure_extgl)        
         self.options.filename_nh3_em_storage = os.path.join(self.options.inputdir,self.options.filename_nh3_em_storage)
         self.options.filename_nh3_em_grazing = os.path.join(self.options.inputdir,self.options.filename_nh3_em_grazing)
+        self.options.filename_nh3_em_grazing_ext = os.path.join(self.options.inputdir,self.options.filename_nh3_em_grazing_ext)
+        self.options.filename_nh3_em_grazing_int = os.path.join(self.options.inputdir,self.options.filename_nh3_em_grazing_int)
         # Budget, runoff, leaching & groundwater: agriculture
         self.options.filename_nsro_ag = os.path.join(self.options.inputdir,self.options.filename_nsro_ag)
         self.options.filename_leaching_ag = os.path.join(self.options.inputdir,self.options.filename_leaching_ag)
@@ -273,19 +297,42 @@ class Input_Critload(cmd_options_general.Input,object):
         self.validate_directory(self.options.outputdir, bool_write=True)
 
         # Check the input files
+        self.validate_file(self.options.filename_biome_map)
         self.validate_file(self.options.filename_gridcell_area)
         self.validate_file(self.options.filename_agri_area)
+        self.validate_file(self.options.filename_cropland_area)
+        self.validate_file(self.options.filename_extgl_area)
+        self.validate_file(self.options.filename_intgl_area)
         self.validate_file(self.options.filename_natural_area)
         self.validate_file(self.options.filename_precipitation_surplus)
         self.validate_file(self.options.filename_fert_inp)
+        self.validate_file(self.options.filename_fert_inp_cropland)
+        self.validate_file(self.options.filename_fert_inp_grassland)
         self.validate_file(self.options.filename_nfixation_agri)
+        self.validate_file(self.options.filename_nfixation_cropland)
+        self.validate_file(self.options.filename_nfixation_intgl)
+        self.validate_file(self.options.filename_nfixation_extgl)        
         self.validate_file(self.options.filename_manure_inp)
-        self.validate_file(self.options.filename_crop_uptake)
+        self.validate_file(self.options.filename_manure_inp_cropland) 
+        self.validate_file(self.options.filename_manure_inp_intgl)
+        self.validate_file(self.options.filename_manure_inp_extgl) 
+        #$#self.validate_file(self.options.filename_uptake_agriculture)#$#
+        self.validate_file(self.options.filename_uptake_cropland)
+        self.validate_file(self.options.filename_uptake_intgl)
+        self.validate_file(self.options.filename_uptake_extgl)        
         self.validate_file(self.options.filename_n_deposition)
         self.validate_file(self.options.filename_nh3_em_spread_fert)
+        self.validate_file(self.options.filename_nh3_em_spread_fert_cropland)
+        self.validate_file(self.options.filename_nh3_em_spread_fert_intgl)
+        self.validate_file(self.options.filename_nh3_em_spread_fert_extgl)
         self.validate_file(self.options.filename_nh3_em_spread_manure)
+        self.validate_file(self.options.filename_nh3_em_spread_manure_cropland)
+        self.validate_file(self.options.filename_nh3_em_spread_manure_intgl)
+        self.validate_file(self.options.filename_nh3_em_spread_manure_extgl)
         self.validate_file(self.options.filename_nh3_em_storage)
         self.validate_file(self.options.filename_nh3_em_grazing)
+        self.validate_file(self.options.filename_nh3_em_grazing_ext)
+        self.validate_file(self.options.filename_nh3_em_grazing_int)
         self.validate_file(self.options.filename_nsro_ag)
         self.validate_file(self.options.filename_leaching_ag)
         self.validate_file(self.options.filename_groundwaterload_ag)

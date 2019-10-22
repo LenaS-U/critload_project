@@ -1,0 +1,51 @@
+Total area int crops: 1.052737e+09
+Total area ext crops: 5.387793e+08
+Total area int grass: 8.438097e+08
+Total area ext grass: 2.341650e+09
+Total cellarea: 1.448870e+10
+Total agricultural area: 4.776976e+09
+Total natural area: 8.673688e+09
+Total runoff: 4.870646e+16
+Total N deposition: 8.187542e+10
+Total fertilizer upland crops: 6.675688e+10
+Total fertilizer legumes: 6.315062e+09
+Total fertilizer wrice: 1.791120e+10
+Total fertilizer grass: 3.087230e+09
+Total fertilizer crops: 9.098314e+10
+Total fertilizer: 9.407037e+10
+Total manure: 1.001106e+11
+Total manure grass int: 3.645990e+10
+Total manure grass ext: 2.786468e+10
+Total manure crops: 3.578605e+10
+Total N natural fixation: 5.426425e+10
+Total N agricultural fixation: 4.396302e+10
+Total N fixation grass ext: 1.170825e+10
+Total N fixation grass int: 4.219049e+09
+Total N fixation crops: 2.803572e+10
+Total N uptake crops: 8.468480e+10
+Total N uptake grass ext: 3.295308e+10
+Total N uptake grass int: 3.381654e+10
+Total NH3 emission spreading fertilizer grass ext: 0.000000e+00
+Total NH3 emission spreading fertilizer grass int: 2.190606e+08
+Total NH3 emission spreading fertilizer crops: 1.341074e+10
+Total NH3 emission spreading fertilizer: 1.362980e+10
+Total NH3 emission spreading manure grass ext: 1.721848e+08
+Total NH3 emission spreading manure grass int: 1.200246e+09
+Total NH3 emission spreading manure crops: 5.418965e+09
+Total NH3 emission spreading manure: 6.791396e+09
+Total NH3 emission storage: 1.044298e+10
+Total NH3 emission grazing ext: 3.307468e+09
+Total NH3 emission grazing int: 3.572679e+09
+Total NH3 emission grazing: 6.880146e+09
+Total leaching natural soils: 1.649927e+10
+Total leaching on agricultural soils: 3.953572e+10
+Total groundwater on natural soils: 1.163563e+10
+Total groundwater on agricultural soils: 1.871587e+10
+Total point sources: 1.038012e+10
+Total aquaculture: 1.371506e+09
+Total deposition on water: 1.103378e+09
+Total alloch matter: 1.176805e+10
+Total erosion natural soils: 1.079431e+09
+Total surface runoff natural soils: 5.319364e+08
+Total erosion on agricultural soils: 6.205778e+09
+Total surface runoff on agricultural soils: 7.181631e+09

@@ -1,5 +1,5 @@
-# Thu Sep 19 16:52:03 2019  : Logfile started by user: schul028
-# Thu Sep 19 16:52:03 2019  : Starting run....
+# Mon Sep 30 21:01:24 2019  : Logfile started by user: schul028
+# Mon Sep 30 21:01:24 2019  : Starting run....
 #############################################
 # Ini input options used:
  --root = D:\\critload_project\\critload\\trunk\\tools
@@ -18,19 +18,39 @@
 # inputdir = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999
 # ldebug = 0
 # inifile = None
+# filename_biome_map = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\gnlct.asc
 # filename_gridcell_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_tot.asc
 # filename_agri_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_ag.asc
+# filename_cropland_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_crop.asc
+# filename_intgl_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_gr_int.asc
+# filename_extgl_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_gr_ext.asc
 # filename_natural_area = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\a_nat.asc
 # filename_precipitation_surplus = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\q.asc
 # filename_fert_inp = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_fe_eff.asc
+# filename_fert_inp_cropland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_fe_eff_crop.asc
+# filename_fert_inp_grassland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_fe_eff_grass.asc
 # filename_nfixation_agri = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nfix_ag.asc
+# filename_nfixation_cropland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nfix_crop.asc
+# filename_nfixation_intgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nfix_grass_int.asc
+# filename_nfixation_extgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nfix_grass_ext.asc
 # filename_manure_inp = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_man_eff.asc
-# filename_crop_uptake = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_up_ag.asc
+# filename_manure_inp_cropland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_man_eff_crops.asc
+# filename_manure_inp_intgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_man_eff_grass_int.asc
+# filename_manure_inp_extgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_man_eff_grass_ext.asc
+# filename_uptake_agriculture = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\n_up_ag.asc
 # filename_n_deposition = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\ndep.asc
 # filename_nh3_em_spread_fert = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_fe.asc
+# filename_nh3_em_spread_fert_cropland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_fe_crops.asc
+# filename_nh3_em_spread_fert_intgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_fe_grass_int.asc
+# filename_nh3_em_spread_fert_extgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_fe_grass_ext.asc
 # filename_nh3_em_spread_manure = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_man.asc
+# filename_nh3_em_spread_manure_cropland = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_man_crops.asc
+# filename_nh3_em_spread_manure_intgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_man_grass_int.asc
+# filename_nh3_em_spread_manure_extgl = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_spread_man_grass_ext.asc
 # filename_nh3_em_storage = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_stor.asc
 # filename_nh3_em_grazing = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_graz.asc
+# filename_nh3_em_grazing_ext = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_graz_ext.asc
+# filename_nh3_em_grazing_int = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nh3_graz_int.asc
 # filename_nsro_ag = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nsro_ag.asc
 # filename_leaching_ag = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nle_ag.asc
 # filename_groundwaterload_ag = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\ngw_ag.asc
@@ -48,29 +68,28 @@
 # filename_n_in_erosion_nat = D:\\critload_project\\critload\\trunk\\tools\\..\\input\\1999\\nero_nat.asc
 # crit_gw = 1.16e-05
 # crit_sw = 2.5e-06
-# crit_dep = 8
 # fr_max_recent_grw = 0.95
 # max_runoff = 2000.0
 # sep = ;
 # lcompress = False
 # mask = None
 #############################################
-# Thu Sep 19 16:52:03 2019  : The following command line arguments will not be used:['run.ini']
-# Thu Sep 19 16:52:03 2019  : ******************************************************
-# Thu Sep 19 16:52:03 2019  : # Version information of main script.
-# Thu Sep 19 16:52:03 2019  : ******************************************************
-# Thu Sep 19 16:52:03 2019  : ## Version information from file: D:\critload_project\critload\trunk\tools\main_critload.py
-# Thu Sep 19 16:52:03 2019  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
-# Thu Sep 19 16:52:03 2019  : ## Date "$LastChangedRevision: 625 $"
-# Thu Sep 19 16:52:03 2019  : ## Author "$LastChangedBy: arthurbeusen $"
-# Thu Sep 19 16:52:03 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
-# Thu Sep 19 16:52:03 2019  : ******************************************************
-# Thu Sep 19 16:52:04 2019  : # Version information of generalcode directory.
-# Thu Sep 19 16:52:04 2019  : ******************************************************
-# Thu Sep 19 16:52:04 2019  : ## Version information from file: D:\critload_project\generalcode\trunk\cmd_options_general.py
-# Thu Sep 19 16:52:04 2019  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
-# Thu Sep 19 16:52:04 2019  : ## Date "$LastChangedRevision: 17 $"
-# Thu Sep 19 16:52:04 2019  : ## Author "$LastChangedBy: arthurbeusen $"
-# Thu Sep 19 16:52:04 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
-# Thu Sep 19 16:52:04 2019  : ******************************************************
-# Thu Sep 19 16:53:04 2019  : Total run took 61.242924 seconds to complete.
+# Mon Sep 30 21:01:24 2019  : The following command line arguments will not be used:['run.ini']
+# Mon Sep 30 21:01:24 2019  : ******************************************************
+# Mon Sep 30 21:01:24 2019  : # Version information of main script.
+# Mon Sep 30 21:01:24 2019  : ******************************************************
+# Mon Sep 30 21:01:24 2019  : ## Version information from file: D:\critload_project\critload\trunk\tools\main_critload.py
+# Mon Sep 30 21:01:24 2019  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
+# Mon Sep 30 21:01:24 2019  : ## Date "$LastChangedRevision: 625 $"
+# Mon Sep 30 21:01:24 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Mon Sep 30 21:01:24 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
+# Mon Sep 30 21:01:24 2019  : ******************************************************
+# Mon Sep 30 21:01:25 2019  : # Version information of generalcode directory.
+# Mon Sep 30 21:01:25 2019  : ******************************************************
+# Mon Sep 30 21:01:25 2019  : ## Version information from file: D:\critload_project\generalcode\trunk\cmd_options_general.py
+# Mon Sep 30 21:01:25 2019  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
+# Mon Sep 30 21:01:25 2019  : ## Date "$LastChangedRevision: 17 $"
+# Mon Sep 30 21:01:25 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Mon Sep 30 21:01:25 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
+# Mon Sep 30 21:01:25 2019  : ******************************************************
+# Mon Sep 30 21:04:50 2019  : Total run took 205.785133 seconds to complete.

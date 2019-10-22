@@ -1,0 +1,25 @@
+# Fri Sep 27 08:36:46 2019  : Logfile started by user: beusena
+# Fri Sep 27 08:36:46 2019  : Starting run....
+#############################################
+# Fri Sep 27 08:36:46 2019  : MANDIST DIRECTORY: /data/beusena/GNM_database/history_2010/preproc_fert/mandist_files
+# Fri Sep 27 08:36:46 2019  : GNM INPUT DIRECTORY: /data/beusena/GNM_database/history_2010/GNM_input
+# Fri Sep 27 08:36:46 2019  : GNM OUTPUT DIRECTORY: /data/beusena/GNM_database/history_2010/GNM_output
+# Fri Sep 27 08:36:46 2019  : WATER INPUT DIRECTORY: /data/beusena/globalnutrients/water_input/pcrglobwb_100
+#############################################
+# Fri Sep 27 08:36:46 2019  : ******************************************************
+# Fri Sep 27 08:36:46 2019  : # Version information of main script.
+# Fri Sep 27 08:36:46 2019  : ******************************************************
+# Fri Sep 27 08:36:46 2019  : ## Version information from file: /data/beusena/globalnutrients/critload/trunk/tools/create_input_files.py
+# Fri Sep 27 08:36:46 2019  : ## Revision "$LastChangedDate: 2019-09-27 08:33:31 +0200 (Fri, 27 Sep 2019) $"
+# Fri Sep 27 08:36:46 2019  : ## Date "$LastChangedRevision: 639 $"
+# Fri Sep 27 08:36:46 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Fri Sep 27 08:36:46 2019  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/create_input_files.py $"
+# Fri Sep 27 08:36:46 2019  : ******************************************************
+# Fri Sep 27 08:36:46 2019  : # Version information of generalcode directory.
+# Fri Sep 27 08:36:46 2019  : ******************************************************
+# Fri Sep 27 08:36:46 2019  : ## Version information from file: /data/beusena/generalcode/trunk/general_class.py
+# Fri Sep 27 08:36:46 2019  : ## Revision "$LastChangedDate: 2019-06-19 09:26:51 +0200 (Wed, 19 Jun 2019) $"
+# Fri Sep 27 08:36:46 2019  : ## Date "$LastChangedRevision: 23 $"
+# Fri Sep 27 08:36:46 2019  : ## Author "$LastChangedBy: arthurbeusen $"
+# Fri Sep 27 08:36:46 2019  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/general_class.py $"
+# Fri Sep 27 08:36:46 2019  : ******************************************************
