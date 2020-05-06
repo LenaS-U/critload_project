@@ -71,13 +71,6 @@ def temp_values(params):
     fileout = os.path.join(params.outputdir,"figl.asc")
     figl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
     print_debug(figl,"figl =")   
-    # calculate fagri
-    fagri = ascraster.duplicategrid(a_ara)
-    fagri.add(a_igl)
-    fagri.divide(a_tot, default_nodata_value = -9999)
-    fileout = os.path.join(params.outputdir,"fagri.asc")
-    fagri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fagri,"fagri =")   
     # calculate fegl
     fegl = ascraster.duplicategrid(a_egl)
     fegl.divide(a_tot, default_nodata_value = -9999)
@@ -93,215 +86,18 @@ def temp_values(params):
   
     ### --------- 2. INPUTS FERTILIZER, MANURE, FIXATION --------- ###
     # read input files N inputs 
-    n_fert_ag   = ascraster.Asciigrid(ascii_file=params.filename_fert_inp,            numtype=float,mask=params.mask)
-    n_fert_ara  = ascraster.Asciigrid(ascii_file=params.filename_fert_inp_cropland,   numtype=float,mask=params.mask)
-    n_fert_igl  = ascraster.Asciigrid(ascii_file=params.filename_fert_inp_grassland,  numtype=float,mask=params.mask)  
-    n_man_ag    = ascraster.Asciigrid(ascii_file=params.filename_manure_inp,          numtype=float,mask=params.mask)    
-    n_man_ara   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_cropland, numtype=float,mask=params.mask)
-    n_man_igl   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_intgl,    numtype=float,mask=params.mask)    
-    n_man_egl   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_extgl,    numtype=float,mask=params.mask)  
-    n_fix_ag    = ascraster.Asciigrid(ascii_file=params.filename_nfixation_agri,      numtype=float,mask=params.mask)
-    n_fix_ara   = ascraster.Asciigrid(ascii_file=params.filename_nfixation_cropland,  numtype=float,mask=params.mask)
-    n_fix_igl   = ascraster.Asciigrid(ascii_file=params.filename_nfixation_intgl,     numtype=float,mask=params.mask)
-    n_fix_egl   = ascraster.Asciigrid(ascii_file=params.filename_nfixation_extgl,     numtype=float,mask=params.mask)
-    nh3_stor    = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_storage,      numtype=float,mask=params.mask)    #$#V1.4#$#
-    
-    #'''
-    
-    # split nh3 emissions from storage over intensive and extensive grassland #$#V1.4#$#
-    # intensive grassland                              #$#V1.3#$#
-    nh3_stor_igl = ascraster.duplicategrid(nh3_stor)   #$#V1.3#$#
-    for icell in range(nh3_stor_igl.length):           #$#V1.3#$#
-        igl = a_igl.get_data(icell)                    #$#V1.3#$#
-        nh3stor = nh3_stor.get_data(icell)             #$#V1.3#$#
-        if (igl == None or igl==0) :                   #$#V1.3#$#
-            nh3emigl = 0                               #$#V1.3#$#
-        elif (igl > 0) :                               #$#V1.3#$#
-            nh3emigl = nh3stor                         #$#V1.3#$#
-        else:                                          #$#V1.3#$#
-            continue                                   #$#V1.3#$#
-            
-        nh3_stor_igl.set_data(icell,nh3emigl)                                                   #$#V1.3#$#
-    fileout = os.path.join(params.outputdir, "nh3_stor_igl.asc")                                #$#V1.3#$#
-    nh3_stor_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  #$#V1.3#$#
-    print_debug(nh3_stor_igl,"nh3_stor_igl =")                                                  #$#V1.3#$#
-    
-    # extensive grassland                              #$#V1.3#$#
-    nh3_stor_egl = ascraster.duplicategrid(nh3_stor)   #$#V1.3#$#          
-    for icell in range(nh3_stor_egl.length):           #$#V1.3#$#
-        egl = a_egl.get_data(icell)                    #$#V1.3#$#
-        nh3stor = nh3_stor.get_data(icell)             #$#V1.3#$#
-        if (egl == None or egl==0) :                   #$#V1.3#$#
-            nh3emegl = 0                               #$#V1.3#$#
-        elif (egl > 0) :                               #$#V1.3#$#
-            nh3emegl = nh3stor                         #$#V1.3#$#
-        else:                                          #$#V1.3#$#
-            continue                                   #$#V1.3#$#
-            
-        nh3_stor_egl.set_data(icell,nh3emegl)                                                   #$#V1.3#$#
-    fileout = os.path.join(params.outputdir, "nh3_stor_egl.asc")                                #$#V1.3#$#
-    nh3_stor_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  #$#V1.3#$#   
-    print_debug(nh3_stor_egl,"nh3_stor_egl =")                                                  #$#V1.3#$#
-
-    # arable land                                      #$#V1.3#$#
-    nh3_stor_ara = ascraster.duplicategrid(nh3_stor)   #$#V1.3#$#          
-    for icell in range(nh3_stor_ara.length):           #$#V1.3#$#
-        ara = a_ara.get_data(icell)                    #$#V1.3#$#
-        igl = a_igl.get_data(icell)                    #$#V1.3#$#
-        egl = a_egl.get_data(icell)                    #$#V1.3#$#
-        nh3stor = nh3_stor.get_data(icell)             #$#V1.3#$#
-        if (ara == None) :                             #$#V1.3#$#
-            nh3emara = 0                               #$#V1.3#$#
-        elif (egl == 0 and igl == 0) :                 #$#V1.3#$#
-            nh3emara = nh3stor                         #$#V1.3#$#
-        elif (egl > 0 or igl > 0):                     #$#V1.3#$#
-            nh3emara = 0                               #$#V1.3#$#
-            nh3emara = 0                               #$#V1.3#$#
-        else:                                          #$#V1.3#$#
-            continue                                   #$#V1.3#$#
-            
-        nh3_stor_ara.set_data(icell,nh3emara)                                                   #$#V1.3#$#
-    fileout = os.path.join(params.outputdir, "nh3_stor_ara.asc")                                #$#V1.3#$#
-    nh3_stor_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  #$#V1.3#$#   
-    print_debug(nh3_stor_ara,"nh3_stor_ara =")                                                  #$#V1.3#$#  
-    
-    #'''
-    
-    
-    # Calculate N inputs to 'agri' - fertilizer
-    n_fert_agri = ascraster.duplicategrid(n_fert_ara)
-    n_fert_agri.add(n_fert_igl)
-    #fileout = os.path.join(params.outputdir,"n_fert_agri.asc")
-    #n_fert_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_fert_agri,"n_fert_agri =")
- 
-    # Calculate N inputs to 'agri' - manure
-    n_man_agri = ascraster.duplicategrid(n_man_ara)
-    n_man_agri.add(n_man_igl)
-    #fileout = os.path.join(params.outputdir,"n_man_agri.asc")
-    #n_man_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_man_agri,"n_man_agri =")
- 
-    #'''
-    #$# Add NH3 emissions to input from FERTILIZER                                                                                      #$#V1.2#$#
-    
-    # ag                                                                                                                                #$#V1.2#$#
-    nh3_spread_fert     = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert,            numtype=float,mask=params.mask) #$#V1.2#$#
-    n_fert_ag_nh3 = ascraster.duplicategrid(n_fert_ag)     #$#V1.2#$# 
-    n_fert_ag_nh3.add(nh3_spread_fert)                     #$#V1.2#$# 
-    print_debug(n_fert_ag_nh3,"n_fert_ag_nh3 =")           #$#V1.2#$# 
-    # replace original calculations of n_fert_ag           #$#V1.2#$#   
-    n_fert_ag = ascraster.duplicategrid(n_fert_ag_nh3)     #$#V1.2#$# 
-    
-    # agri                                                                                                                              #$#V1.2#$#
-    nh3_spread_fert_ara = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_cropland,   numtype=float,mask=params.mask) #$#V1.2#$#
-    nh3_spread_fert_igl = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_intgl,      numtype=float,mask=params.mask) #$#V1.2#$#
-    n_fert_agri_nh3 = ascraster.duplicategrid(n_fert_agri) #$#V1.2#$#
-    n_fert_agri_nh3.add(nh3_spread_fert_ara)               #$#V1.2#$#
-    n_fert_agri_nh3.add(nh3_spread_fert_igl)               #$#V1.2#$#
-    print_debug(n_fert_agri_nh3,"n_fert_agri_nh3 =")       #$#V1.2#$#
-    # replace original calculations of n_fert_agri         #$#V1.2#$#
-    n_fert_agri = ascraster.duplicategrid(n_fert_agri_nh3) #$#V1.2#$#
-    
-    #$# Add NH3 emissions to input from MANURE                                                                                          #$#V1.2#$#    
-  
-    # ag                                                                                                                                #$#V1.2#$#
-    nh3_spread_man      = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure,          numtype=float,mask=params.mask) #$#V1.2#$#
-    nh3_stor            = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_storage,                numtype=float,mask=params.mask) #$#V1.2#$#
-    nh3_graz            = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing,                numtype=float,mask=params.mask) #$#V1.2#$#
-    n_man_ag_nh3 = ascraster.duplicategrid(n_man_ag)       #$#V1.2#$#  
-    n_man_ag_nh3.add(nh3_spread_man)                       #$#V1.2#$#  
-    n_man_ag_nh3.add(nh3_stor)                             #$#V1.2#$#  
-    n_man_ag_nh3.add(nh3_graz)                             #$#V1.2#$#  
-    print_debug(n_man_ag_nh3,"n_man_ag_nh3 =")             #$#V1.2#$#
-    # replace original calculations of n_man_ag            #$#V1.2#$#
-    n_man_ag = ascraster.duplicategrid(n_man_ag_nh3)       #$#V1.2#$#   
-    
-    # agri                                                                                                                              #$#V1.2#$#
-    nh3_spread_man_ara  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_cropland, numtype=float,mask=params.mask) #$#V1.2#$#
-    nh3_spread_man_igl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_intgl,    numtype=float,mask=params.mask) #$#V1.2#$#
-    nh3_graz_igl        = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing_int,            numtype=float,mask=params.mask) #$#V1.2#$#  
-    n_man_agri_nh3 = ascraster.duplicategrid(n_man_agri)   #$#V1.2#$#
-    n_man_agri_nh3.add(nh3_spread_man_ara)                 #$#V1.2#$#
-    n_man_agri_nh3.add(nh3_spread_man_igl)                 #$#V1.2#$#
-    #n_man_agri_nh3.add(nh3_stor)                           #$#V1.2#$#
-    n_man_agri_nh3.add(nh3_stor_ara)                       #$#V1.4#$#
-    n_man_agri_nh3.add(nh3_stor_igl)                       #$#V1.4#$#
-    n_man_agri_nh3.add(nh3_graz_igl)                       #$#V1.2#$#
-    print_debug(n_man_agri_nh3,"n_man_agri_nh3 =")         #$#V1.2#$#
-    # replace original calculations of n_man_agri          #$#V1.2#$#
-    n_man_agri = ascraster.duplicategrid(n_man_agri_nh3)   #$#V1.2#$#
-    #'''
-    
-    # Calculate N inputs to 'agri' - N fixation
-    n_fix_agri = ascraster.duplicategrid(n_fix_ara)
-    n_fix_agri.add(n_fix_igl)
-    fileout = os.path.join(params.outputdir,"n_fix_agri.asc")
-    n_fix_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_fix_agri,"n_fix_agri =")
-    
-    # calculate frNfe_ag
-    fert_man_ag = ascraster.duplicategrid(n_man_ag)
-    fert_man_ag.add(n_fert_ag)
-    frnfe_ag = griddivide(n_fert_ag,fert_man_ag,default_nodata_value = 0)
-    
-    # replace '0' by 0.0001 in frNfe_ag
-    for icell in range(frnfe_ag.length):
-        val = frnfe_ag.get_data(icell)
-        if (val == None or val > 0):
-            continue
-        if val == 0.0:
-            res = 0.0001
-        frnfe_ag.set_data(icell,res) 
-    
-    # replace '1' by 0.9999 in frNfe_ag
-    for icell in range(frnfe_ag.length):
-        val = frnfe_ag.get_data(icell)
-        if (val == None or val < 1):
-            continue
-        if val == 1.0:
-            res = 0.9999
-        frnfe_ag.set_data(icell,res) 
-    
-    print_debug(frnfe_ag,"frNfe_ag =")
-    #fileout = os.path.join(params.outputdir,"frnfe_ag.asc")
-    #frnfe_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-
-    ####CHECK: INDEED OK TO GET NA VALUES FOR DIV ZERO WITH frNfe?
-    # calculate frNfe_agri
-    fert_man_agri = ascraster.duplicategrid(n_fert_agri)
-    fert_man_agri.add(n_man_agri)
-    #fileout = os.path.join(params.outputdir,"fert_man_agri.asc")
-    #fert_man_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)    
-    
-    frnfe_agri = ascraster.duplicategrid(n_fert_agri)
-    frnfe_agri.divide(fert_man_agri)
-    #frnfe_agri = griddivide(n_fert_agri,fert_man_agri,default_nodata_value = 0)
-    
-    # replace '0' by 0.0001 in frNfe_agri
-    for icell in range(frnfe_agri.length):
-        val = frnfe_agri.get_data(icell)
-        if (val == None or val > 0):
-            continue
-        if val == 0.0:
-            res = 0.0001
-        frnfe_agri.set_data(icell,res) 
-    
-    # replace '1' by 0.9999 in frnfe_agri
-    for icell in range(frnfe_agri.length):
-        val = frnfe_agri.get_data(icell)
-        if (val == None or val < 1):
-            continue
-        if val == 1.0:
-            res = 0.9999
-        frnfe_agri.set_data(icell,res) 
-    
-    print_debug(frnfe_agri,"frnfe_agri =")
-    fileout = os.path.join(params.outputdir,"frnfe_agri.asc")
-    frnfe_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-   
-   
-    ### --------- 3. NH3 EMISSIONS & EMISSION FRACTIONS --------- ###
+    nfer_eff_ag    = ascraster.Asciigrid(ascii_file=params.filename_fert_inp,            numtype=float,mask=params.mask)
+    nfer_eff_ara   = ascraster.Asciigrid(ascii_file=params.filename_fert_inp_cropland,   numtype=float,mask=params.mask)
+    nfer_eff_igl   = ascraster.Asciigrid(ascii_file=params.filename_fert_inp_grassland,  numtype=float,mask=params.mask)  
+    nman_eff_ag    = ascraster.Asciigrid(ascii_file=params.filename_manure_inp,          numtype=float,mask=params.mask)    
+    nman_eff_ara   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_cropland, numtype=float,mask=params.mask)
+    nman_eff_igl   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_intgl,    numtype=float,mask=params.mask)    
+    nman_eff_egl   = ascraster.Asciigrid(ascii_file=params.filename_manure_inp_extgl,    numtype=float,mask=params.mask)  
+    nfix_ag        = ascraster.Asciigrid(ascii_file=params.filename_nfixation_agri,      numtype=float,mask=params.mask)
+    nfix_ara       = ascraster.Asciigrid(ascii_file=params.filename_nfixation_cropland,  numtype=float,mask=params.mask)
+    nfix_igl       = ascraster.Asciigrid(ascii_file=params.filename_nfixation_intgl,     numtype=float,mask=params.mask)
+    nfix_egl       = ascraster.Asciigrid(ascii_file=params.filename_nfixation_extgl,     numtype=float,mask=params.mask)
+    nfix_nat       = ascraster.Asciigrid(ascii_file=params.filename_nfixation_nat,       numtype=float,mask=params.mask)
     # read input files NH3 emissions
     nh3_spread_man      = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure,          numtype=float,mask=params.mask)
     nh3_spread_man_ara  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_cropland, numtype=float,mask=params.mask)
@@ -311,75 +107,310 @@ def temp_values(params):
     nh3_graz            = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing,                numtype=float,mask=params.mask)
     nh3_graz_igl        = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing_int,            numtype=float,mask=params.mask)
     nh3_graz_egl        = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing_ext,            numtype=float,mask=params.mask)
-    nh3_spread_fert     = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert,            numtype=float,mask=params.mask)    
-    nh3_spread_fert_ara = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_cropland,   numtype=float,mask=params.mask)
-    nh3_spread_fert_igl = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_intgl,      numtype=float,mask=params.mask)    
-    nh3_spread_fert_egl = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_extgl,      numtype=float,mask=params.mask)
+    nh3_spread_fer      = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert,            numtype=float,mask=params.mask)    
+    nh3_spread_fer_ara  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_cropland,   numtype=float,mask=params.mask)
+    nh3_spread_fer_igl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_intgl,      numtype=float,mask=params.mask)    
+    nh3_spread_fer_egl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_extgl,      numtype=float,mask=params.mask)
+    
+    # split nh3 emissions from storage over intensive grassland, extensive grassland & arable land
+    # intensive grassland                              
+    nh3_stor_igl = ascraster.duplicategrid(nh3_stor)
+    for icell in range(nh3_stor_igl.length):
+        igl = a_igl.get_data(icell)
+        nh3stor = nh3_stor.get_data(icell)
+        if (igl == None or igl==0) :
+            nh3emigl = 0
+        elif (igl > 0) :
+            nh3emigl = nh3stor
+        else:
+            continue
+            
+        nh3_stor_igl.set_data(icell,nh3emigl)
+    fileout = os.path.join(params.outputdir, "nh3_stor_igl.asc")
+    nh3_stor_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_stor_igl,"nh3_stor_igl =") 
+    
+    # extensive grassland
+    nh3_stor_egl = ascraster.duplicategrid(nh3_stor)
+    for icell in range(nh3_stor_egl.length):
+        egl = a_egl.get_data(icell)
+        nh3stor = nh3_stor.get_data(icell)
+        if (egl == None or egl==0) :
+            nh3emegl = 0
+        elif (egl > 0) :
+            nh3emegl = nh3stor
+        else:
+            continue
+            
+        nh3_stor_egl.set_data(icell,nh3emegl)
+    fileout = os.path.join(params.outputdir, "nh3_stor_egl.asc")
+    nh3_stor_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_stor_egl,"nh3_stor_egl =")
 
-      
-    # calculate total NH3 emission (all agriculture)
-    nh3_tot = ascraster.duplicategrid(nh3_spread_man)
-    nh3_tot.add(nh3_stor)
-    nh3_tot.add(nh3_graz)
-    nh3_tot.add(nh3_spread_fert)
-    print_debug(nh3_tot,"nh3_tot =")
+    # arable land
+    nh3_stor_ara = ascraster.duplicategrid(nh3_stor)          
+    for icell in range(nh3_stor_ara.length):
+        ara = a_ara.get_data(icell)
+        igl = a_igl.get_data(icell)
+        egl = a_egl.get_data(icell)
+        nh3stor = nh3_stor.get_data(icell)
+        if (ara == None) : 
+            nh3emara = 0
+        elif (egl == 0 and igl == 0) :
+            nh3emara = nh3stor
+        elif (egl > 0 or igl > 0):
+            nh3emara = 0
+            nh3emara = 0
+        else:
+            continue
+            
+        nh3_stor_ara.set_data(icell,nh3emara)
+    fileout = os.path.join(params.outputdir, "nh3_stor_ara.asc")
+    nh3_stor_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_stor_ara,"nh3_stor_ara =")
+    
+ 
+    # Calculate total N inputs from *FERTILIZER* (incl. NH3 emissions)
+    # 'ag'
+    nfer_ag = ascraster.duplicategrid(nfer_eff_ag)
+    nfer_ag.add(nh3_spread_fer)
+    fileout = os.path.join(params.outputdir,"nfer_ag.asc")
+    nfer_ag.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nfer_ag,"nfer_ag =")
+    # 'ara'
+    nfer_ara = ascraster.duplicategrid(nfer_eff_ara)
+    nfer_ara.add(nh3_spread_fer_ara)
+    fileout = os.path.join(params.outputdir,"nfer_ara.asc")
+    nfer_ara.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nfer_ara,"nfer_ara =")
+    # 'igl'
+    nfer_igl = ascraster.duplicategrid(nfer_eff_igl)
+    nfer_igl.add(nh3_spread_fer_igl)
+    fileout = os.path.join(params.outputdir,"nfer_igl.asc")
+    nfer_igl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nfer_igl,"nfer_igl =")
+    # 'araigl'
+    nfer_araigl = ascraster.duplicategrid(nfer_ara)
+    nfer_araigl.add(nfer_igl)
+    fileout = os.path.join(params.outputdir,"nfer_araigl.asc")
+    nfer_araigl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress) 
+ 
+    # Calculate total N inputs from *MANURE* (incl. NH3 emissions)
+    # 'ag'
+    nman_ag = ascraster.duplicategrid(nman_eff_ag)
+    nman_ag.add(nh3_spread_man)
+    nman_ag.add(nh3_stor)
+    nman_ag.add(nh3_graz)
+    fileout = os.path.join(params.outputdir,"nman_ag.asc")
+    nman_ag.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_ag,"nman_ag =")
+    # 'ara'
+    nman_ara = ascraster.duplicategrid(nman_eff_ara)
+    nman_ara.add(nh3_spread_man_ara)
+    nman_ara.add(nh3_stor_ara)
+    fileout = os.path.join(params.outputdir,"nman_ara.asc")
+    nman_ara.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_ara,"nman_ara =")
+    # 'igl'
+    nman_igl = ascraster.duplicategrid(nman_eff_igl)
+    nman_igl.add(nh3_spread_man_igl)
+    nman_igl.add(nh3_stor_igl)
+    nman_igl.add(nh3_graz_igl)
+    fileout = os.path.join(params.outputdir,"nman_igl.asc")
+    nman_igl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_igl,"nman_igl =")
+    # 'egl'
+    nman_egl = ascraster.duplicategrid(nman_eff_egl)
+    nman_egl.add(nh3_spread_man_egl)
+    nman_egl.add(nh3_stor_egl)
+    nman_egl.add(nh3_graz_egl)
+    fileout = os.path.join(params.outputdir,"nman_egl.asc")
+    nman_egl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_egl,"nman_egl =")    
+    # 'araigl'
+    nman_araigl = ascraster.duplicategrid(nman_ara)
+    nman_araigl.add(nman_igl)
+    fileout = os.path.join(params.outputdir,"nman_araigl.asc")
+    nman_araigl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
 
-    # calculate total NH3 emission (ara + igl)
-    nh3_spread_fert_agri = ascraster.duplicategrid(nh3_spread_fert_ara)
-    nh3_spread_fert_agri.add(nh3_spread_fert_igl)
-    nh3_tot_agri = ascraster.duplicategrid(nh3_spread_fert_agri)
-    nh3_tot_agri.add(nh3_spread_man_ara)
-    nh3_tot_agri.add(nh3_spread_man_igl)
-    nh3_tot_agri.add(nh3_stor_igl)  #$#V1.3#$#
-    nh3_tot_agri.add(nh3_stor_ara)  #$#V1.3#$#
-    #nh3_tot_agri.add(nh3_stor)     #$#V1.1#$#
-    nh3_tot_agri.add(nh3_graz_igl)
-    print_debug(nh3_tot_agri,"nh3_tot_agri =")
-
-    # calculate total NH3 emission (egl)
+    # Calculate total N inputs from *MANURE AND FERTILIZER* (incl. NH3 emissions)
+    # 'ara'
+    nman_fer_ara = ascraster.duplicategrid(nman_ara)
+    nman_fer_ara.add(nfer_ara)
+    fileout = os.path.join(params.outputdir,"nman_fer_ara.asc")
+    nman_fer_ara.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    # 'igl'
+    nman_fer_igl = ascraster.duplicategrid(nman_igl)
+    nman_fer_igl.add(nfer_igl)
+    fileout = os.path.join(params.outputdir,"nman_fer_igl.asc")
+    nman_fer_igl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    # 'araigl'
+    nman_fer_araigl = ascraster.duplicategrid(nman_fer_ara)
+    nman_fer_araigl.add(nman_fer_igl)
+    fileout = os.path.join(params.outputdir,"nman_fer_araigl.asc")
+    nman_fer_araigl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    
+    ## calculate *frNfe*
+    # 'ara'
+    fer_man_ara = ascraster.duplicategrid(nman_ara)
+    fer_man_ara.add(nfer_ara)
+    frnfe_ara = ascraster.duplicategrid(nfer_ara)
+    frnfe_ara.divide(fer_man_ara, default_nodata_value = -9999)
+    
+    # replace '0' by 0.0001 in frnfe_ara
+    for icell in range(frnfe_ara.length):
+        val = frnfe_ara.get_data(icell)
+        if (val == None or val > 0):
+            continue
+        if val == 0.0:
+            res = 0.0001
+        frnfe_ara.set_data(icell,res) 
+    
+    # replace '1' by 0.9999 in frnfe_ara
+    for icell in range(frnfe_ara.length):
+        val = frnfe_ara.get_data(icell)
+        if (val == None or val < 1):
+            continue
+        if val == 1.0:
+            res = 0.9999
+        frnfe_ara.set_data(icell,res) 
+    
+    fileout = os.path.join(params.outputdir,"frnfe_ara.asc")
+    frnfe_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frnfe_ara,"frnfe_ara =")
+    
+    # 'igl'
+    fer_man_igl = ascraster.duplicategrid(nman_igl)
+    fer_man_igl.add(nfer_igl)
+    frnfe_igl = ascraster.duplicategrid(nfer_igl)
+    frnfe_igl.divide(fer_man_igl, default_nodata_value = -9999)
+    
+    # replace '0' by 0.0001 in frnfe_igl
+    for icell in range(frnfe_igl.length):
+        val = frnfe_igl.get_data(icell)
+        if (val == None or val > 0):
+            continue
+        if val == 0.0:
+            res = 0.0001
+        frnfe_igl.set_data(icell,res) 
+    
+    # replace '1' by 0.9999 in frnfe_igl
+    for icell in range(frnfe_igl.length):
+        val = frnfe_igl.get_data(icell)
+        if (val == None or val < 1):
+            continue
+        if val == 1.0:
+            res = 0.9999
+        frnfe_igl.set_data(icell,res) 
+    
+    fileout = os.path.join(params.outputdir,"frnfe_igl.asc")
+    frnfe_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frnfe_igl,"frnfe_igl =")  
+    
+    ## Calculate proportion of N inputs in total (arable + intensive grassland) N inputs
+    # 'ara'
+    frn_ara = ascraster.duplicategrid(nman_ara)
+    frn_ara.add(nfer_ara)
+    denominator_frn_ara = ascraster.duplicategrid(frn_ara)
+    denominator_frn_ara.add(nman_igl)
+    denominator_frn_ara.add(nfer_igl)
+    frn_ara.divide(denominator_frn_ara, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"frn_ara.asc")
+    frn_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frn_ara,"frn_ara =")  
+    
+    # 'igl'
+    frn_igl = ascraster.duplicategrid(nman_igl)
+    frn_igl.add(nfer_igl)
+    denominator_frn_igl = ascraster.duplicategrid(frn_igl)
+    denominator_frn_igl.add(nman_ara)
+    denominator_frn_igl.add(nfer_ara)
+    frn_igl.divide(denominator_frn_igl, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"frn_igl.asc")
+    frn_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frn_igl,"frn_igl =")    
+ 
+    ### --------- 3. NH3 EMISSIONS & EMISSION FRACTIONS --------- ###
+   
+    # calculate *TOTAL NH3 EMISSION*
+    # 'ag'
+    nh3_tot_ag = ascraster.duplicategrid(nh3_spread_man)
+    nh3_tot_ag.add(nh3_spread_fer)
+    nh3_tot_ag.add(nh3_stor)
+    nh3_tot_ag.add(nh3_graz)
+    print_debug(nh3_tot_ag,"nh3_tot_ag =")
+    # 'ara' 
+    nh3_tot_ara = ascraster.duplicategrid(nh3_spread_man_ara)
+    nh3_tot_ara.add(nh3_spread_fer_ara)
+    nh3_tot_ara.add(nh3_stor_ara)
+    fileout = os.path.join(params.outputdir,"nh3_tot_ara.asc")
+    nh3_tot_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_tot_ara,"nh3_tot_ara =")   
+    # 'igl'
+    nh3_tot_igl = ascraster.duplicategrid(nh3_spread_man_igl)
+    nh3_tot_igl.add(nh3_spread_fer_igl)
+    nh3_tot_igl.add(nh3_stor_igl)
+    nh3_tot_igl.add(nh3_graz_igl)
+    fileout = os.path.join(params.outputdir,"nh3_tot_igl.asc")
+    nh3_tot_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_tot_igl,"nh3_tot_igl =")           
+    # 'egl'
     nh3_tot_egl = ascraster.duplicategrid(nh3_spread_man_egl)
+    nh3_tot_egl.add(nh3_spread_fer_egl)
+    nh3_tot_egl.add(nh3_stor_egl)  
     nh3_tot_egl.add(nh3_graz_egl)
-    nh3_tot_egl.add(nh3_spread_fert_egl)
-    nh3_tot_egl.add(nh3_stor_egl)  #$#V1.3#$#
     fileout = os.path.join(params.outputdir,"nh3_tot_egl.asc")
     nh3_tot_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
-    print_debug(nh3_tot_egl,"nh3_tot_egl =")    
+    print_debug(nh3_tot_egl,"nh3_tot_egl =")   
     
-    # calculate fnh3em,man,ag
-    nh3_man_tot = ascraster.duplicategrid(nh3_tot)
-    nh3_man_tot.substract(nh3_spread_fert)
-    nh3_ef_man = griddivide(nh3_man_tot,n_man_ag,default_nodata_value = 0)
-    #fileout = os.path.join(params.outputdir,"nh3_ef_man.asc")
-    #nh3_ef_man.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nh3_ef_man,"nh3_ef_man =")
-    
-    # calculate fnh3em,man,agri
-    nh3_man_tot_agri = ascraster.duplicategrid(nh3_tot_agri)
-    nh3_man_tot_agri.substract(nh3_spread_fert_agri)
-    nh3_ef_man_agri = griddivide(nh3_man_tot_agri,n_man_agri,default_nodata_value = 0)
-    fileout = os.path.join(params.outputdir,"nh3_ef_man_agri.asc")
-    nh3_ef_man_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nh3_ef_man_agri,"nh3_ef_man_agri =")
-    
-    # calculate fnh3em,fert
-    nh3_ef_fert = griddivide(nh3_spread_fert,n_fert_ag,default_nodata_value = 0)
-    #fileout = os.path.join(params.outputdir,"nh3_ef_fert.asc")
-    #nh3_ef_fert.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nh3_ef_fert,"nh3_ef_fert =")
+    # calculate *FNH3EM,MAN*
+    # 'ara'
+    nh3_man_tot_ara = ascraster.duplicategrid(nh3_spread_man_ara)
+    nh3_man_tot_ara.add(nh3_stor_ara)
+    nh3_ef_man_ara = griddivide(nh3_man_tot_ara,nman_ara,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_man_ara.asc")
+    nh3_ef_man_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_man_ara,"nh3_ef_man_ara =")
+    # 'igl'
+    nh3_man_tot_igl = ascraster.duplicategrid(nh3_spread_man_igl)
+    nh3_man_tot_igl.add(nh3_stor_igl)
+    nh3_man_tot_igl.add(nh3_graz_igl)
+    nh3_ef_man_igl = griddivide(nh3_man_tot_igl,nman_igl,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_man_igl.asc")
+    nh3_ef_man_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_man_igl,"nh3_ef_man_igl =")    
 
-    # calculate fnh3em,fert,agri
-    nh3_ef_fert_agri = griddivide(nh3_spread_fert_agri,n_fert_agri,default_nodata_value = 0)
-    fileout = os.path.join(params.outputdir,"nh3_ef_fert_agri.asc")
-    nh3_ef_fert_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nh3_ef_fert_agri,"nh3_ef_fert_agri =")
+    # calculate *FNH3EM,FER*
+    # 'ara'
+    nh3_ef_fer_ara = griddivide(nh3_spread_fer_ara,nfer_ara,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_fer_ara.asc")
+    nh3_ef_fer_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_fer_ara,"nh3_ef_fer_ara =")
+    # 'igl'
+    nh3_ef_fer_igl = griddivide(nh3_spread_fer_igl,nfer_igl,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_fer_igl.asc")
+    nh3_ef_fer_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_fer_igl,"nh3_ef_fer_igl =")
+
+    # calculate *FNH3EM,MAN,FER*
+    # 'ara'
+    nh3_ef_man_fer_ara = griddivide(nh3_tot_ara,fer_man_ara,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_man_fer_ara.asc")
+    nh3_ef_man_fer_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_man_fer_ara,"nh3_ef_man_fer_ara =")
+    # 'igl'
+    nh3_ef_man_fer_igl = griddivide(nh3_tot_igl,fer_man_igl,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"nh3_ef_man_fer_igl.asc")
+    nh3_ef_man_fer_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nh3_ef_man_fer_igl,"nh3_ef_man_fer_igl =")
     
     ### --------- 4. N DEPOSITION & NOx emission --------- ###
     # calculate corrected N deposition grid - for all cells where Ndep < NH3em, replace Ndep by NH3em
     ndep_tot = ascraster.Asciigrid(ascii_file=params.filename_n_deposition,numtype=float,mask=params.mask)
     ndep_corr_tot = ascraster.duplicategrid(ndep_tot)
-    for icell in range(nh3_tot.length):
+    for icell in range(nh3_tot_ag.length):
         # Get values from both grids.
-        nh3 =  nh3_tot.get_data(icell)
+        nh3 =  nh3_tot_ag.get_data(icell)
         dep = ndep_tot.get_data(icell)
     
         # If both grids have nodata, keep nodata.
@@ -395,161 +426,167 @@ def temp_values(params):
   
     # calculate NOx emissions: NOx = *corrected* Ndep - (NH3,spread,fe+NH3,spread,man+NH3stor+NH3,graz)
     nox_em = ascraster.duplicategrid(ndep_corr_tot)
-    nox_em.substract(nh3_tot)
+    nox_em.substract(nh3_tot_ag)
     #factor = 0
     #nox_em.multiply(factor)
     fileout = os.path.join(params.outputdir,"nox_em.asc")
     nox_em.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nox_em,"nox_em =") 
  
-    # calculate ndep_ag
+    ## *N DEPOSITION* 
+    # 'ag'
     ndep_ag = ascraster.duplicategrid(ndep_corr_tot)
     ndep_ag.multiply(fag)
-    #fileout = os.path.join(params.outputdir,"ndep_ag.asc")
-    #ndep_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ndep_ag,"ndep_ag =")
-    # calculate ndep_ara
+    # 'ara'
     ndep_ara = ascraster.duplicategrid(ndep_corr_tot)
     ndep_ara.multiply(fara)
-    #fileout = os.path.join(params.outputdir,"ndep_ara.asc")
-    #ndep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ndep_ara,"ndep_ara =")
-    # calculate ndep_igl
+    # 'igl'
     ndep_igl = ascraster.duplicategrid(ndep_corr_tot)
     ndep_igl.multiply(figl)
-    #fileout = os.path.join(params.outputdir,"ndep_igl.asc")
-    #ndep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ndep_igl,"ndep_igl =") 
-    # calculate ndep_agri
-    ndep_agri = ascraster.duplicategrid(ndep_corr_tot)
-    ndep_agri.multiply(fagri)
-    #fileout = os.path.join(params.outputdir,"ndep_agri.asc")
-    #ndep_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ndep_agri,"ndep_agri =")
-    # calculate ndep_egl
+    # 'egl'
     ndep_egl = ascraster.duplicategrid(ndep_corr_tot)
     ndep_egl.multiply(fegl)
-    #fileout = os.path.join(params.outputdir,"ndep_egl.asc")
-    #ndep_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ndep_egl,"ndep_egl =")    
+    print_debug(ndep_egl,"ndep_egl =")   
+    # 'nat'
+    ndep_nat = ascraster.duplicategrid(ndep_corr_tot)
+    ndep_nat.multiply(fnat)
+    print_debug(ndep_nat,"ndep_nat =")    
    
     ### --------- 5. TOTAL INPUTS --------- ###
-    # calculate n_in_ag
-    n_in_ag = ascraster.duplicategrid(n_fert_ag)
-    n_in_ag.add(n_man_ag)
-    n_in_ag.add(n_fix_ag)
-    n_in_ag.add(ndep_ag)
-    #fileout = os.path.join(params.outputdir,"n_in_ag.asc")
-    #n_in_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_ag,"n_in_ag =")
-    # calculate n_in_ara
-    n_in_ara = ascraster.duplicategrid(n_fert_ara)
-    n_in_ara.add(n_man_ara)
-    n_in_ara.add(n_fix_ara)
-    n_in_ara.add(ndep_ara)
-    #fileout = os.path.join(params.outputdir,"n_in_ara.asc")
-    #n_in_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_ara,"n_in_ara =")    
-    # calculate n_in_igl
-    n_in_igl = ascraster.duplicategrid(n_fert_igl)
-    n_in_igl.add(n_man_igl)
-    n_in_igl.add(n_fix_igl)
-    n_in_igl.add(ndep_igl)
-    #fileout = os.path.join(params.outputdir,"n_in_igl.asc")
-    #n_in_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_igl,"n_in_igl =")    
-    # calculate n_in_agri    
-    n_in_agri = ascraster.duplicategrid(n_fert_agri)
-    n_in_agri.add(n_man_agri)
-    n_in_agri.add(n_fix_agri)
-    n_in_agri.add(ndep_agri)
-    fileout = os.path.join(params.outputdir,"n_in_agri.asc")
-    n_in_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_agri,"n_in_agri =")        
-    # calculate n_in_egl
-    n_in_egl = ascraster.duplicategrid(n_man_egl)
-    n_in_egl.add(n_fix_egl)
-    n_in_egl.add(ndep_egl)
-    #fileout = os.path.join(params.outputdir,"n_in_egl.asc")
-    #n_in_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_egl,"n_in_egl =")    
+    ## Calculate *Total N Inputs*
+    # 'ag'
+    nin_ag = ascraster.duplicategrid(nfer_ag)
+    nin_ag.add(nman_ag)
+    nin_ag.add(nfix_ag)
+    nin_ag.add(ndep_ag)
+    print_debug(nin_ag,"nin_ag =")
+    # 'ara'
+    nin_ara = ascraster.duplicategrid(nfer_ara)
+    nin_ara.add(nman_ara)
+    nin_ara.add(nfix_ara)
+    nin_ara.add(ndep_ara)
+    fileout = os.path.join(params.outputdir,"nin_ara.asc")
+    nin_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_ara,"nin_ara =")    
+    # 'igl'
+    nin_igl = ascraster.duplicategrid(nfer_igl)
+    nin_igl.add(nman_igl)
+    nin_igl.add(nfix_igl)
+    nin_igl.add(ndep_igl)
+    fileout = os.path.join(params.outputdir,"nin_igl.asc")
+    nin_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_igl,"nin_igl =")   
+    # 'araigl'
+    nin_araigl = ascraster.duplicategrid(nin_ara)
+    nin_araigl.add(nin_igl)
+    fileout = os.path.join(params.outputdir,"nin_araigl.asc")
+    nin_araigl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    # 'egl'
+    nin_egl = ascraster.duplicategrid(nman_egl)
+    nin_egl.add(nfix_egl)
+    nin_egl.add(ndep_egl)
+    print_debug(nin_egl,"nin_egl =")
+    # 'nat'
+    nin_nat = ascraster.duplicategrid(ndep_nat)
+    nin_nat.add(nfix_nat)
+    print_debug(nin_nat,"nin_nat =")  
  
     ### --------- 6. SURFACE RUNOFF, UPTAKE, FRNUP, NUE --------- ###
     # read input files uptake, surface runoff
     nsro_ag  = ascraster.Asciigrid(ascii_file=params.filename_nsro_ag,         numtype=float,mask=params.mask)    
-    n_up_ara = ascraster.Asciigrid(ascii_file=params.filename_uptake_cropland, numtype=float,mask=params.mask)
-    n_up_igl = ascraster.Asciigrid(ascii_file=params.filename_uptake_intgl,    numtype=float,mask=params.mask)   
-    n_up_egl = ascraster.Asciigrid(ascii_file=params.filename_uptake_extgl,    numtype=float,mask=params.mask)   
+    nsro_nat = ascraster.Asciigrid(ascii_file=params.filename_nsro_nat,        numtype=float,mask=params.mask)
+    nup_ara  = ascraster.Asciigrid(ascii_file=params.filename_uptake_cropland, numtype=float,mask=params.mask)
+    nup_igl  = ascraster.Asciigrid(ascii_file=params.filename_uptake_intgl,    numtype=float,mask=params.mask)   
+    nup_egl  = ascraster.Asciigrid(ascii_file=params.filename_uptake_extgl,    numtype=float,mask=params.mask)   
     regions  = ascraster.Asciigrid(ascii_file=params.filename_regions,         numtype=float,mask=params.mask)   
     
     #$# To manipulate results for 1999 so that I can also get uptake per land-use type (assuming equal NUE)
-    #$#n_up_ag = ascraster.Asciigrid(ascii_file=params.filename_uptake_agriculture,    numtype=float,mask=params.mask)  #$#
+    #$#nup_ag = ascraster.Asciigrid(ascii_file=params.filename_uptake_agriculture,    numtype=float,mask=params.mask)  #$#
     
-    #$#nue_ag = ascraster.duplicategrid(n_up_ag)
-    #$#nue_ag.divide(n_in_ag, default_nodata_value = -9999)
+    #$#nue_ag = ascraster.duplicategrid(nup_ag)
+    #$#nue_ag.divide(nin_ag, default_nodata_value = -9999)
     
-    #$#n_up_ara = ascraster.duplicategrid(n_in_ara)
-    #$#n_up_ara.multiply(nue_ag)
+    #$#nup_ara = ascraster.duplicategrid(nin_ara)
+    #$#nup_ara.multiply(nue_ag)
     #$#fileout = os.path.join(params.inputdir,"n_up_crops.asc")
-    #$#n_up_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
+    #$#nup_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
     
-    #$#n_up_igl = ascraster.duplicategrid(n_in_igl)
-    #$#n_up_igl.multiply(nue_ag)
+    #$#nup_igl = ascraster.duplicategrid(nin_igl)
+    #$#nup_igl.multiply(nue_ag)
     #$#fileout = os.path.join(params.inputdir,"n_up_grass_int.asc")
-    #$#n_up_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
+    #$#nup_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
     
-    #$#n_up_egl = ascraster.duplicategrid(n_in_egl)
-    #$#n_up_egl.multiply(nue_ag)
+    #$#nup_egl = ascraster.duplicategrid(nin_egl)
+    #$#nup_egl.multiply(nue_ag)
     #$#fileout = os.path.join(params.inputdir,"n_up_grass_ext.asc")
-    #$#n_up_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
-
+    #$#nup_egl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
+ 
     
-    # calculate uptake,agri
-    n_up_agri = ascraster.duplicategrid(n_up_ara)
-    n_up_agri.add(n_up_igl)
-    #fileout = os.path.join(params.outputdir,"n_up_agri.asc")
-    #n_up_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_up_agri,"n_up_agri =")     
+    ## *N UPTAKE*
+    # 'ag'
+    nup_ag = ascraster.duplicategrid(nup_ara)
+    nup_ag.add(nup_igl)
+    nup_ag.add(nup_egl)
+    print_debug(nup_ag,"nup_ag =")  
     
-    # calculate uptake,ag
-    n_up_ag = ascraster.duplicategrid(n_up_ara)
-    n_up_ag.add(n_up_igl)
-    n_up_ag.add(n_up_egl)
-    #fileout = os.path.join(params.outputdir,"n_up_ag.asc")
-    #n_up_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_up_ag,"n_up_ag =")  
-    
-    # calculate runoff fraction fsro,ag
-    fsro_ag = griddivide(nsro_ag,n_in_ag,default_nodata_value = 0)
+    ## *SURFACE RUNOFF FRACTION*
+    # 'ag'
+    fsro_ag = griddivide(nsro_ag,nin_ag,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fsro_ag.asc")
     fsro_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fsro_ag,"fsro_ag =") 
+    # 'nat'
+    fsro_nat = griddivide(nsro_nat,nin_nat,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"fsro_nat.asc")
+    fsro_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fsro_nat,"fsro_nat =")  
+
+    ## *N LOAD FROM SURFACE RUNOFF*
+    # 'ara'
+    nsro_ara = ascraster.duplicategrid(nin_ara)
+    nsro_ara.multiply(fsro_ag)
+    print_debug(nsro_ara,"nsro_ara =")  
+    # 'igl'
+    nsro_igl = ascraster.duplicategrid(nin_igl)
+    nsro_igl.multiply(fsro_ag)
+    print_debug(nsro_igl,"nsro_igl =")
+
+    ## *N UPTAKE FRACTION*
+    # 'ara'
+    nin_min_nsro_ara = ascraster.duplicategrid(nin_ara)
+    nin_min_nsro_ara.substract(nsro_ara)
+    frnup_ara = griddivide(nup_ara,nin_min_nsro_ara,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"frnup_ara.asc")
+    frnup_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frnup_ara,"frnup_ara =")   
+    # 'igl'
+    nin_min_nsro_igl = ascraster.duplicategrid(nin_igl)
+    nin_min_nsro_igl.substract(nsro_igl)
+    frnup_igl = griddivide(nup_igl,nin_min_nsro_igl,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"frnup_igl.asc")
+    frnup_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(frnup_igl,"frnup_igl =")   
+
+    ## *NUE*
+    # 'ara'
+    nue_ara = ascraster.duplicategrid(nup_ara)
+    nue_ara.divide(nin_ara, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nue_ara.asc")
+    nue_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_ara,"nue_ara =")
+    # 'igl'
+    nue_igl = ascraster.duplicategrid(nup_igl)
+    nue_igl.divide(nin_igl, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nue_igl.asc")
+    nue_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_igl,"nue_igl =")
     
-    # calculate nsro,agri
-    nsro_agri = ascraster.duplicategrid(fsro_ag)
-    nsro_agri.multiply(n_in_agri)
-    #fileout = os.path.join(params.outputdir,"nsro_agri.asc")
-    #nsro_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nsro_agri,"nsro_agri =")   
-    
-    # calculate frnup_agri
-    n_in_min_nsro_agri = ascraster.duplicategrid(n_in_agri)
-    n_in_min_nsro_agri.substract(nsro_agri)
-    frnup_agri = griddivide(n_up_agri,n_in_min_nsro_agri,default_nodata_value = 0)
-    fileout = os.path.join(params.outputdir,"frnup_agri.asc")
-    frnup_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(frnup_agri,"frnup_agri =")   
-    
-    # calculate nue_agri
-    nue_agri = ascraster.duplicategrid(n_up_agri)
-    nue_agri.divide(n_in_agri, default_nodata_value = -9999)
-    fileout = os.path.join(params.outputdir,"nue_agri.asc")
-    nue_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nue_agri,"nue_agri =")
-   
-    # maximum N uptake
+    ## *MAXIMUM N UPTAKE*
     # make grid with yield increase per region
-    yieldgap_region = ascraster.duplicategrid(n_up_ara)
+    yieldgap_region = ascraster.duplicategrid(nup_ara)
     for i in range(yieldgap_region.length):
         yieldgap_region.set_data(i,-9999)
           
@@ -642,153 +679,160 @@ def temp_values(params):
             continue        
         yieldgap_region.set_data(icell,yg) 
     
-    print_debug(regions,"The region number is") 
+    print_debug(regions,"region_number =") 
 
     fileout = os.path.join(params.outputdir,"yieldgap_region.asc")
     yieldgap_region.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(yieldgap_region,"The yieldgap for this region is") 
+    print_debug(yieldgap_region,"yieldgap =") 
     
-    # calculate Nup(max) = Nup(agri) * yieldgap_region
-    n_up_max = ascraster.duplicategrid(n_up_agri)
-    n_up_max.multiply(yieldgap_region)
-    fileout = os.path.join(params.outputdir,"n_up_max.asc")
-    n_up_max.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_up_max,"The maximum N uptake is") 
-
-    # calculate corrected NUE (NUE used to calculate Nin at Nup,max should never be higher than 0.8)
-    nue_corr_agri = ascraster.duplicategrid(nue_agri)
+    # calculate Nup(max) = Nup  * yieldgap_region
+    # 'ara'
+    nup_max_ara = ascraster.duplicategrid(nup_ara)
+    nup_max_ara.multiply(yieldgap_region)
+    fileout = os.path.join(params.outputdir,"nup_max_ara.asc")
+    nup_max_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nup_max_ara,"nup_max_ara =") 
+    # 'igl'
+    nup_max_igl = ascraster.duplicategrid(nup_igl)
+    nup_max_igl.multiply(yieldgap_region)
+    fileout = os.path.join(params.outputdir,"nup_max_igl.asc")
+    nup_max_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nup_max_igl,"nup_max_igl =") 
     
-    for icell in range(nue_corr_agri.length):
-        val = nue_corr_agri.get_data(icell)
+    
+    ## *CORRECTED NUE* (NUE used to calculate Nin at Nup,max should never be higher than 0.8)
+    # 'ara'
+    nue_corr_ara = ascraster.duplicategrid(nue_ara)
+    for icell in range(nue_corr_ara.length):
+        val = nue_corr_ara.get_data(icell)
         if (val == None or val <= 0.8):
             continue
         if val > 0.8:
             res = 0.8
-        nue_corr_agri.set_data(icell,res)     
+        nue_corr_ara.set_data(icell,res)     
+    fileout = os.path.join(params.outputdir,"nue_corr_ara.asc")
+    nue_corr_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_corr_ara,"nue_corr_ara =")
 
-    fileout = os.path.join(params.outputdir,"nue_corr_agri.asc")
-    nue_corr_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nue_corr_agri,"The corrected NUE (max=0.8) is")
+    # 'igl'
+    nue_corr_igl = ascraster.duplicategrid(nue_igl)
+    for icell in range(nue_corr_igl.length):
+        val = nue_corr_igl.get_data(icell)
+        if (val == None or val <= 0.8):
+            continue
+        if val > 0.8:
+            res = 0.8
+        nue_corr_igl.set_data(icell,res)     
+    fileout = os.path.join(params.outputdir,"nue_corr_igl.asc")
+    nue_corr_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_corr_igl,"nue_corr_igl =")
     
-    # calculate n_in_max (total N inputs from all sources that correspond to maximum uptake and a max. NUE of 0.8)
-    n_in_max = ascraster.duplicategrid(n_up_max)
-    n_in_max.divide(nue_corr_agri, default_nodata_value = -9999)
-    
-    fileout = os.path.join(params.outputdir,"n_in_max.asc")
-    n_in_max.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_in_max,"The maximum N input is")        
+    ## *MAXIMUM N INPUTS* (total N inputs from all sources that correspond to maximum uptake and a max. NUE of 0.8)
+    # 'ara'
+    nin_max_ara = ascraster.duplicategrid(nup_max_ara)
+    nin_max_ara.divide(nue_corr_ara, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nin_max_ara.asc")
+    nin_max_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_max_ara,"nin_max_ara =")        
+    # 'igl'
+    nin_max_igl = ascraster.duplicategrid(nup_max_igl)
+    nin_max_igl.divide(nue_corr_igl, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nin_max_igl.asc")
+    nin_max_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_max_igl,"nin_max_igl =")
     
     ### --------- 7. BUDGET, LEACHING, DENITRIFICATION --------- ###    
     # read input files
-    ngw_ag = ascraster.Asciigrid(ascii_file=params.filename_groundwaterload_ag,numtype=float,mask=params.mask)
-    fgw_rec_ag = ascraster.Asciigrid(ascii_file=params.filename_fraction_recent_groundwaterload_ag,numtype=float,mask=params.mask)
-    nle_ag = ascraster.Asciigrid(ascii_file=params.filename_leaching_ag,numtype=float,mask=params.mask)
+    ngw_ag      = ascraster.Asciigrid(ascii_file=params.filename_groundwaterload_ag,                   numtype=float,mask=params.mask)
+    ngw_nat     = ascraster.Asciigrid(ascii_file=params.filename_groundwaterload_nat,                  numtype=float,mask=params.mask)
+    fgw_rec_ag  = ascraster.Asciigrid(ascii_file=params.filename_fraction_recent_groundwaterload_ag,   numtype=float,mask=params.mask)
+    fgw_rec_nat = ascraster.Asciigrid(ascii_file=params.filename_fraction_recent_groundwaterload_nat,  numtype=float,mask=params.mask)
+    nle_ag      = ascraster.Asciigrid(ascii_file=params.filename_leaching_ag,                          numtype=float,mask=params.mask)
+    nle_nat     = ascraster.Asciigrid(ascii_file=params.filename_leaching_nat,                         numtype=float,mask=params.mask)
     
-    # calculate N budget agriculture: Nbud,ag = Nin,ag - Nup,ag
-    nbud_ag = ascraster.duplicategrid(n_in_ag)
-    nbud_ag.substract(n_up_ag)
-    fileout = os.path.join(params.outputdir,"nbud_ag.asc")
-    nbud_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    ## *N BUDGET*
+    # 'ag'
+    nbud_ag = ascraster.duplicategrid(nin_ag)
+    nbud_ag.substract(nup_ag)
     print_debug(nbud_ag,"nbud_ag =")
-    
-    # calculate N load to surface water via groundwater due to *recent* N inputs: agriculture
+    # 'ara'
+    nbud_ara = ascraster.duplicategrid(nin_ara)
+    nbud_ara.substract(nup_ara)
+    print_debug(nbud_ara,"nbud_ara =")
+    # 'igl'
+    nbud_igl = ascraster.duplicategrid(nin_igl)
+    nbud_igl.substract(nup_igl)
+    print_debug(nbud_igl,"nbud_igl =")
+    # 'nat'
+    nbud_nat = ascraster.duplicategrid(nin_nat)
+    print_debug(nbud_nat,"nbud_nat =")
+     
+    ## *N load to surface water via groundwater due to *recent* N inputs*
+    # 'ag'
     ngw_rec_ag = ascraster.duplicategrid(ngw_ag)
     ngw_rec_ag.multiply(fgw_rec_ag)
-    #fileout = os.path.join(params.outputdir,"ngw_rec_ag.asc")
-    #ngw_rec_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(ngw_rec_ag,"ngw_rec_ag =")
-    
-    # calculate Denitrification in soil: Nde,ag = Nbud,ag - Nsro,ag - Nle,ag
-    nde_ag = ascraster.duplicategrid(nbud_ag)
-    nde_ag.substract(nsro_ag)
-    nde_ag.substract(nle_ag)
-    fileout = os.path.join(params.outputdir,"nde_ag.asc")
-    nde_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nde_ag,"nde_ag =")
-        
-    # calculate leaching fraction fle,ag
+    # 'nat'
+    ngw_rec_nat = ascraster.duplicategrid(ngw_nat)
+    ngw_rec_nat.multiply(fgw_rec_nat)
+    print_debug(ngw_rec_nat,"ngw_rec_nat =")
+           
+    ## *LEACHING FRACTION*
+    # 'ag'
     nbud_min_nsro_ag = ascraster.duplicategrid(nbud_ag)
     nbud_min_nsro_ag.substract(nsro_ag)
     fle_ag = griddivide(nle_ag,nbud_min_nsro_ag,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fle_ag.asc")
     fle_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fle_ag,"fle_ag =")     
-    
-    # calculate fraction of N leaching that is delivered to surface water via groundwater in first x years
-    fgw_rec_le_ag = griddivide(ngw_rec_ag,nle_ag,default_nodata_value = 0)
-    fileout = os.path.join(params.outputdir,"fgw_rec_le_ag.asc")
-    fgw_rec_le_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fgw_rec_le_ag,"fgw_rec_le_ag =")
-    
-    # calculate ndep_nat
-    ndep_nat = ascraster.duplicategrid(ndep_corr_tot)
-    ndep_nat.multiply(fnat)
-    #fileout = os.path.join(params.outputdir,"ndep_nat.asc")
-    #ndep_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ndep_nat,"ndep_nat =")
-
-    # calculate N budget nature: Nbud,nat = Ndep,nat + Nfix,nat
-    n_fix_nat = ascraster.Asciigrid(ascii_file=params.filename_nfixation_nat,numtype=float,mask=params.mask)
-    nbud_nat = ascraster.duplicategrid(ndep_nat)
-    nbud_nat.add(n_fix_nat)
-    fileout = os.path.join(params.outputdir,"nbud_nat.asc")
-    nbud_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nbud_nat,"nbud_nat =")
-    
-    # calculate N load to surface water via groundwater due to *recent* N inputs: natural areas
-    ngw_nat = ascraster.Asciigrid(ascii_file=params.filename_groundwaterload_nat,numtype=float,mask=params.mask)
-    fgw_rec_nat = ascraster.Asciigrid(ascii_file=params.filename_fraction_recent_groundwaterload_nat,numtype=float,mask=params.mask)
-    ngw_rec_nat = ascraster.duplicategrid(ngw_nat)
-    ngw_rec_nat.multiply(fgw_rec_nat)
-    #fileout = os.path.join(params.outputdir,"ngw_rec_nat.asc")
-    #ngw_rec_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ngw_rec_nat,"ngw_rec_nat =")
-    
-    # calculate Denitrification in soil: Nde,nat = Nbud,nat - Nsro,nat - Nle,nat
-    nsro_nat = ascraster.Asciigrid(ascii_file=params.filename_nsro_nat,numtype=float,mask=params.mask)
-    nle_nat = ascraster.Asciigrid(ascii_file=params.filename_leaching_nat,numtype=float,mask=params.mask)
-    nde_nat = ascraster.duplicategrid(nbud_nat)
-    nde_nat.substract(nsro_nat)
-    nde_nat.substract(nle_nat)
-    fileout = os.path.join(params.outputdir,"nde_nat.asc")
-    nde_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nde_nat,"nde_nat =")
-        
-    # calculate leaching fraction fle,nat
+    # 'nat'
     nbud_min_nsro_nat = ascraster.duplicategrid(nbud_nat)
     nbud_min_nsro_nat.substract(nsro_nat)
     fle_nat = griddivide(nle_nat,nbud_min_nsro_nat,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fle_nat.asc")
     fle_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fle_nat,"fle_nat =")   
+    print_debug(fle_nat,"fle_nat =")
     
-    # calculate runoff fraction fsro,nat
-    fsro_nat = griddivide(nsro_nat,nbud_nat,default_nodata_value = 0)
-    fileout = os.path.join(params.outputdir,"fsro_nat.asc")
-    fsro_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fsro_nat,"fsro_nat =")   
+    ## *N LEACHING*
+    # 'ara'
+    nle_ara = ascraster.duplicategrid(nbud_ara)
+    nle_ara.substract(nsro_ara)
+    nle_ara.multiply(fle_ag)
+    fileout = os.path.join(params.outputdir,"nle_ara.asc")
+    nle_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nle_ara,"nle_ara =")
+    # 'igl'
+    nle_igl = ascraster.duplicategrid(nbud_igl)
+    nle_igl.substract(nsro_igl)
+    nle_igl.multiply(fle_ag)
+    fileout = os.path.join(params.outputdir,"nle_igl.asc")
+    nle_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nle_igl,"nle_igl =")    
     
-    # calculate fraction of N leaching that is delivered to surface water via groundwater in first x years - natural areas
+    ## *FRACTION OF RECENT DELIVERY TO LEACHING* (fraction of N leaching that is delivered to surface water via groundwater in first x years)
+    # 'ag'
+    fgw_rec_le_ag = griddivide(ngw_rec_ag,nle_ag,default_nodata_value = 0)
+    fileout = os.path.join(params.outputdir,"fgw_rec_le_ag.asc")
+    fgw_rec_le_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fgw_rec_le_ag,"fgw_rec_le_ag =")
+    # 'nat'
     fgw_rec_le_nat = griddivide(ngw_rec_nat,nle_nat,default_nodata_value = 0)
     fileout = os.path.join(params.outputdir,"fgw_rec_le_nat.asc")
     fgw_rec_le_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fgw_rec_le_nat,"fgw_rec_le_nat =")
     
-    # calculate variable load to surface water from agriculture: Nload,var,ag = Nsro,ag + Ngw,rec,ag
+    ## *VARIABLE N LOAD TO SURFACE WATER*
+    # 'ag'
     nload_var_ag = ascraster.duplicategrid(ngw_rec_ag)
     nload_var_ag.add(nsro_ag)
-    #fileout = os.path.join(params.outputdir,"nload_var_ag.asc")
-    #nload_var_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_var_ag,"nload_var_ag =")
-    
-    # calculate variable load to surface water from nature: Nload,var,nat = Nsro,nat + Ngw,rec,nat
+    # 'nat'
     nload_var_nat = ascraster.duplicategrid(ngw_rec_nat)
     nload_var_nat.add(nsro_nat)
-    #fileout = os.path.join(params.outputdir,"nload_var_nat.asc")
-    #nload_var_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_var_nat,"nload_var_nat =")   
-
-    # calculate fixed load to surface water from agriculture: Ngw,fixed,ag = Ngw,ag * (1-fgw,rec,ag)
+    
+    ## *FIXED LOAD TO SURFACE WATER*
+    # 'ag'
     grid1 = ascraster.duplicategrid(fgw_rec_ag)
     for i in range(grid1.length):
         grid1.set_data(i,1.0)
@@ -798,8 +842,7 @@ def temp_values(params):
     fileout = os.path.join(params.outputdir,"nload_fixed_ag.asc")
     nload_fixed_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_fixed_ag,"nload_fixed_ag =")   
-    
-    # calculate fixed load to surface water from nature: Ngw,fixed,nat = Ngw,nat * (1-fgw,rec,nat)
+    # 'nat'
     grid2 = ascraster.duplicategrid(fgw_rec_nat)
     for i in range(grid2.length):
         grid2.set_data(i,1.0)
@@ -810,15 +853,14 @@ def temp_values(params):
     nload_fixed_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_fixed_nat,"nload_fixed_nat =")    
 
-    # calculate total load from point sources
+    ## *TOTAL N LOAD FROM POINT SOURCES*
     nallo = ascraster.Asciigrid(ascii_file=params.filename_n_point_alloch_matter,numtype=float,mask=params.mask)
     nww = ascraster.Asciigrid(ascii_file=params.filename_n_point_wastewater,numtype=float,mask=params.mask)
     naqua = ascraster.Asciigrid(ascii_file=params.filename_n_point_aquaculture,numtype=float,mask=params.mask)
     ndep_sw = ascraster.Asciigrid(ascii_file=params.filename_n_point_dep_surfacewater,numtype=float,mask=params.mask)
     #factor = 0
     #nww.multiply(factor)
-    #naqua.multiply(factor)
-    
+    #naqua.multiply(factor)   
     npoint_tot = ascraster.duplicategrid(nallo)
     npoint_tot.add(nww)
     npoint_tot.add(naqua)
@@ -827,7 +869,7 @@ def temp_values(params):
     npoint_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(npoint_tot,"npoint_tot =") 
     
-    # calculate total load from erosion
+    ## *TOTAL N LOAD FROM EROSION*
     nero_ag = ascraster.Asciigrid(ascii_file=params.filename_n_in_erosion_ag,numtype=float,mask=params.mask)
     nero_nat = ascraster.Asciigrid(ascii_file=params.filename_n_in_erosion_nat,numtype=float,mask=params.mask)
     nero_tot = ascraster.duplicategrid(nero_ag)
@@ -836,14 +878,12 @@ def temp_values(params):
     nero_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nero_tot,"nero_tot =")    
     
-    # calculate total n load to surface water: Nload,tot = Nload,var,ag + Nload,var,nat + Ngw,fixed,ag + Ngw,fixed,nat + Npoint + Nero
+    ## *TOTAL N LOAD TO SURFACE WATER* (Nload,tot = Nload,var,ag + Nload,var,nat + Ngw,fixed,ag + Ngw,fixed,nat + Npoint + Nero)
     nload_tot = ascraster.duplicategrid(nload_var_ag)
     nload_tot.add(nload_var_nat)
     nload_tot.add(nload_fixed_ag)
     nload_tot.add(nload_fixed_nat)
     nload_tot.add(npoint_tot)
     nload_tot.add(nero_tot)
-    #fileout = os.path.join(params.outputdir,"nload_tot.asc")
-    #nload_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nload_tot,"nload_tot =")        
     

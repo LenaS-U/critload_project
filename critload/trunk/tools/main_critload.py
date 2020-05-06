@@ -60,16 +60,18 @@ def run_critload_model(args):
     temp_values.temp_values(params)    
     
     # Calculate the critical load for groundwater.
-    print("RESULTS GROUNDWATER")
+    #print("RESULTS_GROUNDWATER")
     groundwater.calculate(params)
 
+    # Calculate the critical load for deposition.
+    #print("RESULTS_DEPOSITION")
+    deposition.calculate(params)
+
     # Calculate the critical load for surface water.
-    print("RESULTS SURFACE WATER")
+    #print("RESULTS_SURFACE WATER")
     surfacewater.calculate(params)
 
-    # Calculate the critical load for deposition.
-    print("RESULTS DEPOSITION")
-    deposition.calculate(params)
+
     
     # End of the run.
     log.write_and_print(s.total("Total run"))    

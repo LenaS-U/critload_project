@@ -23,9 +23,9 @@ def calculate(params):
     # load needed variables for calculations
     n_fix_egl        = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "nfix_grass_ext.asc")     ,numtype=float,mask=params.mask)
     n_fix_nat        = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "nfix_nat.asc")           ,numtype=float,mask=params.mask)
-    nman_egl         = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "n_man_eff_grass_ext.asc"),numtype=float,mask=params.mask)
     nup_egl          = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "n_up_grass_ext.asc")     ,numtype=float,mask=params.mask)    
     q                = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "q.asc")                  ,numtype=float,mask=params.mask)
+    nman_egl         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nman_egl.asc")           ,numtype=float,mask=params.mask)  
     npoint_tot       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"npoint_tot.asc")         ,numtype=float,mask=params.mask)
     nero_tot         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nero_tot.asc")           ,numtype=float,mask=params.mask)
     nload_fixed_ag   = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_ag.asc")     ,numtype=float,mask=params.mask)
@@ -174,6 +174,16 @@ def calculate(params):
     
     nman_crit_sw = ascraster.duplicategrid(numerator)
     nman_crit_sw.divide(denominator, default_nodata_value = -9999)
+    
+    for icell in range (nman_crit_sw.length):
+        nman = nman_crit_sw.get_data(icell)
+        if (nman is None):
+            continue
+        if (nman < 0):
+            man = 0
+        else:
+            continue
+        nman_crit_sw.set_data(icell,man)
     
     fileout = os.path.join(params.outputdir,"nman_crit_sw.asc")
     nman_crit_sw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)

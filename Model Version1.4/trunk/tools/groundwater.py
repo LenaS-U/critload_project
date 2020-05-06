@@ -94,6 +94,16 @@ def calculate(params):
     nman_crit_gw = ascraster.duplicategrid(num)
     nman_crit_gw.divide(dem, default_nodata_value = -9999)
     
+    for icell in range (nman_crit_gw.length):
+        nman = nman_crit_gw.get_data(icell)
+        if (nman is None):
+            continue
+        if (nman < 0):
+            man = 0
+        else:
+            continue
+        nman_crit_gw.set_data(icell,man)
+    
     fileout = os.path.join(params.outputdir,"nman_crit_gw.asc")
     nman_crit_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nman_crit_gw,"The critical N input from manure for the groundwater criterion is")

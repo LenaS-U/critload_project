@@ -1,74 +1,74 @@
-# Mon Apr 13 15:38:01 2020  : Logfile started by user: schul028
-# Mon Apr 13 15:38:01 2020  : Starting run....
+# Wed May  6 14:14:21 2020  : Logfile started by user: schul028
+# Wed May  6 14:14:21 2020  : Starting run....
 #############################################
 # Ini input options used:
- --root = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools
- --parameter_ini = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\parameters.ini
+ --root = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools
+ --parameter_ini = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\parameters.ini
  --year = 2010
- --outputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\output
- --inputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input
+ --outputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\output
+ --inputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input
  --ldebug = 0
  --inifile = None
 #############################################
 # All input options used:
-# root = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools
-# parameter_ini = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\parameters.ini
+# root = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools
+# parameter_ini = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\parameters.ini
 # year = 2010
-# outputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\output\\2010
-# inputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010
+# outputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\output\\2010
+# inputdir = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010
 # ldebug = 0
 # inifile = None
-# filename_biome_map = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\gnlct.asc
-# filename_regions = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\image_region28.asc
-# filename_gridcell_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_tot.asc
-# filename_agri_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_ag.asc
-# filename_cropland_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_crop.asc
-# filename_intgl_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_gr_int.asc
-# filename_extgl_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_gr_ext.asc
-# filename_natural_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\a_nat.asc
-# filename_precipitation_surplus = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\q.asc
-# filename_fert_inp = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_fe_eff.asc
-# filename_fert_inp_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_fe_eff_crop.asc
-# filename_fert_inp_grassland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_fe_eff_grass.asc
-# filename_nfixation_agri = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nfix_ag.asc
-# filename_nfixation_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nfix_crop.asc
-# filename_nfixation_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nfix_grass_int.asc
-# filename_nfixation_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nfix_grass_ext.asc
-# filename_manure_inp = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_man_eff.asc
-# filename_manure_inp_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_man_eff_crops.asc
-# filename_manure_inp_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_man_eff_grass_int.asc
-# filename_manure_inp_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_man_eff_grass_ext.asc
-# filename_uptake_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_up_crops.asc
-# filename_uptake_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_up_grass_int.asc
-# filename_uptake_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\n_up_grass_ext.asc
-# filename_n_deposition = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\ndep.asc
-# filename_nh3_em_spread_fert = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe.asc
-# filename_nh3_em_spread_fert_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_crops.asc
-# filename_nh3_em_spread_fert_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_grass_int.asc
-# filename_nh3_em_spread_fert_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_grass_ext.asc
-# filename_nh3_em_spread_manure = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_man.asc
-# filename_nh3_em_spread_manure_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_crops.asc
-# filename_nh3_em_spread_manure_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_grass_int.asc
-# filename_nh3_em_spread_manure_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_grass_ext.asc
-# filename_nh3_em_storage = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_stor.asc
-# filename_nh3_em_grazing = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_graz.asc
-# filename_nh3_em_grazing_ext = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_graz_ext.asc
-# filename_nh3_em_grazing_int = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nh3_graz_int.asc
-# filename_nsro_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nsro_ag.asc
-# filename_leaching_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nle_ag.asc
-# filename_groundwaterload_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\ngw_ag.asc
-# filename_fraction_recent_groundwaterload_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\fgw_rec_ag.asc
-# filename_nfixation_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nfix_nat.asc
-# filename_nsro_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nsro_nat.asc
-# filename_leaching_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nle_nat.asc
-# filename_groundwaterload_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\ngw_nat.asc
-# filename_fraction_recent_groundwaterload_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\fgw_rec_nat.asc
-# filename_n_point_alloch_matter = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nallo.asc
-# filename_n_point_wastewater = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nww.asc
-# filename_n_point_aquaculture = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\naqua.asc
-# filename_n_point_dep_surfacewater = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\ndep_sw.asc
-# filename_n_in_erosion_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nero_ag.asc
-# filename_n_in_erosion_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\critload\\trunk\\tools\\..\\input\\2010\\nero_nat.asc
+# filename_biome_map = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\gnlct.asc
+# filename_regions = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\image_region28.asc
+# filename_gridcell_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_tot.asc
+# filename_agri_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_ag.asc
+# filename_cropland_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_crop.asc
+# filename_intgl_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_gr_int.asc
+# filename_extgl_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_gr_ext.asc
+# filename_natural_area = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\a_nat.asc
+# filename_precipitation_surplus = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\q.asc
+# filename_fert_inp = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_fe_eff.asc
+# filename_fert_inp_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_fe_eff_crop.asc
+# filename_fert_inp_grassland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_fe_eff_grass.asc
+# filename_nfixation_agri = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nfix_ag.asc
+# filename_nfixation_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nfix_crop.asc
+# filename_nfixation_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nfix_grass_int.asc
+# filename_nfixation_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nfix_grass_ext.asc
+# filename_manure_inp = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_man_eff.asc
+# filename_manure_inp_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_man_eff_crops.asc
+# filename_manure_inp_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_man_eff_grass_int.asc
+# filename_manure_inp_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_man_eff_grass_ext.asc
+# filename_uptake_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_up_crops.asc
+# filename_uptake_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_up_grass_int.asc
+# filename_uptake_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\n_up_grass_ext.asc
+# filename_n_deposition = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\ndep.asc
+# filename_nh3_em_spread_fert = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe.asc
+# filename_nh3_em_spread_fert_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_crops.asc
+# filename_nh3_em_spread_fert_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_grass_int.asc
+# filename_nh3_em_spread_fert_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_fe_grass_ext.asc
+# filename_nh3_em_spread_manure = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_man.asc
+# filename_nh3_em_spread_manure_cropland = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_crops.asc
+# filename_nh3_em_spread_manure_intgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_grass_int.asc
+# filename_nh3_em_spread_manure_extgl = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_spread_man_grass_ext.asc
+# filename_nh3_em_storage = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_stor.asc
+# filename_nh3_em_grazing = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_graz.asc
+# filename_nh3_em_grazing_ext = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_graz_ext.asc
+# filename_nh3_em_grazing_int = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nh3_graz_int.asc
+# filename_nsro_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nsro_ag.asc
+# filename_leaching_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nle_ag.asc
+# filename_groundwaterload_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\ngw_ag.asc
+# filename_fraction_recent_groundwaterload_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\fgw_rec_ag.asc
+# filename_nfixation_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nfix_nat.asc
+# filename_nsro_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nsro_nat.asc
+# filename_leaching_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nle_nat.asc
+# filename_groundwaterload_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\ngw_nat.asc
+# filename_fraction_recent_groundwaterload_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\fgw_rec_nat.asc
+# filename_n_point_alloch_matter = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nallo.asc
+# filename_n_point_wastewater = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nww.asc
+# filename_n_point_aquaculture = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\naqua.asc
+# filename_n_point_dep_surfacewater = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\ndep_sw.asc
+# filename_n_in_erosion_ag = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nero_ag.asc
+# filename_n_in_erosion_nat = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools\\..\\input\\2010\\nero_nat.asc
 # crit_gw = 1.16e-05
 # crit_sw = 5e-06
 # fr_max_recent_grw = 0.95
@@ -77,22 +77,22 @@
 # lcompress = False
 # mask = None
 #############################################
-# Mon Apr 13 15:38:01 2020  : The following command line arguments will not be used:['run.ini']
-# Mon Apr 13 15:38:01 2020  : ******************************************************
-# Mon Apr 13 15:38:01 2020  : # Version information of main script.
-# Mon Apr 13 15:38:01 2020  : ******************************************************
-# Mon Apr 13 15:38:01 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\critload\trunk\tools\main_critload.py
-# Mon Apr 13 15:38:01 2020  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
-# Mon Apr 13 15:38:01 2020  : ## Date "$LastChangedRevision: 625 $"
-# Mon Apr 13 15:38:01 2020  : ## Author "$LastChangedBy: arthurbeusen $"
-# Mon Apr 13 15:38:01 2020  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
-# Mon Apr 13 15:38:01 2020  : ******************************************************
-# Mon Apr 13 15:38:01 2020  : # Version information of generalcode directory.
-# Mon Apr 13 15:38:01 2020  : ******************************************************
-# Mon Apr 13 15:38:01 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\generalcode\trunk\cmd_options_general.py
-# Mon Apr 13 15:38:01 2020  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
-# Mon Apr 13 15:38:01 2020  : ## Date "$LastChangedRevision: 17 $"
-# Mon Apr 13 15:38:01 2020  : ## Author "$LastChangedBy: arthurbeusen $"
-# Mon Apr 13 15:38:01 2020  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
-# Mon Apr 13 15:38:01 2020  : ******************************************************
-# Mon Apr 13 15:40:03 2020  : Total run took 121.963292 seconds to complete.
+# Wed May  6 14:14:21 2020  : The following command line arguments will not be used:['run.ini']
+# Wed May  6 14:14:21 2020  : ******************************************************
+# Wed May  6 14:14:21 2020  : # Version information of main script.
+# Wed May  6 14:14:21 2020  : ******************************************************
+# Wed May  6 14:14:21 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\Model Version1.4\trunk\tools\main_critload.py
+# Wed May  6 14:14:21 2020  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
+# Wed May  6 14:14:21 2020  : ## Date "$LastChangedRevision: 625 $"
+# Wed May  6 14:14:21 2020  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed May  6 14:14:21 2020  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
+# Wed May  6 14:14:21 2020  : ******************************************************
+# Wed May  6 14:14:21 2020  : # Version information of generalcode directory.
+# Wed May  6 14:14:21 2020  : ******************************************************
+# Wed May  6 14:14:21 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\generalcode\trunk\cmd_options_general.py
+# Wed May  6 14:14:21 2020  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
+# Wed May  6 14:14:21 2020  : ## Date "$LastChangedRevision: 17 $"
+# Wed May  6 14:14:21 2020  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed May  6 14:14:21 2020  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
+# Wed May  6 14:14:21 2020  : ******************************************************
+# Wed May  6 14:16:00 2020  : Total run took 99.310590 seconds to complete.

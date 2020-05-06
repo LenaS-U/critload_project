@@ -103,6 +103,16 @@ def calculate(params):
     nman_crit_dep = ascraster.duplicategrid(nh3_em_crit_agri)
     nman_crit_dep.divide(denominator, default_nodata_value = -9999)
     
+    for icell in range (nman_crit_dep.length):
+        nman = nman_crit_dep.get_data(icell)
+        if (nman is None):
+            continue
+        if (nman < 0):
+            man = 0
+        else:
+            continue
+        nman_crit_dep.set_data(icell,man)
+    
     fileout = os.path.join(params.outputdir,"nman_crit_dep.asc")
     nman_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nman_crit_dep,"The critical N input from manure for the N deposition criterion is")

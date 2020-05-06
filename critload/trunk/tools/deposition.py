@@ -21,22 +21,32 @@ def calculate(params):
     #print("The critical N deposition rate is " + str(params.crit_dep) + " kg N ha-1 yr-1")
     
     # load needed variables for calculations
-    biome            = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"gnlct.asc")            ,numtype=float,mask=params.mask)
-    a_tot            = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"a_tot.asc")            ,numtype=float,mask=params.mask)
-    nox_em           = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc")          ,numtype=float,mask=params.mask)
-    nh3_tot_egl      = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_tot_egl.asc")     ,numtype=float,mask=params.mask)
-    nh3_ef_man_agri  = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man_agri.asc") ,numtype=float,mask=params.mask)
-    nh3_ef_fert_agri = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fert_agri.asc"),numtype=float,mask=params.mask)
-    frnfe_agri       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe_agri.asc")      ,numtype=float,mask=params.mask)
-    fagri            = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fagri.asc")           ,numtype=float,mask=params.mask)
-    n_fix_agri       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"n_fix_agri.asc")      ,numtype=float,mask=params.mask)
-    fsro_ag          = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc")         ,numtype=float,mask=params.mask)
-    frnup_agri       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnup_agri.asc")      ,numtype=float,mask=params.mask)
-    n_up_max         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"n_up_max.asc")        ,numtype=float,mask=params.mask)
-    n_in_max         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"n_in_max.asc")        ,numtype=float,mask=params.mask)   
+    biome           = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"gnlct.asc")            ,numtype=float,mask=params.mask)
+    a_tot           = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir,"a_tot.asc")            ,numtype=float,mask=params.mask)
+    nfix_ara        = ascraster.Asciigrid(ascii_file=params.filename_nfixation_cropland                   ,numtype=float,mask=params.mask)
+    nfix_igl        = ascraster.Asciigrid(ascii_file=params.filename_nfixation_intgl                      ,numtype=float,mask=params.mask)
+    nox_em          = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nox_em.asc")          ,numtype=float,mask=params.mask)
+    nh3_tot_egl     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_tot_egl.asc")     ,numtype=float,mask=params.mask)
+    nh3_tot_igl     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_tot_igl.asc")     ,numtype=float,mask=params.mask)
+    nh3_tot_ara     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_tot_ara.asc")     ,numtype=float,mask=params.mask)
+    nh3_ef_man_ara  = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man_ara.asc")  ,numtype=float,mask=params.mask)
+    nh3_ef_man_igl  = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_man_igl.asc")  ,numtype=float,mask=params.mask)
+    nh3_ef_fer_ara  = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fer_ara.asc")  ,numtype=float,mask=params.mask)
+    nh3_ef_fer_igl  = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nh3_ef_fer_igl.asc")  ,numtype=float,mask=params.mask)
+    frnfe_ara       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe_ara.asc")       ,numtype=float,mask=params.mask)
+    frnfe_igl       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnfe_igl.asc")       ,numtype=float,mask=params.mask)
+    fara            = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fara.asc")            ,numtype=float,mask=params.mask)
+    figl            = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"figl.asc")            ,numtype=float,mask=params.mask)
+    fsro_ag         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc")         ,numtype=float,mask=params.mask)
+    frnup_ara       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnup_ara.asc")       ,numtype=float,mask=params.mask)
+    frnup_igl       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"frnup_igl.asc")       ,numtype=float,mask=params.mask)
+    nup_max_ara     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nup_max_ara.asc")     ,numtype=float,mask=params.mask)
+    nup_max_igl     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nup_max_igl.asc")     ,numtype=float,mask=params.mask)
+    nin_max_ara     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nin_max_ara.asc")     ,numtype=float,mask=params.mask)   
+    nin_max_igl     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nin_max_igl.asc")     ,numtype=float,mask=params.mask)   
     
     # make grid with critical N deposition per biome
-    ndep_crit_ha = ascraster.duplicategrid(n_fix_agri)
+    ndep_crit_ha = ascraster.duplicategrid(nfix_ara)
     # watch out: can ndep_crit_ha become both -9999 and -1 (NA value?)
     for i in range(ndep_crit_ha.length):
         ndep_crit_ha.set_data(i,-9999)
@@ -69,133 +79,305 @@ def calculate(params):
             continue        
         ndep_crit_ha.set_data(icell,cl) 
     
-    print_debug(biome,"The biome ID is") 
+    print_debug(biome,"biome =") 
     
     fileout = os.path.join(params.outputdir,"ndep_crit_ha.asc")
     ndep_crit_ha.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ndep_crit_ha,"The critical N deposition per hectare is") 
+    print_debug(ndep_crit_ha,"ndep_crit_ha =") 
     
-    # calculate total critical deposition: Ndep,tot(crit) = Ndep,crit,ha * A
+    ## * Total critical deposition *
     ndep_crit_tot = ascraster.duplicategrid(ndep_crit_ha)
     ndep_crit_tot.multiply(a_tot)
-    #fileout = os.path.join(params.outputdir,"ndep_crit_tot.asc")
-    #ndep_crit_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(ndep_crit_tot,"The total critical N deposition is")    
+    fileout = os.path.join(params.outputdir,"ndep_crit_tot.asc")
+    ndep_crit_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(ndep_crit_tot,"ndep_crit_tot =")    
    
-    # calculate critical N input from manure
-    nh3_em_crit_agri = ascraster.duplicategrid(ndep_crit_tot)
-    nh3_em_crit_agri.substract(nox_em)
-    nh3_em_crit_agri.substract(nh3_tot_egl)
-
-    one_grid = ascraster.duplicategrid(frnfe_agri)
+    ## * Critical NH3 emissions *
+    nh3em_ara_igl = ascraster.duplicategrid(nh3_tot_ara)
+    nh3em_ara_igl.add(nh3_tot_igl)
+    # 'ara'
+    nh3_fraction_ara = ascraster.duplicategrid(nh3_tot_ara)
+    nh3_fraction_ara.divide(nh3em_ara_igl, default_nodata_value = -9999)   
+    nh3em_crit_ara = ascraster.duplicategrid(ndep_crit_tot)
+    nh3em_crit_ara.substract(nox_em)
+    nh3em_crit_ara.substract(nh3_tot_egl)
+    nh3em_crit_ara.multiply(nh3_fraction_ara)
+    print_debug(nh3em_crit_ara,"nh3em_crit_ara =")
+    # 'igl'
+    nh3_fraction_igl = ascraster.duplicategrid(nh3_tot_igl)
+    nh3_fraction_igl.divide(nh3em_ara_igl, default_nodata_value = -9999)   
+    nh3em_crit_igl = ascraster.duplicategrid(ndep_crit_tot)
+    nh3em_crit_igl.substract(nox_em)
+    nh3em_crit_igl.substract(nh3_tot_egl)
+    nh3em_crit_igl.multiply(nh3_fraction_igl)
+    print_debug(nh3em_crit_igl,"nh3em_crit_igl =")
+    
+    ## * Critical N inputs from manure *
+    one_grid = ascraster.duplicategrid(frnfe_ara)
     for i in range(one_grid.length):
         one_grid.set_data(i,1.0)
-        
-    one_min_frnfe = ascraster.duplicategrid(one_grid)
-    one_min_frnfe.substract(frnfe_agri)
-    frnfe_division = ascraster.duplicategrid(frnfe_agri)
-    frnfe_division.divide(one_min_frnfe, default_nodata_value = -9999)
     
-    denominator = ascraster.duplicategrid(frnfe_division)
-    denominator.multiply(nh3_ef_fert_agri)
-    denominator.add(nh3_ef_man_agri)
+    # 'ara'
+    one_min_frnfe_ara = ascraster.duplicategrid(one_grid)
+    one_min_frnfe_ara.substract(frnfe_ara)
+    frnfe_division_ara = ascraster.duplicategrid(frnfe_ara)
+    frnfe_division_ara.divide(one_min_frnfe_ara, default_nodata_value = -9999)
+    
+    denominator_ara = ascraster.duplicategrid(frnfe_division_ara)
+    denominator_ara.multiply(nh3_ef_fer_ara)
+    denominator_ara.add(nh3_ef_man_ara)
  
-    nman_crit_dep = ascraster.duplicategrid(nh3_em_crit_agri)
-    nman_crit_dep.divide(denominator, default_nodata_value = -9999)
+    nman_crit_dep_ara = ascraster.duplicategrid(nh3em_crit_ara)
+    nman_crit_dep_ara.divide(denominator_ara, default_nodata_value = -9999)
     
-    fileout = os.path.join(params.outputdir,"nman_crit_dep.asc")
-    nman_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nman_crit_dep,"The critical N input from manure for the N deposition criterion is")
+    for icell in range(nman_crit_dep_ara.length):       
+        f_ara = fara.get_data(icell) 
+        f_igl = figl.get_data(icell)
+        if (f_ara == 0 and f_igl > 0) : 
+            nman_ara = 0
+        else:
+            continue
+        nman_crit_dep_ara.set_data(icell,nman_ara)
+        
+        
+    for icell in range (nman_crit_dep_ara.length):
+        nman_ara3 = nman_crit_dep_ara.get_data(icell)
+        if (nman_ara3 is None):
+            continue
+        if (nman_ara3 < 0):
+            nman_ara = 0
+        else:
+            continue
+        nman_crit_dep_ara.set_data(icell,nman_ara)
     
-    # calculate critical N input from fertilizer
-    nfert_crit_dep = ascraster.duplicategrid(nman_crit_dep)
-    nfert_crit_dep.multiply(frnfe_division)
-    fileout = os.path.join(params.outputdir,"nfert_crit_dep.asc")
-    nfert_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nfert_crit_dep,"The critical N input from fertilizer for the N deposition criterion is")
+    fileout = os.path.join(params.outputdir,"nman_crit_dep_ara.asc")
+    nman_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_crit_dep_ara,"nman_crit_dep_ara =")   
     
-    # calculate related N deposition
-    nh3em_man_crit_dep = ascraster.duplicategrid(nman_crit_dep)
-    nh3em_man_crit_dep.multiply(nh3_ef_man_agri)
+    # 'igl'
+    one_min_frnfe_igl = ascraster.duplicategrid(one_grid)
+    one_min_frnfe_igl.substract(frnfe_igl)
+    frnfe_division_igl = ascraster.duplicategrid(frnfe_igl)
+    frnfe_division_igl.divide(one_min_frnfe_igl, default_nodata_value = -9999)
+    
+    denominator_igl = ascraster.duplicategrid(frnfe_division_igl)
+    denominator_igl.multiply(nh3_ef_fer_igl)
+    denominator_igl.add(nh3_ef_man_igl)
+ 
+    nman_crit_dep_igl = ascraster.duplicategrid(nh3em_crit_igl)
+    nman_crit_dep_igl.divide(denominator_igl, default_nodata_value = -9999)
+    
+    for icell in range(nman_crit_dep_igl.length):       
+        f_ara = fara.get_data(icell) 
+        f_igl = figl.get_data(icell) 
+        if (f_igl == 0 and f_ara > 0) : 
+            nman_igl = 0
+        else:
+            continue
+        nman_crit_dep_igl.set_data(icell,nman_igl)
+        
+    for icell in range (nman_crit_dep_igl.length):
+        nman_igl3 = nman_crit_dep_igl.get_data(icell)
+        if (nman_igl3 is None):
+            continue
+        if (nman_igl3 < 0):
+            nman_igl = 0
+        else:
+            continue
+        nman_crit_dep_igl.set_data(icell,nman_igl)
+    
+    fileout = os.path.join(params.outputdir,"nman_crit_dep_igl.asc")
+    nman_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nman_crit_dep_igl,"nman_crit_dep_igl =")
+    
+    ## calculate critical N input from fertilizer
+    # 'ara'
+    nfer_crit_dep_ara = ascraster.duplicategrid(nman_crit_dep_ara)
+    nfer_crit_dep_ara.multiply(frnfe_division_ara)
+    for icell in range(nfer_crit_dep_ara.length):       
+        f_ara = fara.get_data(icell) 
+        f_igl = figl.get_data(icell)
+        if (f_ara == 0 and f_igl > 0) : 
+            nfer_ara = 0
+        else:
+            continue
+        nfer_crit_dep_ara.set_data(icell,nfer_ara)
+    
+    fileout = os.path.join(params.outputdir,"nfer_crit_dep_ara.asc")
+    nfer_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nfer_crit_dep_ara,"nfer_crit_dep_ara =")
 
-    fileout = os.path.join(params.outputdir,"nh3em_man_crit_dep.asc")
-    nh3em_man_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    # 'igl'
+    nfer_crit_dep_igl = ascraster.duplicategrid(nman_crit_dep_igl)
+    nfer_crit_dep_igl.multiply(frnfe_division_igl)
+    for icell in range(nfer_crit_dep_igl.length):       
+        f_ara = fara.get_data(icell) 
+        f_igl = figl.get_data(icell) 
+        if (f_igl == 0 and f_ara > 0) : 
+            nfer_igl = 0
+        else:
+            continue
+        nfer_crit_dep_igl.set_data(icell,nfer_igl)
     
-    nh3em_fert_crit_dep = ascraster.duplicategrid(nfert_crit_dep)
-    nh3em_fert_crit_dep.multiply(nh3_ef_fert_agri)
-    
-    fileout = os.path.join(params.outputdir,"nh3em_fert_crit_dep.asc")
-    nh3em_fert_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    
-    nh3em_crit_dep = ascraster.duplicategrid(nh3em_fert_crit_dep)
-    nh3em_crit_dep.add(nh3em_man_crit_dep)
-    #
-    fileout = os.path.join(params.outputdir,"nh3em_crit_dep.asc")
-    nh3em_crit_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    #
-    #nh3em_crit_dep.add(nh3_tot_egl)
-    ndep_crit_dep_tot = ascraster.duplicategrid(nh3em_crit_dep)
+    fileout = os.path.join(params.outputdir,"nfer_crit_dep_igl.asc")
+    nfer_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nfer_crit_dep_igl,"nfer_crit_dep_igl =")
+
+    ## * Critical N inputs from fertilizer plus manure * ##
+    # 'ara'
+    nman_fer_crit_dep_ara = ascraster.duplicategrid(nman_crit_dep_ara)
+    nman_fer_crit_dep_ara.add(nfer_crit_dep_ara)
+    fileout = os.path.join(params.outputdir,"nman_fer_crit_dep_ara.asc")
+    nman_fer_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)    
+    # 'igl'
+    nman_fer_crit_dep_igl = ascraster.duplicategrid(nman_crit_dep_igl)
+    nman_fer_crit_dep_igl.add(nfer_crit_dep_igl)
+    fileout = os.path.join(params.outputdir,"nman_fer_crit_dep_igl.asc")
+    nman_fer_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  
+      
+    ## * NH3 emissions at critical N input *
+    # 'ara'
+    nh3em_man_crit_dep_ara = ascraster.duplicategrid(nman_crit_dep_ara)
+    nh3em_man_crit_dep_ara.multiply(nh3_ef_man_ara) 
+    nh3em_fer_crit_dep_ara = ascraster.duplicategrid(nfer_crit_dep_ara)
+    nh3em_fer_crit_dep_ara.multiply(nh3_ef_fer_ara)
+    nh3em_crit_dep_ara = ascraster.duplicategrid(nh3em_fer_crit_dep_ara)
+    nh3em_crit_dep_ara.add(nh3em_man_crit_dep_ara)
+    print_debug(nh3em_crit_dep_ara, "nh3em_crit_dep_ara =")
+    # 'igl'
+    nh3em_man_crit_dep_igl = ascraster.duplicategrid(nman_crit_dep_igl)
+    nh3em_man_crit_dep_igl.multiply(nh3_ef_man_igl) 
+    nh3em_fer_crit_dep_igl = ascraster.duplicategrid(nfer_crit_dep_igl)
+    nh3em_fer_crit_dep_igl.multiply(nh3_ef_fer_igl)
+    nh3em_crit_dep_igl = ascraster.duplicategrid(nh3em_fer_crit_dep_igl)
+    nh3em_crit_dep_igl.add(nh3em_man_crit_dep_igl)
+    print_debug(nh3em_crit_dep_igl, "nh3em_crit_dep_igl =") 
+
+    ## * N deposition at critical N inputs *    
+    ndep_crit_dep_tot = ascraster.duplicategrid(nh3em_crit_dep_ara)
+    ndep_crit_dep_tot.add(nh3em_crit_dep_igl)
     ndep_crit_dep_tot.add(nox_em)
     ndep_crit_dep_tot.add(nh3_tot_egl)
-    print_debug(ndep_crit_dep_tot,"The total critical N deposition for the N deposition criterion is")
-    ndep_crit_dep_agri = ascraster.duplicategrid(ndep_crit_dep_tot)
-    ndep_crit_dep_agri.multiply(fagri)
-    print_debug(ndep_crit_dep_agri,"The critical N deposition on agricultural land for the N deposition criterion is")
+    fileout = os.path.join(params.outputdir,"ndep_crit_dep_tot.asc")
+    ndep_crit_dep_tot.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(ndep_crit_dep_tot,"ndep_crit_dep_tot =")  
+    # 'ara'
+    ndep_crit_dep_ara = ascraster.duplicategrid(ndep_crit_dep_tot)
+    ndep_crit_dep_ara.multiply(fara)
+    print_debug(ndep_crit_dep_ara,"ndep_crit_dep_ara =")
+    # 'igl'
+    ndep_crit_dep_igl = ascraster.duplicategrid(ndep_crit_dep_tot)
+    ndep_crit_dep_igl.multiply(figl)
+    print_debug(ndep_crit_dep_igl,"ndep_crit_dep_igl =")
+
+    ## * Total critical N inputs *
+    # 'ara'
+    nin_crit_dep_ara = ascraster.duplicategrid(nman_crit_dep_ara)
+    nin_crit_dep_ara.add(nfer_crit_dep_ara)
+    nin_crit_dep_ara.add(ndep_crit_dep_ara)
+    nin_crit_dep_ara.add(nfix_ara)
+    fileout = os.path.join(params.outputdir,"nin_crit_dep_ara.asc")
+    nin_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_crit_dep_ara,"nin_crit_dep_ara =")
+    # 'igl'
+    nin_crit_dep_igl = ascraster.duplicategrid(nman_crit_dep_igl)
+    nin_crit_dep_igl.add(nfer_crit_dep_igl)
+    nin_crit_dep_igl.add(ndep_crit_dep_igl)
+    nin_crit_dep_igl.add(nfix_igl)
+    fileout = os.path.join(params.outputdir,"nin_crit_dep_igl.asc")
+    nin_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nin_crit_dep_igl,"nin_crit_dep_igl =")
+    # 'ara+igl'
+    nin_crit_dep_araigl = ascraster.duplicategrid(nin_crit_dep_ara)
+    nin_crit_dep_araigl.add(nin_crit_dep_igl)
+    fileout = os.path.join(params.outputdir,"nin_crit_dep_araigl.asc")
+    nin_crit_dep_araigl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     
-    # calculate total critical N inputs wrt N deposition
-    nin_crit_dep_agri = ascraster.duplicategrid(nman_crit_dep)
-    nin_crit_dep_agri.add(nfert_crit_dep)
-    nin_crit_dep_agri.add(ndep_crit_dep_agri)
-    nin_crit_dep_agri.add(n_fix_agri)
-    fileout = os.path.join(params.outputdir,"nin_crit_dep_agri.asc")
-    nin_crit_dep_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nin_crit_dep_agri,"The total critical input to agriclture for the N deposition criterion is")
+    ## * N surface runoff at critical N inputs *
+    # 'ara'
+    nsro_crit_dep_ara = ascraster.duplicategrid(nin_crit_dep_ara)
+    nsro_crit_dep_ara.multiply(fsro_ag)
+    print_debug(nsro_crit_dep_ara,"nsro_crit_dep_ara =")
+    # 'igl'
+    nsro_crit_dep_igl = ascraster.duplicategrid(nin_crit_dep_igl)
+    nsro_crit_dep_igl.multiply(fsro_ag)
+    print_debug(nsro_crit_dep_igl,"nsro_crit_dep_igl =")    
     
-    # calculate N surface runoff at critical N inputs deposition
-    nsro_crit_dep_agri = ascraster.duplicategrid(nin_crit_dep_agri)
-    nsro_crit_dep_agri.multiply(fsro_ag)
-    print_debug(nsro_crit_dep_agri,"The critical N surface runoff for the N deposition criterion is")
+    ## * N uptake at critical N inputs *
+    # 'ara'
+    nup_crit_dep_ara = ascraster.duplicategrid(nin_crit_dep_ara)
+    nup_crit_dep_ara.substract(nsro_crit_dep_ara)
+    nup_crit_dep_ara.multiply(frnup_ara)
+    fileout = os.path.join(params.outputdir,"nup_crit_dep_ara.asc")
+    nup_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nup_crit_dep_ara,"nup_crit_dep_ara =")
+    # 'igl'
+    nup_crit_dep_igl = ascraster.duplicategrid(nin_crit_dep_igl)
+    nup_crit_dep_igl.substract(nsro_crit_dep_igl)
+    nup_crit_dep_igl.multiply(frnup_igl)
+    fileout = os.path.join(params.outputdir,"nup_crit_dep_igl.asc")
+    nup_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nup_crit_dep_igl,"nup_crit_dep_igl =")
     
-    # calculate N uptake at critical N inputs deposition
-    nup_crit_dep_agri = ascraster.duplicategrid(nin_crit_dep_agri)
-    nup_crit_dep_agri.substract(nsro_crit_dep_agri)
-    nup_crit_dep_agri.multiply(frnup_agri)
-    fileout = os.path.join(params.outputdir,"nup_crit_dep_agri.asc")
-    nup_crit_dep_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nup_crit_dep_agri,"The N uptake for the N deposition criterion is")
-        
-    # calculate implied NUE
-    nue_crit_dep_agri = ascraster.duplicategrid(nup_crit_dep_agri)
-    nue_crit_dep_agri.divide(nin_crit_dep_agri, default_nodata_value = -9999)
-    #fileout = os.path.join(params.outputdir,"nue_crit_dep_agri.asc")
-    #nue_crit_dep_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nue_crit_dep_agri,"The NUE for the N deposition criterion is")
+    ## * NUE at critical N inputs *
+    # 'ara'
+    nue_crit_dep_ara = ascraster.duplicategrid(nup_crit_dep_ara)
+    nue_crit_dep_ara.divide(nin_crit_dep_ara, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nue_crit_dep_ara.asc")
+    nue_crit_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_crit_dep_ara,"nue_crit_dep_ara =")
+    # 'igl'
+    nue_crit_dep_igl = ascraster.duplicategrid(nup_crit_dep_igl)
+    nue_crit_dep_igl.divide(nin_crit_dep_igl, default_nodata_value = -9999)
+    fileout = os.path.join(params.outputdir,"nue_crit_dep_igl.asc")
+    nue_crit_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(nue_crit_dep_igl,"nue_crit_dep_igl =")
     
-    # calculate maximum uptake fraction
-    fnup_max_dep = ascraster.duplicategrid(n_up_max)
-    fnup_max_dep.divide(nup_crit_dep_agri)
-    fileout = os.path.join(params.outputdir,"fnup_max_dep.asc")
-    fnup_max_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fnup_max_dep,"The fraction maximum uptake / critical uptake for deposition is")
+    ## * Maximum uptake fraction  *
+    # 'ara'
+    fnup_max_dep_ara = ascraster.duplicategrid(nup_max_ara)
+    fnup_max_dep_ara.divide(nup_crit_dep_ara)
+    fileout = os.path.join(params.outputdir,"fnup_max_dep_ara.asc")
+    fnup_max_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fnup_max_dep_ara,"fnup_max_dep_ara =")
+    # 'igl'
+    fnup_max_dep_igl = ascraster.duplicategrid(nup_max_igl)
+    fnup_max_dep_igl.divide(nup_crit_dep_igl)
+    fileout = os.path.join(params.outputdir,"fnup_max_dep_igl.asc")
+    fnup_max_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fnup_max_dep_igl,"fnup_max_dep_igl =")
     
-    # calculate correction factor for those cases where critical N uptake exceeds max. N uptake 
-    fnup_corr_dep = ascraster.duplicategrid(n_in_max)
-    fnup_corr_dep.substract(n_fix_agri)
-    
-    temp2 = ascraster.duplicategrid(nh3_tot_egl)
-    temp2.add(nox_em)
-    temp2.multiply(fagri)
-    fnup_corr_dep.substract(temp2)
-    
-    temp3 = ascraster.duplicategrid(nh3em_crit_dep)
-    temp3.multiply(fagri)
-    temp3.add(nman_crit_dep)
-    temp3.add(nfert_crit_dep)
-    fnup_corr_dep.divide(temp3, default_nodata_value = -9999)
-    
-    fileout = os.path.join(params.outputdir,"fnup_corr_dep.asc")
-    fnup_corr_dep.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(fnup_corr_dep,"The correction factor for cases where Nup,crit>Nup,max is")
+    ## * Correction factor for grid cells where Nup,crit > Nup,max *
+    # 'ara'
+    fnup_corr_dep_ara = ascraster.duplicategrid(nin_max_ara)
+    fnup_corr_dep_ara.substract(nfix_ara)
+    temp2_ara = ascraster.duplicategrid(nh3_tot_egl)
+    temp2_ara.add(nox_em)
+    temp2_ara.multiply(fara)
+    fnup_corr_dep_ara.substract(temp2_ara) 
+    temp3_ara = ascraster.duplicategrid(nh3em_crit_dep_ara)
+    temp3_ara.multiply(fara)
+    temp3_ara.add(nman_crit_dep_ara)
+    temp3_ara.add(nfer_crit_dep_ara)
+    fnup_corr_dep_ara.divide(temp3_ara, default_nodata_value = -9999) 
+    fileout = os.path.join(params.outputdir,"fnup_corr_dep_ara.asc")
+    fnup_corr_dep_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fnup_corr_dep_ara,"fnup_corr_dep_ara =")
+    # 'igl'
+    fnup_corr_dep_igl = ascraster.duplicategrid(nin_max_igl)
+    fnup_corr_dep_igl.substract(nfix_igl)
+    temp2_igl = ascraster.duplicategrid(nh3_tot_egl)
+    temp2_igl.add(nox_em)
+    temp2_igl.multiply(figl)
+    fnup_corr_dep_igl.substract(temp2_igl)  
+    temp3_igl = ascraster.duplicategrid(nh3em_crit_dep_igl)
+    temp3_igl.multiply(figl)
+    temp3_igl.add(nman_crit_dep_igl)
+    temp3_igl.add(nfer_crit_dep_igl)
+    fnup_corr_dep_igl.divide(temp3_igl, default_nodata_value = -9999)   
+    fileout = os.path.join(params.outputdir,"fnup_corr_dep_igl.asc")
+    fnup_corr_dep_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(fnup_corr_dep_igl,"fnup_corr_dep_igl =")    
     
     
     ########### FORWARD CALCULATIONS TO CHECK ###########
@@ -205,13 +387,13 @@ def calculate(params):
         fw = ndep_crit_dep_tot.get_data(icell_debug)
         bw = ndep_crit_tot.get_data(icell_debug)
         if fw is None:
-            print("FW / BW TEST: Forward calculation not possible (Nin,crit=None)")
+            print("FW/BW_TEST:_Forward_calculation_not_possible:_Nin,crit = None")
         
         else:
             fw = round(fw,4) 
             bw = round(bw,4)
             if fw == bw:
-                print("FW / BW TEST: SUCCESFUL")
+                print("FW/BW_TEST = SUCCESFUL")
             else:
-                print("FW / BW TEST: NOT SUCCESFUL")
+                print("FW/BW_TEST = NOT_SUCCESFUL")
     ############################################################################################

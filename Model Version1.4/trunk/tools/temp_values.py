@@ -169,18 +169,14 @@ def temp_values(params):
     
     
     # Calculate N inputs to 'agri' - fertilizer
-    n_fert_agri = ascraster.duplicategrid(n_fert_ara)
-    n_fert_agri.add(n_fert_igl)
-    #fileout = os.path.join(params.outputdir,"n_fert_agri.asc")
-    #n_fert_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_fert_agri,"n_fert_agri =")
+    n_fert_agri_eff = ascraster.duplicategrid(n_fert_ara)
+    n_fert_agri_eff.add(n_fert_igl)
+    print_debug(n_fert_agri_eff,"n_fert_agri_eff =")
  
     # Calculate N inputs to 'agri' - manure
-    n_man_agri = ascraster.duplicategrid(n_man_ara)
-    n_man_agri.add(n_man_igl)
-    #fileout = os.path.join(params.outputdir,"n_man_agri.asc")
-    #n_man_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(n_man_agri,"n_man_agri =")
+    n_man_agri_eff = ascraster.duplicategrid(n_man_ara)
+    n_man_agri_eff.add(n_man_igl)
+    print_debug(n_man_agri_eff,"n_man_agri_eff =")
  
     #'''
     #$# Add NH3 emissions to input from FERTILIZER                                                                                      #$#V1.2#$#
@@ -196,12 +192,15 @@ def temp_values(params):
     # agri                                                                                                                              #$#V1.2#$#
     nh3_spread_fert_ara = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_cropland,   numtype=float,mask=params.mask) #$#V1.2#$#
     nh3_spread_fert_igl = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_intgl,      numtype=float,mask=params.mask) #$#V1.2#$#
-    n_fert_agri_nh3 = ascraster.duplicategrid(n_fert_agri) #$#V1.2#$#
+    n_fert_agri_nh3 = ascraster.duplicategrid(n_fert_agri_eff) #$#V1.2#$#
     n_fert_agri_nh3.add(nh3_spread_fert_ara)               #$#V1.2#$#
     n_fert_agri_nh3.add(nh3_spread_fert_igl)               #$#V1.2#$#
     print_debug(n_fert_agri_nh3,"n_fert_agri_nh3 =")       #$#V1.2#$#
     # replace original calculations of n_fert_agri         #$#V1.2#$#
     n_fert_agri = ascraster.duplicategrid(n_fert_agri_nh3) #$#V1.2#$#
+    fileout = os.path.join(params.outputdir,"n_fert_agri.asc")
+    n_fert_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(n_fert_agri,"n_fert_agri =")
     
     #$# Add NH3 emissions to input from MANURE                                                                                          #$#V1.2#$#    
   
@@ -221,7 +220,7 @@ def temp_values(params):
     nh3_spread_man_ara  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_cropland, numtype=float,mask=params.mask) #$#V1.2#$#
     nh3_spread_man_igl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_intgl,    numtype=float,mask=params.mask) #$#V1.2#$#
     nh3_graz_igl        = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing_int,            numtype=float,mask=params.mask) #$#V1.2#$#  
-    n_man_agri_nh3 = ascraster.duplicategrid(n_man_agri)   #$#V1.2#$#
+    n_man_agri_nh3 = ascraster.duplicategrid(n_man_agri_eff)   #$#V1.2#$#
     n_man_agri_nh3.add(nh3_spread_man_ara)                 #$#V1.2#$#
     n_man_agri_nh3.add(nh3_spread_man_igl)                 #$#V1.2#$#
     #n_man_agri_nh3.add(nh3_stor)                           #$#V1.2#$#
@@ -231,6 +230,24 @@ def temp_values(params):
     print_debug(n_man_agri_nh3,"n_man_agri_nh3 =")         #$#V1.2#$#
     # replace original calculations of n_man_agri          #$#V1.2#$#
     n_man_agri = ascraster.duplicategrid(n_man_agri_nh3)   #$#V1.2#$#
+    fileout = os.path.join(params.outputdir,"n_man_agri.asc")
+    n_man_agri.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(n_man_agri,"n_man_agri =")
+    
+    # 'egl'
+    nh3_graz_egl        = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_grazing_ext,            numtype=float,mask=params.mask) #$#V1.2#$#  
+    nh3_spread_man_egl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_manure_extgl,    numtype=float,mask=params.mask)
+    n_man_egl_nh3 = ascraster.duplicategrid(n_man_egl)
+    n_man_egl_nh3.add(nh3_spread_man_egl)
+    n_man_egl_nh3.add(nh3_stor_egl)
+    n_man_egl_nh3.add(nh3_graz_egl)
+    # replace original calculations of n_man_egl          #$#V1.2#$#
+    n_man_egl = ascraster.duplicategrid(n_man_egl_nh3)   #$#V1.2#$#
+    fileout = os.path.join(params.outputdir,"nman_egl.asc")
+    n_man_egl.write_ascii_file(fileout, output_nodata_value=-9999,compress=params.lcompress)
+    print_debug(n_man_egl,"n_man_egl =")    
+
+
     #'''
     
     # Calculate N inputs to 'agri' - N fixation
@@ -334,6 +351,8 @@ def temp_values(params):
     nh3_tot_agri.add(nh3_stor_ara)  #$#V1.3#$#
     #nh3_tot_agri.add(nh3_stor)     #$#V1.1#$#
     nh3_tot_agri.add(nh3_graz_igl)
+    fileout = os.path.join(params.outputdir,"nh3_tot_agri.asc")
+    nh3_tot_agri.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)   
     print_debug(nh3_tot_agri,"nh3_tot_agri =")
 
     # calculate total NH3 emission (egl)

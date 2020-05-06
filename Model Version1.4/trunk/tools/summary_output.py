@@ -33,7 +33,7 @@ os.chdir('c:\\users')
 os.chdir('schul028')
 os.chdir('OneDrive - WageningenUR')
 os.chdir('critload_project')
-os.chdir('critload')
+os.chdir('Model Version1.4')
 os.chdir('trunk')
 os.chdir('output')
 os.chdir('2010')
@@ -81,7 +81,7 @@ os.chdir('c:\\users')
 os.chdir('schul028')
 os.chdir('OneDrive - WageningenUR')
 os.chdir('critload_project')
-os.chdir('critload')
+os.chdir('Model Version1.4')
 os.chdir('trunk')
 os.chdir('input')
 os.chdir('2010')
@@ -219,7 +219,8 @@ with np.errstate(invalid='ignore'):
     fer_araigl = np.add(fer_araigl, nh3emfert_igl)  #$#V1.2#$# #$#V1.4#$#
     man_araigl = np.add(man_araigl, nh3emappl_ara)  #$#V1.2#$# #$#V1.4#$#
     man_araigl = np.add(man_araigl, nh3emappl_igl)  #$#V1.2#$# #$#V1.4#$#
-    man_araigl = np.add(man_araigl, nh3emstor)      #$#V1.2#$# #$#V1.4#$#
+    man_araigl = np.add(man_araigl, nh3_stor_ara)      #$#V1.2#$# #$#V1.4#$#
+    man_araigl = np.add(man_araigl, nh3_stor_igl)      #$#V1.2#$# #$#V1.4#$#
     man_araigl = np.add(man_araigl, nh3emgraz_igl)  #$#V1.2#$# #$#V1.4#$#
     manfer_araigl = np.add(fer_araigl, man_araigl)  #$#V1.2#$# #$#V1.4#$#
    
@@ -348,7 +349,18 @@ with np.errstate(invalid='ignore'):
     print("case-3-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritde)==False, np.logical_and(manfercritde>0,manfercritde<=manfer_araigl))) ]))
     print("case-4-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritde)==False, np.logical_and(manfercritde>manfer_araigl,manfercritde<=manfercritde_max))) ]))
     print("case-5-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritde)==False, np.logical_and(manfercritde>manfer_araigl,manfercritde>manfercritde_max))) ]))
-    
+
+    # new version - after we set nman_crit to zero in model
+    manfercritmiX = np.minimum(manfercritsw, manfercritgw)
+    manfercritmi  = np.minimum(manfercritmiX, manfercritde)
+    print("case-1-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritmi)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
+    print("case-2-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritmi)==False, manfercritmi<=0)) ]))
+    print("case-3-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritmi)==False, np.logical_and(manfercritmi>0,manfercritmi<=manfer_araigl))) ]))
+    print("case-4-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritmi)==False, np.logical_and(manfercritmi>manfer_araigl,manfercritmi<=manfercritde_max))) ]))
+    print("case-5-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritmi)==False, np.logical_and(manfercritmi>manfer_araigl,manfercritmi>manfercritde_max))) ]))
+
+
+''' #old version: before we set nman_crit to zero in model    
     print("case-1-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritsw)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
     print("case-2-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritsw)==False, np.logical_and(manfercritsw<manfercritgw, np.logical_and(manfercritsw<manfercritde, manfercritsw<=0)))) ]))
     print("case-3-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(manfercritsw)==False, np.logical_and(manfercritsw<manfercritgw, np.logical_and(manfercritsw<manfercritde, np.logical_and(manfercritsw>0,manfercritsw<=manfer_araigl))))) ]))
@@ -372,6 +384,7 @@ with np.errstate(invalid='ignore'):
     #print("not-cons-2: %i" % np.nansum(area_araigl[np.where(np.logical_and(manfercritsw<manfercritde, manfercritsw==manfercritgw))])) # sw AND gw kleinste
     #print("not-cons-3: %i" % np.nansum(area_araigl[np.where(np.logical_and(manfercritgw<manfercritsw, manfercritgw==manfercritde))])) # gw AND de kleinste
     #print("not-cons-4: %i" % np.nansum(area_araigl[np.where(np.logical_and(manfercritgw==manfercritsw, manfercritgw==manfercritde))])) # allemaal kleinste
+'''
 
 #######################################################################################################################################################################################################
 # 7. Print land areas + actual N inputs from fertilizer and manure ####################################################################################################################################
@@ -829,6 +842,10 @@ nin_tot_crit_min_cutoff = np.add(nin_tot_crit_min_cutoff, nfix_araigl)
 nin_tot_crit_min_cutoff = np.add(nin_tot_crit_min_cutoff, ndep_fixed_araigl)
 nin_tot_crit_min_cutoff = np.add(nin_tot_crit_min_cutoff, ndep_var_crit_tot_min3_araigl)
 
+# select minimum
+nin_tot_crit_miX    = np.minimum(nin_tot_crit_sw,     nin_tot_crit_gw)
+nin_tot_crit_mi     = np.minimum(nin_tot_crit_miX,    nin_tot_crit_dep)
+
 print("CASES-FOR-*ALL*-INPUTS")
 with np.errstate(invalid='ignore'):
     print("total-area: %i"% np.nansum(area_araigl))
@@ -850,26 +867,14 @@ with np.errstate(invalid='ignore'):
     print("case-4-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep>nin_tot_araigl,nin_tot_crit_dep<=nin_max))) ]))
     print("case-5-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep>nin_tot_araigl,nin_tot_crit_dep>nin_max))) ]))
 
-    print("case-1-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_sw)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
-    print("case-2-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_sw)==False, np.logical_and(nin_tot_crit_sw<nin_tot_crit_gw, np.logical_and(nin_tot_crit_sw<nin_tot_crit_dep, nin_tot_crit_sw<=0)))) ]))
-    print("case-3-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_sw)==False, np.logical_and(nin_tot_crit_sw<nin_tot_crit_gw, np.logical_and(nin_tot_crit_sw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_sw>0,nin_tot_crit_sw<=nin_tot_araigl))))) ]))
-    print("case-4-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_sw)==False, np.logical_and(nin_tot_crit_sw<nin_tot_crit_gw, np.logical_and(nin_tot_crit_sw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_sw>nin_tot_araigl,nin_tot_crit_sw<=nin_max))))) ]))
-    print("case-5-mi-sw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_sw)==False, np.logical_and(nin_tot_crit_sw<nin_tot_crit_gw, np.logical_and(nin_tot_crit_sw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_sw>nin_tot_araigl,nin_tot_crit_sw>nin_max))))) ]))
+    print("case-1-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_mi)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
+    print("case-2-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_mi)==False, nin_tot_crit_mi<=0)) ]))
+    print("case-3-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_mi)==False, np.logical_and(nin_tot_crit_mi>0,nin_tot_crit_mi<=nin_tot_araigl))) ]))
+    print("case-4-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_mi)==False, np.logical_and(nin_tot_crit_mi>nin_tot_araigl,nin_tot_crit_mi<=nin_max))) ]))
+    print("case-5-mi: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_mi)==False, np.logical_and(nin_tot_crit_mi>nin_tot_araigl,nin_tot_crit_mi>nin_max))) ]))
     
-    print("case-1-mi-gw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_gw)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
-    print("case-2-mi-gw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_gw)==False, np.logical_and(nin_tot_crit_gw<nin_tot_crit_sw, np.logical_and(nin_tot_crit_gw<nin_tot_crit_dep, nin_tot_crit_gw<=0)))) ]))
-    print("case-3-mi-gw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_gw)==False, np.logical_and(nin_tot_crit_gw<nin_tot_crit_sw, np.logical_and(nin_tot_crit_gw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_gw>0,nin_tot_crit_gw<=nin_tot_araigl))))) ]))
-    print("case-4-mi-gw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_gw)==False, np.logical_and(nin_tot_crit_gw<nin_tot_crit_sw, np.logical_and(nin_tot_crit_gw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_gw>nin_tot_araigl,nin_tot_crit_gw<=nin_max))))) ]))
-    print("case-5-mi-gw: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_gw)==False, np.logical_and(nin_tot_crit_gw<nin_tot_crit_sw, np.logical_and(nin_tot_crit_gw<nin_tot_crit_dep, np.logical_and(nin_tot_crit_gw>nin_tot_araigl,nin_tot_crit_gw>nin_max))))) ]))
 
-    print("case-1-mi-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==True,  np.logical_and(np.isnan(area_araigl)==False, area_araigl>0)) )]))
-    print("case-2-mi-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep<nin_tot_crit_sw, np.logical_and(nin_tot_crit_dep<nin_tot_crit_gw, nin_tot_crit_dep<=0)))) ]))
-    print("case-3-mi-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep<nin_tot_crit_sw, np.logical_and(nin_tot_crit_dep<nin_tot_crit_gw, np.logical_and(nin_tot_crit_dep>0,nin_tot_crit_dep<=nin_tot_araigl))))) ]))
-    print("case-4-mi-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep<nin_tot_crit_sw, np.logical_and(nin_tot_crit_dep<nin_tot_crit_gw, np.logical_and(nin_tot_crit_dep>nin_tot_araigl,nin_tot_crit_dep<=nin_max))))) ]))
-    print("case-5-mi-de: %i" % np.nansum(area_araigl[np.where(np.logical_and(np.isnan(nin_tot_crit_dep)==False, np.logical_and(nin_tot_crit_dep<nin_tot_crit_sw, np.logical_and(nin_tot_crit_dep<nin_tot_crit_gw, np.logical_and(nin_tot_crit_dep>nin_tot_araigl,nin_tot_crit_dep>nin_max))))) ]))
-
-
-
+'''
 #PRINT NH3 EMISSIONS AT CRITICAL N INPUTS (AFTER CUTOFF)#
 print("NH3_emissions")
 
@@ -1445,3 +1450,4 @@ plt.show()
 #print("Crit-fer-de-ha-6: %f" % np.nanmean(fercritdeha4))
 #print("Crit-man-de-ha-6: %f" % np.nanmean(mancritdeha4))    
 
+'''
