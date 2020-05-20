@@ -23,6 +23,10 @@ def calculate(params):
     # load needed variables for calculations
     nfix_ara            = ascraster.Asciigrid(ascii_file=params.filename_nfixation_cropland                      ,numtype=float,mask=params.mask)
     nfix_igl            = ascraster.Asciigrid(ascii_file=params.filename_nfixation_intgl                         ,numtype=float,mask=params.mask)
+    nallo               = ascraster.Asciigrid(ascii_file=params.filename_n_point_alloch_matter                   ,numtype=float,mask=params.mask)
+    nww                 = ascraster.Asciigrid(ascii_file=params.filename_n_point_wastewater                      ,numtype=float,mask=params.mask)
+    naqua               = ascraster.Asciigrid(ascii_file=params.filename_n_point_aquaculture                     ,numtype=float,mask=params.mask)
+    ndep_sw             = ascraster.Asciigrid(ascii_file=params.filename_n_point_dep_surfacewater                ,numtype=float,mask=params.mask)
     nfix_egl            = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "nfix_grass_ext.asc")     ,numtype=float,mask=params.mask)
     nfix_nat            = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "nfix_nat.asc")           ,numtype=float,mask=params.mask)
     nup_egl             = ascraster.Asciigrid(ascii_file=os.path.join(params.inputdir, "n_up_grass_ext.asc")     ,numtype=float,mask=params.mask)    
@@ -31,6 +35,8 @@ def calculate(params):
     nero_tot            = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nero_tot.asc")           ,numtype=float,mask=params.mask)
     nload_fixed_ag      = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_ag.asc")     ,numtype=float,mask=params.mask)
     nload_fixed_nat     = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_fixed_nat.asc")    ,numtype=float,mask=params.mask)
+    nload_var_ag        = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_var_ag.asc")       ,numtype=float,mask=params.mask)
+    nload_var_nat       = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nload_var_nat.asc")      ,numtype=float,mask=params.mask)
     fle_ag              = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_ag.asc")             ,numtype=float,mask=params.mask)
     fle_nat             = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fle_nat.asc")            ,numtype=float,mask=params.mask)
     fsro_ag             = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"fsro_ag.asc")            ,numtype=float,mask=params.mask)
@@ -60,6 +66,7 @@ def calculate(params):
     nin_max_ara         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nin_max_ara.asc")        ,numtype=float,mask=params.mask)   
     nin_max_igl         = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nin_max_igl.asc")        ,numtype=float,mask=params.mask)   
     nman_egl            = ascraster.Asciigrid(ascii_file=os.path.join(params.outputdir,"nman_egl.asc")           ,numtype=float,mask=params.mask)  
+
     
     ## One grid
     one_grid = ascraster.duplicategrid(nfix_ara)
@@ -74,11 +81,36 @@ def calculate(params):
     print_debug(nload_crit_sw,"nload_crit_sw =")
    
     # calculate fixed N load to surface water
-    nload_fixed_tot = ascraster.duplicategrid(npoint_tot)
+    nload_fixed_tot = ascraster.duplicategrid(nallo)
     nload_fixed_tot.add(nero_tot)
-    nload_fixed_tot.add(nload_fixed_ag)
     nload_fixed_tot.add(nload_fixed_nat)
     print_debug(nload_fixed_tot,"nload_fixed_tot =")
+      
+    nload_var_ag_nat = ascraster.duplicategrid(nload_var_ag) 
+    nload_var_ag_nat.add(nload_var_nat)
+    
+    nload_var_other = ascraster.duplicategrid(nww)
+    nload_var_other.add(naqua)
+    nload_var_other.add(ndep_sw)
+    nload_var_other.add(nload_fixed_ag) # is zero if combined with scenario 1 (all ag. N load = variable)
+    
+    nload_var_tot = ascraster.duplicategrid(nload_var_ag_nat) 
+    nload_var_tot.add(nload_var_other)
+      
+    nload_var_ag_nat_percent = ascraster.duplicategrid(nload_var_ag_nat)
+    nload_var_ag_nat_percent.divide(nload_var_tot, default_nodata_value = -9999)
+
+    nload_var_other_percent = ascraster.duplicategrid(nload_var_other)
+    nload_var_other_percent.divide(nload_var_tot, default_nodata_value = -9999)
+    
+    nload_var_crit_tot = ascraster.duplicategrid(nload_crit_sw)
+    nload_var_crit_tot.substract(nload_fixed_tot)
+    
+    nload_var_crit_ag_nat = ascraster.duplicategrid(nload_var_crit_tot)
+    nload_var_crit_ag_nat.multiply(nload_var_ag_nat_percent)
+    
+    nload_var_crit_other = ascraster.duplicategrid(nload_var_crit_tot)
+    nload_var_crit_other.multiply(nload_var_other_percent)
     
     ## Parameter 'v' 
     # 'ara'
@@ -207,11 +239,10 @@ def calculate(params):
     
     ## OPTION2 - for grid cells with BOTH 'ara' AND 'igl'
     # 'ara'
-    numerator_V2_ara = ascraster.duplicategrid(nload_crit_sw)
+    numerator_V2_ara = ascraster.duplicategrid(nload_var_crit_ag_nat)
     n1_V2_ara = ascraster.duplicategrid(nox_em)
     n1_V2_ara.add(nh3_tot_egl)
     n1_V2_ara.multiply(y2)
-    numerator_V2_ara.substract(nload_fixed_tot)
     numerator_V2_ara.substract(y1)
     numerator_V2_ara.substract(n1_V2_ara)
     
@@ -657,6 +688,7 @@ def calculate(params):
     nload_crit_sw_test.add(nload_var_crit_sw_igl)   
     nload_crit_sw_test.add(nload_var_crit_sw_nat)
     nload_crit_sw_test.add(nload_var_crit_sw_egl)
+    nload_crit_sw_test.add(nload_var_crit_other)
     nload_crit_sw_test.add(nload_fixed_tot)
     fileout = os.path.join(params.outputdir,"nload_crit_sw_test.asc")
     nload_crit_sw_test.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
@@ -682,4 +714,4 @@ def calculate(params):
     ############################################################################################
 
     #print(fw)
-    #print(bw)
+    #print(bw)    

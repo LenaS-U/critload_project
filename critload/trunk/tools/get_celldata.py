@@ -14,7 +14,7 @@ import general_path
 import ascraster
 import my_sys
 
-coordinate = [74.75,53.75]
+coordinate = [-81.25,39.75]
 
 # First argument is the input directory of the raster files.
 inputdir = sys.argv[1]

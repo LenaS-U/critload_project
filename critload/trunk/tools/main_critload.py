@@ -102,4 +102,4 @@ if (__name__ == "__main__"):
         print("***** ERROR ******")
         print("main_critload.py failed.")
         print(str(sys.exc_info()[0]))
-        print(traceback.print_exc())    
+        print(traceback.print_exc())

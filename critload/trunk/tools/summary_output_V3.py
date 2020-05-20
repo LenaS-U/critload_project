@@ -3,29 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm
 
-#ToC
-# 1. Read files from input / output directory and replace NA values by NaN
-### 1a. Read files from *OUTPUT* directory
-### 1b. Read files from *INPUT* directory
-### 1c. change NA values to NaN
-# 2. Calculate CURRENT inputs from manure and fertilizer per hectare for each grid cell
-### 2a. all agricultural land ('manha', 'ferha', 'manfer', 'manferha')
-### 2b. cropland (..._ara)
-### 2c. intensive grassland (..._igl)
-### 2d. cropland + intensive grassland (..._araigl)
-# 3. Calculate CURRENT inputs from deposition due to NOx and NH3_egl for each grid cell (for _ara, _igl, _egl, _agri, _ag)
-# 4. Calculate maximum inputs from fertilizer and manure, and sum of the two for each grid cell
-# 5. Calculate CRITICAL inputs from manure and fertilizer per hectare for each grid cell
-# 6. Calculate areas for different cases
-# 7. Print land areas + actual N inputs
-### 7a. Areas
-### 7b. Actual N inputs (totals)
-### 7c. Actual N inputs (per hectare)
-# 8. Critical N inputs for cut-off at actual N inputs
-### 8a. copy original critical N inputs
-
 #######################################################################################################################################################################################################    
-# 1. Read files from input / output directory and replace NA values by NaN ############################################################################################################################
+# Read files from input / output directory and replace NA values by NaN ############################################################################################################################
 #######################################################################################################################################################################################################
 
 ### 1a. Read files from *OUTPUT* directory
@@ -39,64 +18,64 @@ os.chdir('output')
 os.chdir('2010')
 
 # general
-nox_em           = np.loadtxt("nox_em.asc"               , skiprows=6)
-fag              = np.loadtxt("fag.asc"                  , skiprows=6)
-fara             = np.loadtxt("fara.asc"                 , skiprows=6)
-figl             = np.loadtxt("figl.asc"                 , skiprows=6)
-fegl             = np.loadtxt("fegl.asc"                 , skiprows=6)
+nox_em               = np.loadtxt("nox_em.asc"                , skiprows=6)
+fag                  = np.loadtxt("fag.asc"                   , skiprows=6)
+fara                 = np.loadtxt("fara.asc"                  , skiprows=6)
+figl                 = np.loadtxt("figl.asc"                  , skiprows=6)
+fegl                 = np.loadtxt("fegl.asc"                  , skiprows=6)
 # egl
-nman_egl             = np.loadtxt("nman_egl.asc"            , skiprows=6)
-nh3_tot_egl          = np.loadtxt("nh3_tot_egl.asc"         , skiprows=6)
+nman_egl             = np.loadtxt("nman_egl.asc"              , skiprows=6)
+nh3_tot_egl          = np.loadtxt("nh3_tot_egl.asc"           , skiprows=6)
 # ara
-nfer_ara             = np.loadtxt("nfer_ara.asc"            , skiprows=6)
-nman_ara             = np.loadtxt("nman_ara.asc"            , skiprows=6)
-nman_crit_sw_ara     = np.loadtxt("nman_crit_sw_ara.asc"    , skiprows=6)
-nfer_crit_sw_ara     = np.loadtxt("nfer_crit_sw_ara.asc"    , skiprows=6)
-nman_crit_gw_ara     = np.loadtxt("nman_crit_gw_ara.asc"    , skiprows=6)
-nfer_crit_gw_ara     = np.loadtxt("nfer_crit_gw_ara.asc"    , skiprows=6)
-nman_crit_de_ara     = np.loadtxt("nman_crit_dep_ara.asc"   , skiprows=6)
-nfer_crit_de_ara     = np.loadtxt("nfer_crit_dep_ara.asc"   , skiprows=6)
-fnup_max_sw_ara      = np.loadtxt("fnup_max_sw_ara.asc"     , skiprows=6)
-fnup_max_gw_ara      = np.loadtxt("fnup_max_gw_ara.asc"     , skiprows=6)
-fnup_max_de_ara      = np.loadtxt("fnup_max_dep_ara.asc"    , skiprows=6)
-fnup_corr_sw_ara     = np.loadtxt("fnup_corr_sw_ara.asc"    , skiprows=6)
-fnup_corr_gw_ara     = np.loadtxt("fnup_corr_gw_ara.asc"    , skiprows=6)
-fnup_corr_de_ara     = np.loadtxt("fnup_corr_dep_ara.asc"   , skiprows=6)
-nh3_ef_man_ara       = np.loadtxt("nh3_ef_man_ara.asc"      , skiprows=6)
-nh3_ef_fer_ara       = np.loadtxt("nh3_ef_fer_ara.asc"      , skiprows=6)
-nin_max_ara          = np.loadtxt("nin_max_ara.asc"         , skiprows=6)
-nin_tot_crit_sw_ara  = np.loadtxt("nin_crit_sw_ara.asc"     , skiprows=6)
-nin_tot_crit_gw_ara  = np.loadtxt("nin_crit_gw_ara.asc"     , skiprows=6)
-nin_tot_crit_dep_ara = np.loadtxt("nin_crit_dep_ara.asc"    , skiprows=6)
-nh3_stor_ara         = np.loadtxt("nh3_stor_ara.asc"        , skiprows=6)
-nman_fer_crit_sw_ara = np.loadtxt("nman_fer_crit_sw_ara.asc"        , skiprows=6)
-nman_fer_crit_gw_ara = np.loadtxt("nman_fer_crit_gw_ara.asc"        , skiprows=6)
-nman_fer_crit_de_ara = np.loadtxt("nman_fer_crit_dep_ara.asc"       , skiprows=6)
+nfer_ara             = np.loadtxt("nfer_ara.asc"              , skiprows=6)
+nman_ara             = np.loadtxt("nman_ara.asc"              , skiprows=6)
+nman_crit_sw_ara     = np.loadtxt("nman_crit_sw_ara.asc"      , skiprows=6)
+nfer_crit_sw_ara     = np.loadtxt("nfer_crit_sw_ara.asc"      , skiprows=6)
+nman_crit_gw_ara     = np.loadtxt("nman_crit_gw_ara.asc"      , skiprows=6)
+nfer_crit_gw_ara     = np.loadtxt("nfer_crit_gw_ara.asc"      , skiprows=6)
+nman_crit_de_ara     = np.loadtxt("nman_crit_dep_ara.asc"     , skiprows=6)
+nfer_crit_de_ara     = np.loadtxt("nfer_crit_dep_ara.asc"     , skiprows=6)
+fnup_max_sw_ara      = np.loadtxt("fnup_max_sw_ara.asc"       , skiprows=6)
+fnup_max_gw_ara      = np.loadtxt("fnup_max_gw_ara.asc"       , skiprows=6)
+fnup_max_de_ara      = np.loadtxt("fnup_max_dep_ara.asc"      , skiprows=6)
+fnup_corr_sw_ara     = np.loadtxt("fnup_corr_sw_ara.asc"      , skiprows=6)
+fnup_corr_gw_ara     = np.loadtxt("fnup_corr_gw_ara.asc"      , skiprows=6)
+fnup_corr_de_ara     = np.loadtxt("fnup_corr_dep_ara.asc"     , skiprows=6)
+nh3_ef_man_ara       = np.loadtxt("nh3_ef_man_ara.asc"        , skiprows=6)
+nh3_ef_fer_ara       = np.loadtxt("nh3_ef_fer_ara.asc"        , skiprows=6)
+nin_max_ara          = np.loadtxt("nin_max_ara.asc"           , skiprows=6)
+nin_tot_crit_sw_ara  = np.loadtxt("nin_crit_sw_ara.asc"       , skiprows=6)
+nin_tot_crit_gw_ara  = np.loadtxt("nin_crit_gw_ara.asc"       , skiprows=6)
+nin_tot_crit_dep_ara = np.loadtxt("nin_crit_dep_ara.asc"      , skiprows=6)
+nh3_stor_ara         = np.loadtxt("nh3_stor_ara.asc"          , skiprows=6)
+nman_fer_crit_sw_ara = np.loadtxt("nman_fer_crit_sw_ara.asc"  , skiprows=6)
+nman_fer_crit_gw_ara = np.loadtxt("nman_fer_crit_gw_ara.asc"  , skiprows=6)
+nman_fer_crit_de_ara = np.loadtxt("nman_fer_crit_dep_ara.asc" , skiprows=6)
 # igl
-nfer_igl             = np.loadtxt("nfer_igl.asc"            , skiprows=6)
-nman_igl             = np.loadtxt("nman_igl.asc"            , skiprows=6)
-nman_crit_sw_igl     = np.loadtxt("nman_crit_sw_igl.asc"    , skiprows=6)
-nfer_crit_sw_igl     = np.loadtxt("nfer_crit_sw_igl.asc"    , skiprows=6)
-nman_crit_gw_igl     = np.loadtxt("nman_crit_gw_igl.asc"    , skiprows=6)
-nfer_crit_gw_igl     = np.loadtxt("nfer_crit_gw_igl.asc"    , skiprows=6)
-nman_crit_de_igl     = np.loadtxt("nman_crit_dep_igl.asc"   , skiprows=6)
-nfer_crit_de_igl     = np.loadtxt("nfer_crit_dep_igl.asc"   , skiprows=6)
-fnup_max_sw_igl      = np.loadtxt("fnup_max_sw_igl.asc"     , skiprows=6)
-fnup_max_gw_igl      = np.loadtxt("fnup_max_gw_igl.asc"     , skiprows=6)
-fnup_max_de_igl      = np.loadtxt("fnup_max_dep_igl.asc"    , skiprows=6)
-fnup_corr_sw_igl     = np.loadtxt("fnup_corr_sw_igl.asc"    , skiprows=6)
-fnup_corr_gw_igl     = np.loadtxt("fnup_corr_gw_igl.asc"    , skiprows=6)
-fnup_corr_de_igl     = np.loadtxt("fnup_corr_dep_igl.asc"   , skiprows=6)
-nh3_ef_man_igl       = np.loadtxt("nh3_ef_man_igl.asc"      , skiprows=6)
-nh3_ef_fer_igl       = np.loadtxt("nh3_ef_fer_igl.asc"      , skiprows=6)
-nin_max_igl          = np.loadtxt("nin_max_igl.asc"         , skiprows=6)
-nin_tot_crit_sw_igl  = np.loadtxt("nin_crit_sw_igl.asc"     , skiprows=6)
-nin_tot_crit_gw_igl  = np.loadtxt("nin_crit_gw_igl.asc"     , skiprows=6)
-nin_tot_crit_dep_igl = np.loadtxt("nin_crit_dep_igl.asc"    , skiprows=6)
-nh3_stor_igl         = np.loadtxt("nh3_stor_igl.asc"        , skiprows=6)
-nman_fer_crit_sw_igl = np.loadtxt("nman_fer_crit_sw_igl.asc"        , skiprows=6)
-nman_fer_crit_gw_igl = np.loadtxt("nman_fer_crit_gw_igl.asc"        , skiprows=6)
-nman_fer_crit_de_igl = np.loadtxt("nman_fer_crit_dep_igl.asc"       , skiprows=6)
+nfer_igl             = np.loadtxt("nfer_igl.asc"              , skiprows=6)
+nman_igl             = np.loadtxt("nman_igl.asc"              , skiprows=6)
+nman_crit_sw_igl     = np.loadtxt("nman_crit_sw_igl.asc"      , skiprows=6)
+nfer_crit_sw_igl     = np.loadtxt("nfer_crit_sw_igl.asc"      , skiprows=6)
+nman_crit_gw_igl     = np.loadtxt("nman_crit_gw_igl.asc"      , skiprows=6)
+nfer_crit_gw_igl     = np.loadtxt("nfer_crit_gw_igl.asc"      , skiprows=6)
+nman_crit_de_igl     = np.loadtxt("nman_crit_dep_igl.asc"     , skiprows=6)
+nfer_crit_de_igl     = np.loadtxt("nfer_crit_dep_igl.asc"     , skiprows=6)
+fnup_max_sw_igl      = np.loadtxt("fnup_max_sw_igl.asc"       , skiprows=6)
+fnup_max_gw_igl      = np.loadtxt("fnup_max_gw_igl.asc"       , skiprows=6)
+fnup_max_de_igl      = np.loadtxt("fnup_max_dep_igl.asc"      , skiprows=6)
+fnup_corr_sw_igl     = np.loadtxt("fnup_corr_sw_igl.asc"      , skiprows=6)
+fnup_corr_gw_igl     = np.loadtxt("fnup_corr_gw_igl.asc"      , skiprows=6)
+fnup_corr_de_igl     = np.loadtxt("fnup_corr_dep_igl.asc"     , skiprows=6)
+nh3_ef_man_igl       = np.loadtxt("nh3_ef_man_igl.asc"        , skiprows=6)
+nh3_ef_fer_igl       = np.loadtxt("nh3_ef_fer_igl.asc"        , skiprows=6)
+nin_max_igl          = np.loadtxt("nin_max_igl.asc"           , skiprows=6)
+nin_tot_crit_sw_igl  = np.loadtxt("nin_crit_sw_igl.asc"       , skiprows=6)
+nin_tot_crit_gw_igl  = np.loadtxt("nin_crit_gw_igl.asc"       , skiprows=6)
+nin_tot_crit_dep_igl = np.loadtxt("nin_crit_dep_igl.asc"      , skiprows=6)
+nh3_stor_igl         = np.loadtxt("nh3_stor_igl.asc"          , skiprows=6)
+nman_fer_crit_sw_igl = np.loadtxt("nman_fer_crit_sw_igl.asc"  , skiprows=6)
+nman_fer_crit_gw_igl = np.loadtxt("nman_fer_crit_gw_igl.asc"  , skiprows=6)
+nman_fer_crit_de_igl = np.loadtxt("nman_fer_crit_dep_igl.asc" , skiprows=6)
 
 ### 1b. Read files from *INPUT* directory
 os.chdir('c:\\users')
@@ -122,7 +101,7 @@ nh3_graz_igl       = np.loadtxt("nh3_graz_int.asc"             , skiprows=6)
 
 ### 1c. change NA values to NaN
 #general
-nox_em[nox_em==-9999]                     =np.nan
+nox_em[nox_em==-1]                        =np.nan
 fag[fag==-1]                              =np.nan
 fara[fara==-1]                            =np.nan
 figl[figl==-1]                            =np.nan
@@ -187,8 +166,8 @@ a_ara[a_ara==-1]                             =np.nan
 a_igl[a_igl==-1]                             =np.nan
 a_egl[a_egl==-1]                             =np.nan
 nfix_ara[nfix_ara==-9999]                    =np.nan
-nfix_igl[nfix_igl==-9999]                    =np.nan
-nfix_egl[nfix_egl==-9999]                    =np.nan
+nfix_igl[nfix_igl==-2]                       =np.nan
+nfix_egl[nfix_egl==-2]                       =np.nan
 nh3_spred_fer_ara[nh3_spred_fer_ara==-9999]  =np.nan
 nh3_spred_fer_igl[nh3_spred_fer_igl==-9999]  =np.nan
 nh3_spred_man_ara[nh3_spred_man_ara==-9999]  =np.nan
@@ -304,17 +283,17 @@ with np.errstate(invalid='ignore'):
 with np.errstate(invalid='ignore'):
     for i in range(np.shape(fnup_max_sw_ara)[0]):
         for j in range(np.shape(fnup_max_sw_ara)[1]):
-            if (fnup_max_sw_ara[i,j] < 1 and np.isnan(fnup_max_sw_ara[i,j])==False):
+            if (fnup_max_sw_ara[i,j] < 1 and np.isnan(fnup_max_sw_ara[i,j])==False and np.isnan(fnup_corr_sw_ara[i,j])==False):
                 nfer_crit_sw_ara3[i,j] = nfer_crit_sw_ara3[i,j]*fnup_corr_sw_ara[i,j]
                 nman_crit_sw_ara3[i,j] = nman_crit_sw_ara3[i,j]*fnup_corr_sw_ara[i,j]
     for i in range(np.shape(fnup_max_gw_ara)[0]):
         for j in range(np.shape(fnup_max_gw_ara)[1]):
-            if (fnup_max_gw_ara[i,j] < 1 and np.isnan(fnup_max_gw_ara[i,j])==False):
+            if (fnup_max_gw_ara[i,j] < 1 and np.isnan(fnup_max_gw_ara[i,j])==False and np.isnan(fnup_corr_gw_ara[i,j])==False):
                 nfer_crit_gw_ara3[i,j] = nfer_crit_gw_ara3[i,j]*fnup_corr_gw_ara[i,j]
                 nman_crit_gw_ara3[i,j] = nman_crit_gw_ara3[i,j]*fnup_corr_gw_ara[i,j]
     for i in range(np.shape(fnup_max_de_ara)[0]):
         for j in range(np.shape(fnup_max_de_ara)[1]):
-            if (fnup_max_de_ara[i,j] < 1 and np.isnan(fnup_max_de_ara[i,j])==False):
+            if (fnup_max_de_ara[i,j] < 1 and np.isnan(fnup_max_de_ara[i,j])==False and np.isnan(fnup_corr_de_ara[i,j])==False):
                 nfer_crit_de_ara3[i,j] = nfer_crit_de_ara3[i,j]*fnup_corr_de_ara[i,j]
                 nman_crit_de_ara3[i,j] = nman_crit_de_ara3[i,j]*fnup_corr_de_ara[i,j]
 
@@ -347,17 +326,17 @@ with np.errstate(invalid='ignore'):
 with np.errstate(invalid='ignore'):
     for i in range(np.shape(fnup_max_sw_igl)[0]):
         for j in range(np.shape(fnup_max_sw_igl)[1]):
-            if (fnup_max_sw_igl[i,j] < 1 and np.isnan(fnup_max_sw_igl[i,j])==False):
+            if (fnup_max_sw_igl[i,j] < 1 and np.isnan(fnup_max_sw_igl[i,j])==False and np.isnan(fnup_corr_sw_igl[i,j])==False):
                 nfer_crit_sw_igl3[i,j] = nfer_crit_sw_igl3[i,j]*fnup_corr_sw_igl[i,j]
                 nman_crit_sw_igl3[i,j] = nman_crit_sw_igl3[i,j]*fnup_corr_sw_igl[i,j]
     for i in range(np.shape(fnup_max_gw_igl)[0]):
         for j in range(np.shape(fnup_max_gw_igl)[1]):
-            if (fnup_max_gw_igl[i,j] < 1 and np.isnan(fnup_max_gw_igl[i,j])==False):
+            if (fnup_max_gw_igl[i,j] < 1 and np.isnan(fnup_max_gw_igl[i,j])==False and np.isnan(fnup_corr_gw_igl[i,j])==False):
                 nfer_crit_gw_igl3[i,j] = nfer_crit_gw_igl3[i,j]*fnup_corr_gw_igl[i,j]
                 nman_crit_gw_igl3[i,j] = nman_crit_gw_igl3[i,j]*fnup_corr_gw_igl[i,j]
     for i in range(np.shape(fnup_max_de_igl)[0]):
         for j in range(np.shape(fnup_max_de_igl)[1]):
-            if (fnup_max_de_igl[i,j] < 1 and np.isnan(fnup_max_de_igl[i,j])==False):
+            if (fnup_max_de_igl[i,j] < 1 and np.isnan(fnup_max_de_igl[i,j])==False and np.isnan(fnup_corr_de_igl[i,j])==False):
                 nfer_crit_de_igl3[i,j] = nfer_crit_de_igl3[i,j]*fnup_corr_de_igl[i,j]
                 nman_crit_de_igl3[i,j] = nman_crit_de_igl3[i,j]*fnup_corr_de_igl[i,j]
 
@@ -547,3 +526,56 @@ with np.errstate(invalid='ignore'):
     print("case-3-mi:  %.1f" % np.nansum(a_igl[np.where(np.logical_and(np.isnan(nman_fer_crit_mi_igl)==False, np.logical_and(nman_fer_crit_mi_igl>0,nman_fer_crit_mi_igl<=nman_fer_igl))) ]))
     print("case-4-mi:  %.1f" % np.nansum(a_igl[np.where(np.logical_and(np.isnan(nman_fer_crit_mi_igl)==False, np.logical_and(nman_fer_crit_mi_igl>nman_fer_igl,nman_fer_crit_mi_igl<=nman_fer_crit_gw_max_igl))) ]))
     print("case-5-mi:  %.1f" % np.nansum(a_igl[np.where(np.logical_and(np.isnan(nman_fer_crit_mi_igl)==False, np.logical_and(nman_fer_crit_mi_igl>nman_fer_igl,nman_fer_crit_mi_igl>nman_fer_crit_gw_max_igl))) ]))   
+    
+# per-hectare values (to check for outliers)
+nman_fer_crit_sw_ara3 = np.add(nman_crit_sw_ara3,nfer_crit_sw_ara3)
+nman_fer_crit_gw_ara3 = np.add(nman_crit_gw_ara3,nfer_crit_gw_ara3)
+nman_fer_crit_de_ara3 = np.add(nman_crit_de_ara3,nfer_crit_de_ara3)
+nman_fer_crit_mi_ara3 = np.add(nman_crit_min_ara3,nfer_crit_min_ara3)
+
+nman_fer_crit_sw_igl3 = np.add(nman_crit_sw_igl3,nfer_crit_sw_igl3)
+nman_fer_crit_gw_igl3 = np.add(nman_crit_gw_igl3,nfer_crit_gw_igl3)
+nman_fer_crit_de_igl3 = np.add(nman_crit_de_igl3,nfer_crit_de_igl3)
+nman_fer_crit_mi_igl3 = np.add(nman_crit_min_igl3,nfer_crit_min_igl3)
+
+with np.errstate(invalid='ignore'):
+    nman_fer_ara_ha = np.divide(nman_fer_ara, a_ara)
+    nman_fer_crit_sw_ara3_ha = np.divide(nman_fer_crit_sw_ara3, a_ara)
+    nman_fer_crit_gw_ara3_ha = np.divide(nman_fer_crit_gw_ara3, a_ara)
+    nman_fer_crit_de_ara3_ha = np.divide(nman_fer_crit_de_ara3, a_ara)
+    nman_fer_crit_mi_ara3_ha = np.divide(nman_fer_crit_mi_ara3, a_ara)
+
+    nman_fer_igl_ha = np.divide(nman_fer_igl, a_igl)
+    nman_fer_crit_sw_igl3_ha = np.divide(nman_fer_crit_sw_igl3, a_igl)
+    nman_fer_crit_gw_igl3_ha = np.divide(nman_fer_crit_gw_igl3, a_igl)
+    nman_fer_crit_de_igl3_ha = np.divide(nman_fer_crit_de_igl3, a_igl)
+    nman_fer_crit_mi_igl3_ha = np.divide(nman_fer_crit_mi_igl3, a_igl)
+
+print("nman-fer-ara-ha-min: %.1f" % np.nanmin(nman_fer_ara_ha))
+print("nman-fer-crit-sw-ara-ha-min: %.1f" % np.nanmin(nman_fer_crit_sw_ara3_ha))
+print("nman-fer-crit-gw-ara-ha-min: %.1f" % np.nanmin(nman_fer_crit_gw_ara3_ha))
+print("nman-fer-crit-de-ara-ha-min: %.1f" % np.nanmin(nman_fer_crit_de_ara3_ha))
+print("nman-fer-crit-mi-ara-ha-min: %.1f" % np.nanmin(nman_fer_crit_mi_ara3_ha))
+
+print("nman-fer-igl-ha-min: %.1f" % np.nanmin(nman_fer_igl_ha))
+print("nman-fer-crit-sw-igl-ha-min: %.1f" % np.nanmin(nman_fer_crit_sw_igl3_ha))
+print("nman-fer-crit-gw-igl-ha-min: %.1f" % np.nanmin(nman_fer_crit_gw_igl3_ha))
+print("nman-fer-crit-de-igl-ha-min: %.1f" % np.nanmin(nman_fer_crit_de_igl3_ha))
+print("nman-fer-crit-mi-igl-ha-min: %.1f" % np.nanmin(nman_fer_crit_mi_igl3_ha))
+
+print("nman-fer-ara-ha-max: %.1f" % np.nanmax(nman_fer_ara_ha))
+print("nman-fer-crit-sw-ara-ha-max: %.1f" % np.nanmax(nman_fer_crit_sw_ara3_ha))
+print("nman-fer-crit-gw-ara-ha-max: %.1f" % np.nanmax(nman_fer_crit_gw_ara3_ha))
+print("nman-fer-crit-de-ara-ha-max: %.1f" % np.nanmax(nman_fer_crit_de_ara3_ha))
+print("nman-fer-crit-mi-ara-ha-max: %.1f" % np.nanmax(nman_fer_crit_mi_ara3_ha))
+
+print("nman-fer-igl-ha-max: %.1f" % np.nanmax(nman_fer_igl_ha))
+print("nman-fer-crit-sw-igl-ha-max: %.1f" % np.nanmax(nman_fer_crit_sw_igl3_ha))
+print("nman-fer-crit-gw-igl-ha-max: %.1f" % np.nanmax(nman_fer_crit_gw_igl3_ha))
+print("nman-fer-crit-de-igl-ha-max: %.1f" % np.nanmax(nman_fer_crit_de_igl3_ha))
+print("nman-fer-crit-mi-igl-ha-max: %.1f" % np.nanmax(nman_fer_crit_mi_igl3_ha))
+
+#result1 = np.nanmax(nman_fer_crit_sw_igl3_ha)
+#print(result1)
+#result2 = np.where(nman_fer_crit_sw_igl3_ha == np.nanmax(nman_fer_crit_sw_igl3_ha))
+#print(result2)

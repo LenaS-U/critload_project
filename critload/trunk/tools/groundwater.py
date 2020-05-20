@@ -519,30 +519,44 @@ def calculate(params):
     fnup_corr_gw_igl.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(fnup_corr_gw_igl,"fnup_corr_gw_igl =")    
         
-    '''
+    
     ########### Checking degree of exceedance of critical N leaching by FIXED N inputs ############
     # Calculate N leaching caused by N fixation alone
-    nle_nfix_gw = ascraster.duplicategrid(n_fix_agri)
-    nle_nfix_gw.multiply(v)
-    #fileout = os.path.join(params.outputdir,"nle_nfix_gw.asc")
-    #nle_nfix_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nle_nfix_gw,"The N leaching caused by N fixation alone is")
+    nle_nfix_gw_ara = ascraster.duplicategrid(nfix_ara)
+    nle_nfix_gw_ara.multiply(v_ara)
+    nle_nfix_gw_igl = ascraster.duplicategrid(nfix_igl)
+    nle_nfix_gw_igl.multiply(v_igl)
+    nle_nfix_gw = ascraster.duplicategrid(nle_nfix_gw_ara)
+    nle_nfix_gw.add(nle_nfix_gw_igl)
+    fileout = os.path.join(params.outputdir,"nle_nfix_gw.asc")
+    nle_nfix_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    #print_debug(nle_nfix_gw,"The N leaching caused by N fixation alone is")
     # Calculate N leaching caused by NOx emissions alone
-    nle_nox_gw = ascraster.duplicategrid(nox_em)
-    nle_nox_gw.multiply(fagri)
-    nle_nox_gw.multiply(v)
-    #fileout = os.path.join(params.outputdir,"nle_nox_gw.asc")
-    #nle_nox_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nle_nox_gw,"The N leaching caused by NOx emissions alone is")
+    nle_nox_gw_ara = ascraster.duplicategrid(nox_em)
+    nle_nox_gw_ara.multiply(fara)
+    nle_nox_gw_ara.multiply(v_ara)
+    nle_nox_gw_igl = ascraster.duplicategrid(nox_em)
+    nle_nox_gw_igl.multiply(figl)
+    nle_nox_gw_igl.multiply(v_igl)
+    nle_nox_gw = ascraster.duplicategrid(nle_nox_gw_ara)
+    nle_nox_gw.add(nle_nox_gw_igl)
+    fileout = os.path.join(params.outputdir,"nle_nox_gw.asc")
+    nle_nox_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    #print_debug(nle_nox_gw,"The N leaching caused by NOx emissions alone is")
     # Calculate N leaching caused by NH3,egl emissions alone
-    nle_nh3egl_gw = ascraster.duplicategrid(nh3_tot_egl)
-    nle_nh3egl_gw.multiply(fagri)
-    nle_nh3egl_gw.multiply(v)
-    #fileout = os.path.join(params.outputdir,"nle_nh3egl_gw.asc")
-    #nle_nh3egl_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
-    print_debug(nle_nh3egl_gw,"The N leaching caused by NH3 emissions from ext grassland alone is")
+    nle_nh3egl_gw_ara = ascraster.duplicategrid(nh3_tot_egl)
+    nle_nh3egl_gw_ara.multiply(fara)
+    nle_nh3egl_gw_ara.multiply(v_ara)
+    nle_nh3egl_gw_igl = ascraster.duplicategrid(nh3_tot_egl)
+    nle_nh3egl_gw_igl.multiply(figl)
+    nle_nh3egl_gw_igl.multiply(v_igl)
+    nle_nh3egl_gw = ascraster.duplicategrid(nle_nh3egl_gw_ara)
+    nle_nh3egl_gw.add(nle_nh3egl_gw_igl)
+    fileout = os.path.join(params.outputdir,"nle_nh3egl_gw.asc")
+    nle_nh3egl_gw.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
+    #print_debug(nle_nh3egl_gw,"The N leaching caused by NH3 emissions from ext grassland alone is")
     #############################################################################################
-    '''
+    
     
     ########### FORWARD CALCULATIONS TO CHECK ###########
     ## * Critical N budget *

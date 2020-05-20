@@ -8,7 +8,7 @@
 # ******************************************************
 
 # Specify debug_cell which results are printed to screen. When icell_debug < -1 then there is no writing to screen.
-icell_debug=41792
+icell_debug=111822
 
 def print_debug (grid, txt):
     if (icell_debug > -1):

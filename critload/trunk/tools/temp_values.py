@@ -113,7 +113,7 @@ def temp_values(params):
     nh3_spread_fer_egl  = ascraster.Asciigrid(ascii_file=params.filename_nh3_em_spread_fert_extgl,      numtype=float,mask=params.mask)
     
     # split nh3 emissions from storage over intensive grassland, extensive grassland & arable land
-    # intensive grassland                              
+    # intensive grassland                             
     nh3_stor_igl = ascraster.duplicategrid(nh3_stor)
     for icell in range(nh3_stor_igl.length):
         igl = a_igl.get_data(icell)
@@ -168,8 +168,7 @@ def temp_values(params):
     fileout = os.path.join(params.outputdir, "nh3_stor_ara.asc")
     nh3_stor_ara.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)
     print_debug(nh3_stor_ara,"nh3_stor_ara =")
-    
- 
+     
     # Calculate total N inputs from *FERTILIZER* (incl. NH3 emissions)
     # 'ag'
     nfer_ag = ascraster.duplicategrid(nfer_eff_ag)
@@ -750,6 +749,10 @@ def temp_values(params):
     nle_ag      = ascraster.Asciigrid(ascii_file=params.filename_leaching_ag,                          numtype=float,mask=params.mask)
     nle_nat     = ascraster.Asciigrid(ascii_file=params.filename_leaching_nat,                         numtype=float,mask=params.mask)
     
+    # Scenarios 1+2+3 surface water
+    #for i in range(fgw_rec_ag.length):
+    #    fgw_rec_ag.set_data(i,1.0)    
+    
     ## *N BUDGET*
     # 'ag'
     nbud_ag = ascraster.duplicategrid(nin_ag)
@@ -825,10 +828,14 @@ def temp_values(params):
     # 'ag'
     nload_var_ag = ascraster.duplicategrid(ngw_rec_ag)
     nload_var_ag.add(nsro_ag)
+    fileout = os.path.join(params.outputdir,"nload_var_ag.asc")
+    nload_var_ag.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  
     print_debug(nload_var_ag,"nload_var_ag =")
     # 'nat'
     nload_var_nat = ascraster.duplicategrid(ngw_rec_nat)
     nload_var_nat.add(nsro_nat)
+    fileout = os.path.join(params.outputdir,"nload_var_nat.asc")
+    nload_var_nat.write_ascii_file(fileout,output_nodata_value=-9999,compress=params.lcompress)  
     print_debug(nload_var_nat,"nload_var_nat =")   
     
     ## *FIXED LOAD TO SURFACE WATER*
@@ -858,9 +865,6 @@ def temp_values(params):
     nww = ascraster.Asciigrid(ascii_file=params.filename_n_point_wastewater,numtype=float,mask=params.mask)
     naqua = ascraster.Asciigrid(ascii_file=params.filename_n_point_aquaculture,numtype=float,mask=params.mask)
     ndep_sw = ascraster.Asciigrid(ascii_file=params.filename_n_point_dep_surfacewater,numtype=float,mask=params.mask)
-    #factor = 0
-    #nww.multiply(factor)
-    #naqua.multiply(factor)   
     npoint_tot = ascraster.duplicategrid(nallo)
     npoint_tot.add(nww)
     npoint_tot.add(naqua)

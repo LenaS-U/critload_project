@@ -1,5 +1,5 @@
-# Wed May  6 14:14:21 2020  : Logfile started by user: schul028
-# Wed May  6 14:14:21 2020  : Starting run....
+# Wed May 20 10:41:39 2020  : Logfile started by user: schul028
+# Wed May 20 10:41:39 2020  : Starting run....
 #############################################
 # Ini input options used:
  --root = C:\\Users\\schul028\\OneDrive - WageningenUR\\critload_project\\Model Version1.4\\trunk\\tools
@@ -77,22 +77,22 @@
 # lcompress = False
 # mask = None
 #############################################
-# Wed May  6 14:14:21 2020  : The following command line arguments will not be used:['run.ini']
-# Wed May  6 14:14:21 2020  : ******************************************************
-# Wed May  6 14:14:21 2020  : # Version information of main script.
-# Wed May  6 14:14:21 2020  : ******************************************************
-# Wed May  6 14:14:21 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\Model Version1.4\trunk\tools\main_critload.py
-# Wed May  6 14:14:21 2020  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
-# Wed May  6 14:14:21 2020  : ## Date "$LastChangedRevision: 625 $"
-# Wed May  6 14:14:21 2020  : ## Author "$LastChangedBy: arthurbeusen $"
-# Wed May  6 14:14:21 2020  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
-# Wed May  6 14:14:21 2020  : ******************************************************
-# Wed May  6 14:14:21 2020  : # Version information of generalcode directory.
-# Wed May  6 14:14:21 2020  : ******************************************************
-# Wed May  6 14:14:21 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\generalcode\trunk\cmd_options_general.py
-# Wed May  6 14:14:21 2020  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
-# Wed May  6 14:14:21 2020  : ## Date "$LastChangedRevision: 17 $"
-# Wed May  6 14:14:21 2020  : ## Author "$LastChangedBy: arthurbeusen $"
-# Wed May  6 14:14:21 2020  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
-# Wed May  6 14:14:21 2020  : ******************************************************
-# Wed May  6 14:16:00 2020  : Total run took 99.310590 seconds to complete.
+# Wed May 20 10:41:39 2020  : The following command line arguments will not be used:['run.ini']
+# Wed May 20 10:41:39 2020  : ******************************************************
+# Wed May 20 10:41:39 2020  : # Version information of main script.
+# Wed May 20 10:41:39 2020  : ******************************************************
+# Wed May 20 10:41:39 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\Model Version1.4\trunk\tools\main_critload.py
+# Wed May 20 10:41:39 2020  : ## Revision "$LastChangedDate: 2019-03-14 08:53:42 +0100 (Thu, 14 Mar 2019) $"
+# Wed May 20 10:41:39 2020  : ## Date "$LastChangedRevision: 625 $"
+# Wed May 20 10:41:39 2020  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed May 20 10:41:39 2020  : ## URL "$HeadURL: http://pbl.sliksvn.com/globalnutrients/critload/trunk/tools/main_critload.py $"
+# Wed May 20 10:41:39 2020  : ******************************************************
+# Wed May 20 10:41:39 2020  : # Version information of generalcode directory.
+# Wed May 20 10:41:39 2020  : ******************************************************
+# Wed May 20 10:41:39 2020  : ## Version information from file: C:\Users\schul028\OneDrive - WageningenUR\critload_project\generalcode\trunk\cmd_options_general.py
+# Wed May 20 10:41:39 2020  : ## Revision "$LastChangedDate: 2019-02-01 08:45:22 +0100 (Fri, 01 Feb 2019) $"
+# Wed May 20 10:41:39 2020  : ## Date "$LastChangedRevision: 17 $"
+# Wed May 20 10:41:39 2020  : ## Author "$LastChangedBy: arthurbeusen $"
+# Wed May 20 10:41:39 2020  : ## URL "$HeadURL: https://pbl.sliksvn.com/generalcode/trunk/cmd_options_general.py $"
+# Wed May 20 10:41:39 2020  : ******************************************************
+# Wed May 20 10:43:18 2020  : Total run took 98.428235 seconds to complete.
